@@ -1,4 +1,4 @@
-# Paradigmas de progrmación
+# Paradigmas de programación
 
 **Enfoque del curso**
 
