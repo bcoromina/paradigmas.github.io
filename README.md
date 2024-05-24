@@ -2,15 +2,8 @@
 
 **Enfoque del curso**
 
-Des de los orígenes de la ciencia de la computación, se han creado distintos paradigmas de
-programación que han proporcionado soluciones y puntos de vista diferentes a los problemas y retos
-que plantea la construción de programas informáticos. El presente curso pretende dar a conocer
-algunos de los paradigmas de mayor relevancia más allá de la orientación a objetos que se utilizará
-como punto de partida para su exploración. El objetivo del curso es enriquecer la visión y recursos
-del alumno para que adquiera el criterio que le permita utilizar el paradigma adecuado para cada
-problema. Se hará especial atención en el paradigma funcional con lenguage Scala, ya que al ser
-multiparadigma se erige como ideal para que el alumno pueda realizar una transición suave de OOP
-a Programación Funcional.
+Des de los orígenes de la ciencia de la computación, se han creado distintos paradigmas de programación que han proporcionado soluciones y puntos de vista diferentes a los problemas y retos que plantea la construción de programas informáticos. El presente curso pretende dar a conocer algunos de los paradigmas de mayor relevancia más allá de la orientación a objetos que se utilizará como punto de partida para su exploración. El objetivo del curso es enriquecer la visión y recursos del alumno para que adquiera el criterio que le permita utilizar el paradigma adecuado para cada problema. Se hará especial atención en el paradigma funcional con lenguage Scala, ya que al ser
+multiparadigma se erige como ideal para que el alumno pueda realizar una transición suave de OOP a Programación Funcional.
 
 
 ## **Parte 1**: Introducción a otros paradigmas de programación
