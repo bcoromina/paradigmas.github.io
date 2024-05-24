@@ -40,30 +40,30 @@ a Programación Funcional.
 
 #### 1.1- Introducción
 
-    1.1.1- Qué es un paradigma de programación
+##### 1.1.1- Qué es un paradigma de programación
 
-    Ante el reto que presenta construir programas informáticos han ido apaerciendo distintos paradigmas de programación. Cada uno pone el foco en diferentes dimensiones del problema proporcionando un punto de vista o enfoque particular. 
-    cat 
-    Ejemplos de dimensiones pueden ser:
+Ante el reto que presenta construir programas informáticos han ido apaerciendo distintos paradigmas de programación. Cada uno pone el foco en diferentes dimensiones del problema proporcionando un punto de vista o enfoque particular. 
+cat 
+Ejemplos de dimensiones pueden ser:
 
-    - modelo de ejecución: Cómo ejecuto los Side Effects? 
-    - organización del código: OOP agrupa estado y comportamiento en una classe.
-    - modelo de concurrencia: Threads con código bloqueante, Green Threads, Actores... 
-    ...
-   
-    Cada paradigma tiene, de una manera más o menos formal, un conjunto de reglas o de principios que constituyen el fundamento teórico. Ej OOP: abstracción, encapsulamiento, herencia y polimorfismo
+- modelo de ejecución: Cómo ejecuto los Side Effects? 
+- organización del código: OOP agrupa estado y comportamiento en una classe.
+- modelo de concurrencia: Threads con código bloqueante, Green Threads, Actores... 
+...
 
-
-    Los paradigmas de programación constituyen al desarrollador o arquitecto de software del conjunto de herramientas necesarias para abordar un problema de la mejor manera possible. 
+Cada paradigma tiene, de una manera más o menos formal, un conjunto de reglas o de principios que constituyen el fundamento teórico. Ej OOP: abstracción, encapsulamiento, herencia y polimorfismo
 
 
-    Ejemplos:
-        - Imperativo: 
-            - Procedural: C
-            - Object Oriented Programming
-        - Logic programming: Basados en logica formal como Prolog 
-        - Reactive Programming: El resultado deseado es descrito como la propagación de elementos a traves de un flujo de datos. 
-        - Funcional programming
+Los paradigmas de programación constituyen al desarrollador o arquitecto de software del conjunto de herramientas necesarias para abordar un problema de la mejor manera possible. 
+
+
+Ejemplos:
+    - Imperativo: 
+        - Procedural: C
+        - Object Oriented Programming
+    - Logic programming: Basados en logica formal como Prolog 
+    - Reactive Programming: El resultado deseado es descrito como la propagación de elementos a traves de un flujo de datos. 
+    - Funcional programming
         
       
-    1.1.2. Origen de la programación funcional
+##### 1.1.2. Origen de la programación funcional
