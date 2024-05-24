@@ -62,3 +62,17 @@ _Ejemplos:
         
       
 ##### 1.1.2. Origen de la programación funcional
+
+
+```scala
+trait LivingCreature
+
+case class Person(name: String, age: Int)
+val persion = Person
+```
+
+```mermaid
+sequenceDiagram
+    Alice->>John: Hello John, how are you?
+    John-->>Alice: Great!
+    Alice-)John: See you later!
