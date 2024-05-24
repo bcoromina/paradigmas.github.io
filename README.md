@@ -63,6 +63,13 @@ _Ejemplos:
       
 ##### 1.1.2. Origen de la programación funcional
 
+Lisp, el primer lenguage de programación funcional fué desarrollado en 1960 en el MIT. En aquellos años fueron creados también los primeros lenguajes orientados a objetos. Sin embargo, Alan Kay, al que se le otorga el acuñamiento del término, lo definia de una forma que se asemeja más al modelo de actores a cómo se definie la OOP hoy en día.
+Alan Kay definia la comunicación entre objetos como un intercambio de mensajes, no como una llamada a un método.
+https://adabeat.com/fp/the-history-of-functional-programming/
+
+ 
+ 
+
 
 ```scala
 trait LivingCreature
@@ -75,4 +82,4 @@ val persion = Person
 sequenceDiagram
     Alice->>John: Hello John, how are you?
     John-->>Alice: Great!
-    Alice-)John: See you later!
+    Alice->>John: See you later!
