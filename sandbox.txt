@@ -13,12 +13,48 @@ https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-sca
 - Model d'actors. Reactive paradigm, akka streams, reactive manifesto
 - Java virtual threads. Java 21
 
+
+
+
+
 - Rediseño de almacén automático con Actores.
+
+  https://www.youtube.com/watch?v=x4wzLLYEv9g
   
   Cuando la caja pasa por un punto de notificación manda un mensaje que contiene: boxId, locationId, additionalData
   Al recibir una notificación de una caja en un punto hay que aplicar reglas de negocio: 
   	- actualizar el estado
   	- responder con un mensaje que contiene un transporte
+  
+  Subsistema de entradas: Proceso de entradas hasta celda	
+  
+  Notificacióm: TransportSystem -> LC1, Position1
+  
+  
+  
+  Layout:
+  
+											   ___________________________
+									     BigBoxAisle  |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
+											  |_|_|_|_|_|_|_|_|_|_|_|_|_|_|
+										     	ʌ |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
+										     	| |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
+										        y |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
+  											  x->	
+  												
+  InitialScanner -> Scale -> VolumetricScanner (wide, length, high) -> BigBoxAislePickUp  
+		      |	  	   |	                            -> LittleBoxAislePickUp
+		      v	           v
+  		   Reject1    	 Reject2
+  	                                                                                   ___________________________
+  									  LittleBoxAisle  |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
+											  |_|_|_|_|_|_|_|_|_|_|_|_|_|_|
+										     	ʌ |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
+										     	| |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
+										        y |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
+  											  x->												
+  
+  
   
   Dominio:
   trait WharehouseLocation
@@ -33,7 +69,7 @@ https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-sca
   
   
   Por threads: 
-  	Cada mensaje es procesado por un thread,  
+  	Cada mensaje es procesado por un thread 'tradicional' (de sistema operativo). En el procesado se realizan llamadas bloqueantes a base de datos.
   
   
   
@@ -44,14 +80,7 @@ https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-sca
   class LoadCarrierActor(id: String, position: WharehouseLocation, transporte: Option[Transaport], lastLocationSeen: WharehouseLocation)
   
   
-  PLC -> LC1, LB1
-  
-  
-  InitialScanner -> Scale -> VolumetricScanner (wide, length, high) -> BigBoxAislePickUp
-		      |	  	   |	                            -> LittleBoxAislePickUp
-		      v	           v
-  		   Reject1    	 Reject2
-  
+ 
   
   
   
