@@ -26,13 +26,26 @@ https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-sca
   	- actualizar el estado
   	- responder con un mensaje que contiene un transporte
   
-  Subsistema de entradas: Proceso de entradas hasta celda	
+   ______________________________	
+  |				 |	 
+  |  Warehouse Management System |	
+  |______________________________|  
+  |				 |	 
+  |      Transport System        |	
+  |______________________________|  
+  |				 |	 
+  |          Hardware            |	
+  |______________________________| 	
   
-  Notificacióm: TransportSystem -> LC1, Position1
+  	
+  
+  Notificacióm: TS ---- LC1, Position1 ----> WMS 
+  Respuesta:    WMS ---- LC1, Transport(A -> B) ----> TS
   
   
+  Layout Subsistema de entradas: Proceso de entradas hasta celda
   
-  Layout:
+  
   
 											   ___________________________
 									     BigBoxAisle  |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
@@ -42,10 +55,10 @@ https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-sca
 										        y |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
   											  x->	
   												
-  InitialScanner -> Scale -> VolumetricScanner (wide, length, high) -> BigBoxAislePickUp  
-		      |	  	   |	                            -> LittleBoxAislePickUp
-		      v	           v
-  		   Reject1    	 Reject2
+  InitialScannerScale -> VolumetricScanner (wide, length, high) -> BigBoxAislePickUp  
+	|	  	           |	                        -> LittleBoxAislePickUp
+	v	                   v
+     Reject1    	        Reject2
   	                                                                                   ___________________________
   									  LittleBoxAisle  |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
 											  |_|_|_|_|_|_|_|_|_|_|_|_|_|_|
@@ -57,14 +70,21 @@ https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-sca
   
   
   Dominio:
+  
+  case class Box(barcodeId: String, width: Int, height: Int, length: Int)
+  
   trait WharehouseLocation
   case class ConveyorPoint(name: String)
   case class Silo(aisle: Int, x: Int, y: Int)
   
   case class Transaport(origin: WharehouseLocation, destination: destination: WharehouseLocation, status: TransaportStatus)
   
+  trait LocationAlgorithm{
+   	def 
+  }
   
-  PROVLEMA: 
+  
+  PROBLEMA: 
   	Dado que hay métricas críticas de flujo de cajas en determinados puntos
   
   
