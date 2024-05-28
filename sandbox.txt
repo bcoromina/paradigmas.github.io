@@ -1,0 +1,57 @@
+
+
+- Dosier de teoria
+- Repository de github amb exemples i solucions
+
+
+
+
+
+- Toy IO, monad for effect vs future. Fp for mortals?
+https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-scala-14419039a423
+
+- Model d'actors. Reactive paradigm, akka streams, reactive manifesto
+- Java virtual threads. Java 21
+
+- Rediseño de almacén automático con Actores.
+  
+  Cuando la caja pasa por un punto de notificación manda un mensaje que contiene: boxId, locationId, additionalData
+  Al recibir una notificación de una caja en un punto hay que aplicar reglas de negocio: 
+  	- actualizar el estado
+  	- responder con un mensaje que contiene un transporte
+  
+  Dominio:
+  trait WharehouseLocation
+  case class ConveyorPoint(name: String)
+  case class Silo(aisle: Int, x: Int, y: Int)
+  
+  case class Transaport(origin: WharehouseLocation, destination: destination: WharehouseLocation, status: TransaportStatus)
+  
+  
+  PROVLEMA: 
+  	Dado que hay métricas críticas de flujo de cajas en determinados puntos
+  
+  
+  Por threads: 
+  	Cada mensaje es procesado por un thread,  
+  
+  
+  
+  Actor por caja: Estado 
+  
+  
+  
+  class LoadCarrierActor(id: String, position: WharehouseLocation, transporte: Option[Transaport], lastLocationSeen: WharehouseLocation)
+  
+  
+  PLC -> LC1, LB1
+  
+  
+  InitialScanner -> Scale -> VolumetricScanner (wide, length, high) -> BigBoxAislePickUp
+		      |	  	   |	                            -> LittleBoxAislePickUp
+		      v	           v
+  		   Reject1    	 Reject2
+  
+  
+  
+  
