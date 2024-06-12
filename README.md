@@ -92,6 +92,49 @@ sequenceDiagram
 ```
 
 
+***Saliendo del paradigma convencional***
+
+El paradigma de programación más extendido es el de OOP con un modelo de concurrencia basado en Threads ( o light threads/fibers) y utilizando RPC.
+
+El problema de esta combinación viene con la escalabilidad. Definimos escalabilidad como la capacidad de una aplicación o sistema de hacer frente a un incremento de demanda manteniendo el tiempo de respuesta.
+Un sistema puede escalar a dos niveles:
+- *scale up*(vertical): utilización de más CPUs dentro de la misma máquina
+- *scale out*(horizontal): añadiendo máquinas o nodos al sistema distribuido
+
+La concurrencia es un medio para conseguir escalabilidad. Si tengo que ejecutar dos compuntaciones incorreladas, las ejecuto "al mismo tiempo" (en paralelo o de forma entrelazada).
+
+Ante un incremento de la demanda es deseable un augmento de los recursos requeridos con una relación lineal o inferior. Además, la relación entre demanda y complejidad de la aplicación queremos que mantenga un buen equilibrio.
+
+El paradigma convencional utiliza Threads para scale up y RPC para scale down.
+RPC parte de la base que una llamada a través de la red no és diferente a una llamada en la misma máquina. Si se realiza en modo síncrono va a bloquear el thread que hace la llamada con lo que vamos a hacer un uso poco eficiente de los recursos. Si hacemos una llamada asíncrona, tendremos que especificar una función de callback lo que añade complejidad a la aplicación. Puedes acabar con un callback hell si en la callback hacer otra llamada que necesita su callback, etc...
+
+Otro problema de este paradigma es que obtenemos un código en el que se mezclan contínuamente las dos abstracciones dirigidas a cada tipo de scalabilidad. Acabas hardcodeando qué partes de tu aplicación van a utilizar Threads para scale up y cuales van a utilizar RPC para scale out.
+
+El modelo de actores proporciona una abstracción única para concurrencia y escalabilidad.
+
+
+***Actor***: El actor es la unidad básica de computación en el modelo de actores. 
+  - Puede recibir mensajes que procesa secuencialmente según el orden de llegada. Los guarda en una cola
+  - Contiene estado que puede ser modificado en base a los mmensajes recibidos.
+  - Puede mandar mensajes a otros actores
+  - Puede crear otros actores generando un árbol jerárquico y manejando su ciclo de vida. Si un actor peta, su supervisor es notificado y puede decidir qué acciones aplicar.
+  
+El modelo de concurrencia utilizado consiste en un único thread (o pool de threads) que mediante un scheduler va ejecutando cada actor.
+Por ejecutar un actor se entiende comprovar si tiene mensajes en la cola y llamar a la lógica de proceso associada. Así pues, un solo thread es compartido por varios actores con lo que un actor no debe contener código bloqueante ya que bloquearía la ejecución de otros actores.
+
+Un actor tiene una dirección tipo el path de un fichero que lo localiza en el árbol jerárquico y permite localizarlo para mandar-le mensajes. En el caso de un sistema distribuido formado con varios nodos en el que se ejecuta un sistema de actores, la localización de un actor en concreto en el cluster es transparente. Es decir, en el momento de mmandar un mensaje a un actor se utiliza la misma API tanto si el actor esta en la misma máquina o está en remoto.
+
+Ya no tenemos una doble API para scale up y scale out.
+
+
+***Aislamiento de fallos****: Al ser el actor la unidad básica de computación, pueden ocurrir fallos o excepciones en su lógica. Un fallo no controlado en un actor lo para y notifica a su supervisor que aplicará la lógica de gestión de errores. El fallo queda, sin embargo aislado, no se propaga por el sistema como una excepción a través de la pila de llamadas.
+
+***Bajo acoplamiento***: El intercambio de mensajes de forma asíncrona entre las unidades de computacón da lugar a sistemas mucho menos acoplados que los que produce la orientación a objetos donde un objeto ejecuta el método de otro a través de una instancia.
+
+
+
+
+
 ### 2. Paradigma Reactivo
 
 #### 2.1- Introducción
