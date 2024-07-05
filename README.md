@@ -50,15 +50,15 @@ Ejemplos de dimensiones pueden ser:
 - modelo de ejecución: Cómo ejecuto los Side Effects? 
 - organización del código: OOP agrupa estado y comportamiento en una classe.
 - modelo de concurrencia: Threads con código bloqueante, Green Threads, Actores... 
-...
+
 
 Cada paradigma tiene, de una manera más o menos formal, un conjunto de reglas o de principios que constituyen el fundamento teórico. Ej OOP: abstracción, encapsulamiento, herencia y polimorfismo
 
 
-Los paradigmas de programación constituyen al desarrollador o arquitecto de software del conjunto de herramientas necesarias para abordar un problema de la mejor manera possible. 
+Los paradigmas de programación proporcionan al desarrollador o arquitecto de software del conjunto de herramientas necesarias para abordar un problema de la mejor manera possible. 
 </div>
 
-_Ejemplos:
+Ejemplos:
 - **Imperativo**: 
     - Procedural: C
     - Object Oriented Programming
