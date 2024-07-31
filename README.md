@@ -65,6 +65,9 @@ Ejemplos:
 - **Logic programming**: Basados en logica formal como Prolog 
 - **Reactive Programming**: El resultado deseado es descrito como la propagación de elementos a traves de un flujo de datos. 
 - **Funcional programming**
+
+**Definición pragmática**
+    Ante dos programas que resuelven el mismo problema (equivalentes funcionalmente) se puede detectar que se ha seguido un paradigma de programación didtinto en cada uno de ellos cuando presentan diferéncias conceptuales significativas más allá de la sintaxi. Si simplemente podemos traducir un programa al otro traduciendo la sintaxis y poco más, estamos dentro del mismo paradigma. Si por el contrario tenemos que reescribir-lo usando abstracciones y conceptos nuevos, hemos cambiado de paradigma. 
         
       
 ##### 1.1.2. Origen de la programación funcional
