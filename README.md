@@ -194,6 +194,9 @@ Vemos que la resiliencia va más allá de la toleráncia a fallos. No se trata d
 **Implementaciones:** Akka/Pekko en Scala y Akka.Net en c# son implementaciones, Elixir/Erlang de un ReactiveSystem basado en el Modelo de Actores.
     Elixir/Erlang es monoparadigma, solo puedo hacer programas siguiendo el modelo de actores (procesos maquina virtual BEAM).
     Scala/C# son multiparadigma.
+    Erlang es un lenguaje que se compila a bytecodes a ejecutar en la máquina virtual BEAM que es una implementacón del modelo ed actores.
+    Una de las principales diferencias con Akka es que BEAM está optimizado para sistemas con baja laténcia. Shcheduler preemptivo limita la duración de ejecución de los procesos/actores en los threads de sistema operativo.
+    Nació en Ericson para equipos de telecomunicaciones y ahora lo usan Whatsapp, Discord, RabbitMQ, etc...
 
                     
 
