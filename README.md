@@ -191,7 +191,12 @@ Vemos que la resiliencia va más allá de la toleráncia a fallos. No se trata d
 
 
 
-**Implementaciones:** Akka/Pekko en Scala y Akka.Net en c# son implementaciones de un ReactiveSystem basado en el Modelo de Actores.
+**Implementaciones:** Akka/Pekko en Scala y Akka.Net en c# son implementaciones, Elixir/Erlang de un ReactiveSystem basado en el Modelo de Actores.
+    Elixir/Erlang es monoparadigma, solo puedo hacer programas siguiendo el modelo de actores (procesos maquina virtual BEAM).
+    Scala/C# son multiparadigma.
+
+                    
+
 
 **Akka streams**
 
