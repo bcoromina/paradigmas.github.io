@@ -12,36 +12,35 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
 
 
 
-### 1. Programación funcional
+### 1. Qué es un paradigma de programación
 
-    1.1. Introducción
-
-        1.1.1. Qué es un paradigma de programación
-        1.1.2. Origen de la programación funcional
-        1.1.3. ¿Porqué?
-        1.2.4. Desmontando OOP 
-
-    1.2. Principios
-        1,2.1- Función matemática y propiedades
 
 ### 2. Modelo de actores
 
-    2.1. Sub item
-    2.2. Sub item
-
+    2.1. Saliendo del paradigma convencional
+    2.2. Qué es un actor
+    2.3. Escalabilidad
 
 ### 2. Paradigma Reactivo
 
-    2.1. Sub item
-    2.2. Sub item
+    2.1. Introducción
+    2.2. Reactive Programming
+    3.3. Streams
+
+### 3. Programación funcional
+        3.1. Origen de la programación funcional
+        3.1. ¿Porqué?
+        3.2. Desmontando OOP 
+
+    1.2. Principios
+        1.2.1- Función matemática y propiedades
 
 
 
-### Programación funcional
 
-#### 1.1- Introducción
 
-##### 1.1.1- Qué es un paradigma de programación
+### 1. Qué es un paradigma de programación
+
 <div style="text-align: justify;">
 Ante el reto que presenta construir programas informáticos han ido apaerciendo distintos paradigmas de programación. Cada uno pone el foco en diferentes dimensiones del problema proporcionando un punto de vista o enfoque particular. 
 
@@ -67,10 +66,12 @@ Ejemplos:
 - **Funcional programming**
 
 **Definición pragmática**
-    Ante dos programas que resuelven el mismo problema (equivalentes funcionalmente) se puede detectar que se ha seguido un paradigma de programación didtinto en cada uno de ellos cuando presentan diferéncias conceptuales significativas más allá de la sintaxi. Si simplemente podemos traducir un programa al otro traduciendo la sintaxis y poco más, estamos dentro del mismo paradigma. Si por el contrario tenemos que reescribir-lo usando abstracciones y conceptos nuevos, hemos cambiado de paradigma. 
+    Ante dos programas que resuelven el mismo problema (equivalentes funcionalmente) se puede detectar que se ha seguido un paradigma de programación distinto en cada uno de ellos cuando presentan diferéncias conceptuales significativas más allá de la sintaxi. Si simplemente podemos traducir un programa al otro traduciendo la sintaxis y poco más, estamos dentro del mismo paradigma. Si por el contrario tenemos que reescribir-lo usando abstracciones y conceptos nuevos, hemos cambiado de paradigma. 
         
+
+### 3. Programación funcional
       
-##### 1.1.2. Origen de la programación funcional
+##### 3.1. Origen de la programación funcional
 
 Lisp, el primer lenguage de programación funcional fué desarrollado en 1960 en el MIT. En aquellos años fueron creados también los primeros lenguajes orientados a objetos. Sin embargo, Alan Kay, al que se le otorga el acuñamiento del término, lo definia de una forma que se asemeja más al modelo de actores a cómo se definie la OOP hoy en día.
 Alan Kay definia la comunicación entre objetos como un intercambio de mensajes, no como una llamada a un método.
@@ -94,8 +95,9 @@ sequenceDiagram
     Alice->>John: See you later!
 ```
 
+### 2. Modelo de actores
 
-***Saliendo del paradigma convencional***
+#### 2.1- Saliendo del paradigma convencional
 
 El paradigma de programación más extendido es el de OOP con un modelo de concurrencia basado en Threads ( o light threads/fibers) y utilizando RPC.
 
@@ -112,6 +114,8 @@ El paradigma convencional utiliza Threads para scale up y RPC para scale down.
 RPC parte de la base que una llamada a través de la red no és diferente a una llamada en la misma máquina. Si se realiza en modo síncrono va a bloquear el thread que hace la llamada con lo que vamos a hacer un uso poco eficiente de los recursos. Si hacemos una llamada asíncrona, tendremos que especificar una función de callback lo que añade complejidad a la aplicación. Puedes acabar con un callback hell si en la callback hacer otra llamada que necesita su callback, etc...
 
 Otro problema de este paradigma es que obtenemos un código en el que se mezclan contínuamente las dos abstracciones dirigidas a cada tipo de scalabilidad. Acabas hardcodeando qué partes de tu aplicación van a utilizar Threads para scale up y cuales van a utilizar RPC para scale out.
+
+#### 2.1- Qué es un actor
 
 El modelo de actores proporciona una abstracción única para concurrencia y escalabilidad.
 
@@ -135,12 +139,16 @@ Ya no tenemos una doble API para scale up y scale out.
 ***Bajo acoplamiento***: El intercambio de mensajes de forma asíncrona entre las unidades de computacón da lugar a sistemas mucho menos acoplados que los que produce la orientación a objetos donde un objeto ejecuta el método de otro a través de una instancia.
 
 
+#### 2.3- Escalabilidad
+
+    Escalabilidad en cluster és muy potente pero implica tener un sistema distribuido y los sistemas distribuidos vienen con sus propias complejidades.
+    
+    Ejemplos: Banca, IoT
 
 
+### 3. Paradigma Reactivo
 
-### 2. Paradigma Reactivo
-
-#### 2.1- Introducción
+#### 3.1- Introducción
 
 La primera formalización del paradigma reactivo la encontramos en la publicación del Reactive Manifesto en 2013. En él se exponen los principios de diseño para un sistema reactivo o Reactive System que, a nivel de implementación, se concreta con el paradigma Reactive Programing. El target de los sistemas reactivos son sistemas distribuidos con alta concurrencia.
 
@@ -157,7 +165,7 @@ El driver principal de los sistemas reactivos es la responsividad Responsiveness
 El Reactive Manifesto prescribe que para conseguir estas propiedades, necesitamos que el sistema sea Message-driven.
 
 
-#### 2.2- Reactive Programming
+#### 3.2- Reactive Programming
 
 Es un subconjunto de Asynchronous Programming.
 
@@ -191,7 +199,7 @@ Vemos que la resiliencia va más allá de la toleráncia a fallos. No se trata d
 
 
 
-**Implementaciones:** Akka/Pekko en Scala y Akka.Net en c# son implementaciones, Elixir/Erlang de un ReactiveSystem basado en el Modelo de Actores.
+**Implementaciones:** Akka/Pekko en Scala y Akka.Net en c# son implementaciones, Groovy GPars, Elixir/Erlang de un ReactiveSystem basado en el Modelo de Actores.
     Elixir/Erlang es monoparadigma, solo puedo hacer programas siguiendo el modelo de actores (procesos maquina virtual BEAM).
     Scala/C# son multiparadigma.
     Erlang es un lenguaje que se compila a bytecodes a ejecutar en la máquina virtual BEAM que es una implementacón del modelo ed actores.
@@ -199,9 +207,8 @@ Vemos que la resiliencia va más allá de la toleráncia a fallos. No se trata d
     Nació en Ericson para equipos de telecomunicaciones y ahora lo usan Whatsapp, Discord, RabbitMQ, etc...
 
                     
+#### 3.3- Akka Streams
 
-
-**Akka streams**
 
 Un buen ejemplo de Reactive Programing es Akka Streams. Basa
 
