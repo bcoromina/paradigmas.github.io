@@ -21,19 +21,37 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
     2.2. Qué es un actor
     2.3. Escalabilidad
 
-### 2. Paradigma Reactivo
+### 3. Paradigma Reactivo
 
     2.1. Introducción
     2.2. Reactive Programming
     3.3. Streams
 
-### 3. Programación funcional
-        3.1. Origen de la programación funcional
-        3.1. ¿Porqué?
-        3.2. Desmontando OOP 
+### 4. Programación funcional
 
-    1.2. Principios
-        1.2.1- Función matemática y propiedades
+     4.2. Principios
+
+         4.2.1 Función matemàtica y sus propiedades
+         4.2.2 Ejemplos de side effect
+         4.2.3 Expresiones vs statemen
+         4.2.4 Composabilidad
+
+##### 4.3. Beneficios de la programación funcional
+
+##### 4.3.1 Testing: Funciones deterministas sin contexto
+##### 4.3.2 Local reasoning (7 items en mente)
+##### 4.3.3 Composición, la escéncia de la computación
+"The Magical Number Seven, Plus or Minus Two" by psychologist George A. Miller (1956). Miller suggested that the average human can hold about 7 ± 2 items in their short-term memory (STM) at one time.
+
+##### 4.4. Side Efffects
+
+##### 4.4.1 Segregación de código puro. Aplicación en arquitectura hexagonal
+##### 4.4.2 Concepto de sistema de efectos
+
+##### 4.5. Immutabilidad
+
+##### 4.5.1 Beneficios
+##### 4.5.2 Path Copying y Structural Sharing
 
 
 
@@ -69,13 +87,7 @@ Ejemplos:
     Ante dos programas que resuelven el mismo problema (equivalentes funcionalmente) se puede detectar que se ha seguido un paradigma de programación distinto en cada uno de ellos cuando presentan diferéncias conceptuales significativas más allá de la sintaxi. Si simplemente podemos traducir un programa al otro traduciendo la sintaxis y poco más, estamos dentro del mismo paradigma. Si por el contrario tenemos que reescribir-lo usando abstracciones y conceptos nuevos, hemos cambiado de paradigma. 
         
 
-### 3. Programación funcional
-      
-##### 3.1. Origen de la programación funcional
 
-Lisp, el primer lenguage de programación funcional fué desarrollado en 1960 en el MIT. En aquellos años fueron creados también los primeros lenguajes orientados a objetos. Sin embargo, Alan Kay, al que se le otorga el acuñamiento del término, lo definia de una forma que se asemeja más al modelo de actores a cómo se definie la OOP hoy en día.
-Alan Kay definia la comunicación entre objetos como un intercambio de mensajes, no como una llamada a un método.
-https://adabeat.com/fp/the-history-of-functional-programming/
 
  
  
@@ -98,6 +110,10 @@ sequenceDiagram
 ### 2. Modelo de actores
 
 #### 2.1- Saliendo del paradigma convencional
+
+Entre 1960 y 1070 fueron creados los primeros lenguajes orientados a objetos. Sin embargo, Alan Kay, al que se le otorga el acuñamiento del término, lo definia de una forma que se asemeja más al modelo de actores a cómo se definie la OOP hoy en día.
+Alan Kay definia la comunicación entre objetos como un intercambio de mensajes, no como una llamada a un método.
+https://adabeat.com/fp/the-history-of-functional-programming/
 
 El paradigma de programación más extendido es el de OOP con un modelo de concurrencia basado en Threads ( o light threads/fibers) y utilizando RPC.
 
@@ -212,6 +228,39 @@ Vemos que la resiliencia va más allá de la toleráncia a fallos. No se trata d
 
 Un buen ejemplo de Reactive Programing es Akka Streams. Basa
 
+### 4. Programación funcional
+      
+##### 4.1. Origen de la programación funcional
+
+Lisp, el primer lenguage de programación funcional fué desarrollado en 1960 en el MIT.
+Los primeros lenguajes de progamación funcional estuvieron inspirados en el Lambda Calculus (Alonzo Church 1930).
+Lambda Calculus es un sistema formal matemático que permiten describir una compitación en base a la abstraccióne de funciones y su aplicación.
+En otras palabras, el lambda calculus describe una computación como la aplicación de una función a sus argumentos. Las funciones son 'first-class citizen'. Pueden ser pasadas como argumentos y ser devueltas como valores.   
+
+
+##### 4.2. Principios
+
+##### 4.2.1 Función matemàtica y sus propiedades
+##### 4.2.2 Ejemplos de side effect
+##### 4.2.3 Expresiones vs statements
+##### 4.2.4 Composabilidad
+
+##### 4.3. Beneficios de la programación funcional
+
+##### 4.3.1 Testing: Funciones deterministas sin contexto
+##### 4.3.2 Local reasoning (7 items en mente)
+##### 4.3.3 Composición, la escéncia de la computación
+"The Magical Number Seven, Plus or Minus Two" by psychologist George A. Miller (1956). Miller suggested that the average human can hold about 7 ± 2 items in their short-term memory (STM) at one time.
+
+##### 4.4. Side Efffects
+
+##### 4.4.1 Segregación de código puro. Aplicación en arquitectura hexagonal
+##### 4.4.2 Concepto de sistema de efectos
+
+##### 4.5. Immutabilidad
+
+##### 4.5.1 Beneficios
+##### 4.5.2 Path Copying y Structural Sharing
 
 
 Evento vs mensaje
