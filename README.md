@@ -193,9 +193,9 @@ Ya no tenemos una doble API para scale up y scale out.
 
 #### 2.3- Escalabilidad
 
-    Escalabilidad en cluster és muy potente pero implica tener un sistema distribuido y los sistemas distribuidos vienen con sus propias complejidades.
+Escalabilidad en cluster és muy potente pero implica tener un sistema distribuido y los sistemas distribuidos vienen con sus propias complejidades.
     
-    Ejemplos: Banca, IoT
+Ejemplos: Banca, IoT
 
 
 ### 3. Paradigma Reactivo
