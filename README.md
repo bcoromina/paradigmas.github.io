@@ -19,7 +19,7 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
 
     2.1. Saliendo del paradigma convencional
     2.2. Qué es un actor
-    2.3. Escalabilidad
+    2.3. Sistemas resilientes
 
 ### 3. Paradigma Reactivo
 
@@ -169,6 +169,8 @@ Otro problema de este paradigma es que obtenemos un código en el que se mezclan
 
 #### 2.1- Qué es un actor
 
+Carl Hewitt 1973 definió el modelo de actores.
+
 El modelo de actores proporciona una abstracción única para concurrencia y escalabilidad.
 
 
@@ -181,7 +183,7 @@ El modelo de actores proporciona una abstracción única para concurrencia y esc
 El modelo de concurrencia utilizado consiste en un único thread (o pool de threads) que mediante un scheduler va ejecutando cada actor.
 Por ejecutar un actor se entiende comprovar si tiene mensajes en la cola y llamar a la lógica de proceso associada. Así pues, un solo thread es compartido por varios actores con lo que un actor no debe contener código bloqueante ya que bloquearía la ejecución de otros actores.
 
-Un actor tiene una dirección tipo el path de un fichero que lo localiza en el árbol jerárquico y permite localizarlo para mandar-le mensajes. En el caso de un sistema distribuido formado con varios nodos en el que se ejecuta un sistema de actores, la localización de un actor en concreto en el cluster es transparente. Es decir, en el momento de mmandar un mensaje a un actor se utiliza la misma API tanto si el actor esta en la misma máquina o está en remoto.
+Location transparency: Un actor tiene una dirección tipo el path de un fichero que lo localiza en el árbol jerárquico y permite localizarlo para mandar-le mensajes. En el caso de un sistema distribuido formado con varios nodos en el que se ejecuta un sistema de actores, la localización de un actor en concreto en el cluster es transparente. Es decir, en el momento de mmandar un mensaje a un actor se utiliza la misma API tanto si el actor esta en la misma máquina o está en remoto.
 
 Ya no tenemos una doble API para scale up y scale out.
 
@@ -191,11 +193,25 @@ Ya no tenemos una doble API para scale up y scale out.
 ***Bajo acoplamiento***: El intercambio de mensajes de forma asíncrona entre las unidades de computacón da lugar a sistemas mucho menos acoplados que los que produce la orientación a objetos donde un objeto ejecuta el método de otro a través de una instancia.
 
 
-#### 2.3- Escalabilidad
+#### 2.3- Sistemas resilientes
 
-Escalabilidad en cluster és muy potente pero implica tener un sistema distribuido y los sistemas distribuidos vienen con sus propias complejidades.
+Un sistema resiliente es el que, ante una petición del usuario, puede dar una respuesta en un tiempo razonable. Manteniendo esta capacidad en las siguientes situaciones:
+
+- Situaciones de alta demanda. Ya sean picos o niveles sostenidos
+- Errores en el sistema
+- Self healing. Si un componente se para por un error, se le hace un restart automáticamente.
+- ...
+
+
+La escalabilidad es la propiedad del sistema que permite le permite ser resiliente ante incrementos de demanda.
+Aislamiento de fallos es la propiedad del sistema que permite ser resiliente ante errores.
+
+El modelo de programación de actores (concurrencia y location transparency) permite escribir "código escalable". Para scale out hay que utilizar un sistema de autoescalado como el de K8S o AWS. 
+
+Escalabilidad en cluster és muy potente pero implica tener un sistema distribuido y los sistemas distribuidos vienen con sus propias complejidades. Ejemplo: split brain.
     
 Ejemplos: Banca, IoT
+
 
 
 ### 3. Paradigma Reactivo
