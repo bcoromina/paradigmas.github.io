@@ -141,19 +141,7 @@ Ejemplos:
  
 
 
-```scala
-trait LivingCreature
 
-case class Person(name: String, age: Int)
-val persion = Person
-```
-
-```mermaid
-sequenceDiagram
-    Alice->>John: Hello John, how are you?
-    John-->>Alice: Great!
-    Alice->>John: See you later!
-```
 
 ### 2. Modelo de actores
 
@@ -290,6 +278,10 @@ En otras palabras, el lambda calculus describe una computación como la aplicaci
 ##### 4.2. Principios
 
 ##### 4.2.1 Función matemàtica y sus propiedades
+
+
+
+
 ##### 4.2.2 Ejemplos de side effect
 ##### 4.2.3 Expresiones vs statements
 ##### 4.2.4 Composabilidad
@@ -298,8 +290,11 @@ En otras palabras, el lambda calculus describe una computación como la aplicaci
 
 ##### 4.3.1 Testing: Funciones deterministas sin contexto
 ##### 4.3.2 Local reasoning (7 items en mente)
+    "The Magical Number Seven, Plus or Minus Two" by psychologist George A. Miller (1956). Miller suggested that the average human can hold about 7 ± 2 items in their short-term memory (STM) at one time.
+
+
 ##### 4.3.3 Composición, la escéncia de la computación
-"The Magical Number Seven, Plus or Minus Two" by psychologist George A. Miller (1956). Miller suggested that the average human can hold about 7 ± 2 items in their short-term memory (STM) at one time.
+
 
 ##### 4.4. Side Efffects
 
@@ -315,6 +310,12 @@ En otras palabras, el lambda calculus describe una computación como la aplicaci
 ## **Parte 2**: Lenguaje Scala
 
 
+```scala
+trait LivingCreature
+
+case class Person(name: String, age: Int)
+val persion = Person
+```
 
     1. Porqué Scala
         
