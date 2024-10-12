@@ -295,12 +295,33 @@ En otras palabras, el lambda calculus describe una computación como la aplicaci
 
 ##### 4.2.1 Función matemàtica y sus propiedades
 
+Una función matemàtica calcula un resultado en base a unos valores de entrada, nada más.
 
+Esto implica que la función tiene un comportamiento determinista: dados los mismos valores de entrada, el resultado va a ser el mismo.
+De hecho, si ya se ha calculado el resultado para una determinada entrada, la función puede memoizar el resultado y simplemente devolverlo en sucesivas ejecuciones de la función con la misma entrada.
+
+Notese que una función matemática o función pura no puede hacer side effects. Es decir, no puede alterar ni interactuar con el mundo exterior, no puede hacer nada más que calcular el resultado en función de la entrada. 
 
 
 ##### 4.2.2 Ejemplos de side effect
+
+- Escribir a una base de datos
+- Lanzar una excepción
+- No devolver un valor para una determinada entrada
+- Modificar una variable global
+  ```scala
+      var globalCounter: Int = 0
+
+    def incrementCounter(): Unit = {
+      globalCounter += 1  // Modifies global state
+    }
+  ```
+- 
+
 ##### 4.2.3 Expresiones vs statements
 ##### 4.2.4 Composabilidad
+
+Los side effects no se pueden componer.
 
 ##### 4.3. Beneficios de la programación funcional
 
