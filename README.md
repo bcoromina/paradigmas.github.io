@@ -180,7 +180,7 @@ El modelo de actores proporciona una abstracción única para concurrencia y esc
   - Puede mandar mensajes a otros actores
   - Puede crear otros actores generando un árbol jerárquico y manejando su ciclo de vida. Si un actor peta, su supervisor es notificado y puede decidir qué acciones aplicar.
   
-El modelo de concurrencia utilizado consiste en un único thread (o pool de threads) que mediante un scheduler va ejecutando cada actor.
+El modelo de concurrencia utilizado consiste en un único thread (o pool de threads, uno por core) que mediante un scheduler va ejecutando cada actor.
 Por ejecutar un actor se entiende comprovar si tiene mensajes en la cola y llamar a la lógica de proceso associada. Así pues, un solo thread es compartido por varios actores con lo que un actor no debe contener código bloqueante ya que bloquearía la ejecución de otros actores.
 
 Location transparency: Un actor tiene una dirección tipo el path de un fichero que lo localiza en el árbol jerárquico y permite localizarlo para mandar-le mensajes. En el caso de un sistema distribuido formado con varios nodos en el que se ejecuta un sistema de actores, la localización de un actor en concreto en el cluster es transparente. Es decir, en el momento de mmandar un mensaje a un actor se utiliza la misma API tanto si el actor esta en la misma máquina o está en remoto.
@@ -258,7 +258,7 @@ La **asincronía** es una forma de implementar un sistema concurrente. Hace refe
 
 
 Así pues Reactive Programing se basa en la programación asíncrona y orientada a mensajes: Modelo de Actores
-- Elasticidad que proporciona la configuración en cluster de akka
+- Elasticidad que proporciona la configuración en cluster
 - Resiliencia: 
     - A nivel de actor: Jerarquía de actores con supervisor. Cuando hay una excepción en un Actor y este peta, su actor supervisor en la jerarquía determina qué haver. Normalmente poner en marxa otra instancia. Lo importante es que el fallo no se propaga. Let it crash.
     - A nivel de nodo del cluster: Actor Rebalancing en sistemas de actores con Actor   Sharding (Kubernetes como pareja de baile)
