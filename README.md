@@ -369,7 +369,7 @@ Las funciones puras nos permiten construir expresiones referencial transaparent 
 
 Los side effects no se pueden componer.
 
-'''scala
+```scala
  def addOne(x: Int): Int = x + 1
   def addOneWithSideEffect(x: Int): Int = {
     val result = x + 1
@@ -394,7 +394,7 @@ Los side effects no se pueden componer.
   }
 
   addTwoComposed(4)
-'''
+```
 
 ##### 4.3. Beneficios de la programación funcional
 
