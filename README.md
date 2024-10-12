@@ -307,6 +307,8 @@ Notese que una función matemática o función pura no puede hacer side effects.
 
 - Leer o escribir a una fuente de datos externa: base de datos, RPC, etc...
 - Lanzar una excepción
+- Concurrencia. Efecto de que dos computaciones ocurren de forma concurrente. Ej: en threads diferentes
+- No determinismo intrínseco. Generación de números aleatórios.
 - Modificar una variable externa
   ```scala
     var globalCounter: Int = 0
@@ -367,20 +369,35 @@ Las funciones puras nos permiten construir expresiones referencial transaparent 
 
 ##### 4.2.4 Composabilidad
 
-Los side effects no se pueden componer.
+Los side effects no se pueden componer. Las funciones puras sí.
+
+Dada la función addOne del siguiente listado, es posible construir la función addTwo como composición de addOne.
+Sinembargo, dada la función addOneWithSideEffect no es posible construir addTwoWithSideEffect como una función que suma 2 e imprime el resultado
+por pantalla. Si lo intentamos, al ejecutar la función resultatante hay dos println, una con el resultado parcial y otro con el resultado final.
+
+Los ide effects se ejecutan de forma no controlada, entrelazada con el resto de la funcionalidad. 
 
 ```scala
- def addOne(x: Int): Int = x + 1
+  def addOne(x: Int): Int = x + 1
   def addOneWithSideEffect(x: Int): Int = {
     val result = x + 1
     println(s"Result: $result")
     result
   }
 
-  def addTwo(x: Int): Int = {
+  def addTwo(x: Int): Int = (addOne _ andThen addOne _)(x) //addOne(addOne(x))
+  
+  def addTwoWithSideEffect(x: Int): Int = {
     ???
   }
+```
 
+Para controlar la ejecución de los side effects vamos a refactorizar la función addOne para que, en lugar de ejecutar el side effect,
+devuelva los datos necesarios para ejecutarlo. El side effect lo vamos a ejecutar de forma diferida (deferred) respecto a la evaluación
+de la función.
+
+
+```scala 
   def addOnePure(x: Int): (Int, String) = {
     val result = x + 1
     (result, s"Result: $result")
@@ -395,20 +412,94 @@ Los side effects no se pueden componer.
 
   addTwoComposed(4)
 ```
+addOnePure es pues una función pura, libre de side effects y esto nos permite combinarla para construir addTwoComposed.
+
+En este caso, en addTwoComposed, obtenemos los String a printar correspondientes a la primera y a la segunda llamada a addOnePure y
+sólo ejecutamos el sideeffect de la segunda llamada porque contiene el resultado final.
+
+Cómo seria una versión más genérica de esta composición de enteros?
+
+Podría acumular todos mis side effects en una List[String] y tener una función para ejecutarlos que printara solo el último como ahora,
+que printara los resultados intermedios, que printara los resultados pares, etc...
+
+Nótese que en este punto me resulta muy fácil cambiar la ejecución de side effects de un println a un writea base de datos.
+
+El hecho de separar el cálculo de la ejecución de los side effects me permite componer mis funciones y me permite controlar de forma independiente
+la ejecución de estos side effects.
+
+
 
 ##### 4.3. Beneficios de la programación funcional
 
-##### 4.3.1 Testing: Funciones deterministas sin contexto
+##### 4.3.1 Testing
+
+El testing de funciones puras, deterministas y sin side effects, es el sueño de cualquier tester.
+
+No hay que construir un contexto para el testing de una función, al ser determinista la función va a dar la misma salida para la misma entrada.
+Al no generar side effects no hay que chequear ni mockear componentes externos.
+
+Facilita el empleo de tecnicas como el Property-Based Testing. Consiste en definir una propiedad de una o varias funciones y el framework se encarga 
+de generar un conjunto pseudoaleatorio de datos de entrada para nuestra función y para cada una de ellas chequear que se cumple dicha propiedad.
+
+Por ejemplo, se desea testear que desserialización de un objeto tras su serialización coincide con el objeto original.
+O que una función que devuelve la longitud de una estructura de datos simpre de >= 0.
+
+Separo el testing del cálculo de la lógica de negocio de la ejecución de los side effects.
+
+
+
+
 ##### 4.3.2 Local reasoning (7 items en mente)
     "The Magical Number Seven, Plus or Minus Two" by psychologist George A. Miller (1956). Miller suggested that the average human can hold about 7 ± 2 items in their short-term memory (STM) at one time.
 
+La carga cognitiva de un programa cuyo comportamiento depende de estados internos del propio programa en su conjunto ni i/o de un contexto externo de sistemas dependientes es muy grande. 
 
-##### 4.3.3 Composición, la escéncia de la computación
+Ejemplo: Falla una función porque un memória compartida de forma asíncrona esta en un estado inesperado. Quién y porqué ha puesto la memória en aquel estado?
+
+Las funciones puras permiten al programador razonar de forma aislada, local, permitiendo su comprensión sin tener en cuenta el resto del sistema.
+Compo las funciones puras son altamente composables, se trata de reducir su tamaño de forma que su responsabilidad quede claramente definida.
+
+
+
+
+##### 4.3.3 Composición, la escéncia de la computación?
+
+Necesita un computador un programa escrito de forma funcional pura?
+
+La respuesta es: no. Un computador necesita un lista de operaciones a ejecutar una detras de otra sin mayor estructura.
+
+Quién necesita funciones puras y pqueñas, y entodo caso construir sistemas complejos a partir de su composición? Los humanos.
+
+Entonces el código lo escribimos no para la máquina si no para un humano. Ya sea un companyero o un yo del futuro que necesita entender lo que se hizo en su día.
+
+Un lenguaje de programación es un lenguage de comunicación entre humanos especializado en formalizar determinado tipo de problemas relacionados con el procesado de información.
+
+Por otra parte, la composición tiene raíces profundas en las matemàticas, especialmente en la teoría de categorias que formaliza la idea de que la composición es una operación fundamental en casi todas las ramas de las matemáticas.
 
 
 ##### 4.4. Side Efffects
 
 ##### 4.4.1 Segregación de código puro. Aplicación en arquitectura hexagonal
+
+El concepto de función pura se puede aplicar sin mas. A pesar de que existen sistemas de efectos que permiten manejar los side effects como computaciones puras, se pueden aplicar conceptos de programación funcional en cualquier code base.
+
+Una forma de empezar es el de tener mi lógica de negocio en funciones puras aprovechando las ventajas de testeo que esto implica.
+En arquitectura hexagonal, por ejemplo, esto implicaria tener un dominio puro y la ejecución de side effects a los puertos y adaptadores.
+
+Ejemplo:
+
+Función que recibe un json complejo y tiene que parsearlo y calcular las operaciones a base de datos a realizar. Pero que en lugar de ejecutarlas, devuelve una descripción de ellas, como una lista operaciones. Así puedo separar por una parte el cálculo de qué se debe hacer (descripción de la computación) del hecho de hacerlo (side effect).
+
+Se puede pensar que la computación pura es la descripción de la computación y la parte que recibe la lista de operaciones a base de datos y las ejecuta es nuestro runtime.
+
+Ventajas: 
+    - Separation of concerns. No tengo que manejar la conexión de base de datos y la transacción donde no es necesario
+    - Testeabilidad: La lógica se puede testear sin base de datos
+    - Esta separación permitiría, por ejemplo, añadir un optimizador entre las dos fases con el fin de optimizar las operaciones de base de dados,            eliminando dupllicados, juntando operaciones relacionadas, etc...
+
+En general, se puede aplicar el concepto de función pura y composabilidad como buena práctica y cuando sea más factible, de forma gradual y sin que sea un imperativo absoluto.
+
+
 ##### 4.4.2 Concepto de sistema de efectos
 
 ##### 4.5. Immutabilidad
