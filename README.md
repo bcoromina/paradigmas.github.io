@@ -372,6 +372,7 @@ Las funciones puras nos permiten construir expresiones referencial transaparent 
 Los side effects no se pueden componer. Las funciones puras sí.
 
 Dada la función addOne del siguiente listado, es posible construir la función addTwo como composición de addOne.
+addOneWithSideEffect es una función que realiza una operación e imprime el resultado por pantalla.
 Sinembargo, dada la función addOneWithSideEffect no es posible construir addTwoWithSideEffect como una función que suma 2 e imprime el resultado
 por pantalla. Si lo intentamos, al ejecutar la función resultatante hay dos println, una con el resultado parcial y otro con el resultado final.
 
