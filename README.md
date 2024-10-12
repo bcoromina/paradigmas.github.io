@@ -305,23 +305,96 @@ Notese que una función matemática o función pura no puede hacer side effects.
 
 ##### 4.2.2 Ejemplos de side effect
 
-- Escribir a una base de datos
+- Leer o escribir a una fuente de datos externa: base de datos, RPC, etc...
 - Lanzar una excepción
-- No devolver un valor para una determinada entrada
-- Modificar una variable global
+- Modificar una variable externa
   ```scala
-      var globalCounter: Int = 0
+    var globalCounter: Int = 0
 
     def incrementCounter(): Unit = {
       globalCounter += 1  // Modifies global state
     }
   ```
-- 
+- Mutar unn objeto o estructura de datos
+
+```scala
+class Person(var name: String)
+
+def changeName(person: Person, newName: String): Unit = {
+  person.name = newName  // Mutating the object
+}
+```
+Es un side effect mutar una variable dentro de la misma función?
+
+
 
 ##### 4.2.3 Expresiones vs statements
+
+Statement: Línea de código o fragmento que tiene como objetivo realizar una acción (Side effect).
+        Estilo imperativo:
+            doThis();
+            doThat;
+
+Expresión: Línea de código o fragmento que tiene como ojetivo ser evaluado a un valor.
+
+Las expresiones tienen la propiedad 'referencial transparancy': Se puede substituir la expresión por el valor resultado de su evaluación:
+
+```scala
+ def getNumberFive(): Int = 5
+  
+  val result = (getNumberFive() * 2, getNumberFive() * 2)
+  
+  //es qquivalente a 
+  
+  val result2 = (10, 10)
+  
+  //pero los side effects lo rompen
+
+  def getNumberFive2(): Int = {
+    println("5")
+    5
+  }
+  
+  //esto ejecuta dos veces el println
+  val result3 = (getNumberFive2() * 2, getNumberFive2() * 2)
+  
+  //No es quivalente a 
+  val ten = getNumberFive2() * 5
+  val result4 = (ten, ten)
+```
+
+Las funciones puras nos permiten construir expresiones referencial transaparent con las cuales nos es mucho mas fácil razonar y refacctorizar nuestro código como una expresión matemática.
+
 ##### 4.2.4 Composabilidad
 
 Los side effects no se pueden componer.
+
+'''scala
+ def addOne(x: Int): Int = x + 1
+  def addOneWithSideEffect(x: Int): Int = {
+    val result = x + 1
+    println(s"Result: $result")
+    result
+  }
+
+  def addTwo(x: Int): Int = {
+    ???
+  }
+
+  def addOnePure(x: Int): (Int, String) = {
+    val result = x + 1
+    (result, s"Result: $result")
+  }
+
+  def addTwoComposed(x: Int): Int = {
+    val r = addOnePure(x)
+    val result = addOnePure(r._1)
+    println(result._2)
+    result._1
+  }
+
+  addTwoComposed(4)
+'''
 
 ##### 4.3. Beneficios de la programación funcional
 
