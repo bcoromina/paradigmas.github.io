@@ -503,6 +503,46 @@ En general, se puede aplicar el concepto de función pura y composabilidad como 
 
 ##### 4.4.2 Concepto de sistema de efectos
 
+El objetivo de un sistema de efectos es manejar los side effects de una forma 100% functional. Se trata pues de describir y controlar la ejecución de los side effects.
+
+Para la descropción de los efectos podemos empezar clasificándolos en las siguientes categorías:
+
+- I/O: Leer o escribir de un fichero, base de datos, red...
+- State Effects: Mutar un estado
+- Concurrency Effects: Ejecución código en paralelo, gestión de threads,....
+- Error Effects: Manejo de errores y excepciones, reintentos, etc...
+
+Cada typo de efecto tiene su propio typo que hace de contenedor del código que ejecuta el side effect. Sin embargo, cuando se construye el effect no se ejecuta el side effect si no que la ejecución queda diferida.
+Una vez más, describimos una computación como un dato tipado en lugar de ejecutarla. 
+
+Ejemplo de signatura:
+
+```scala
+def leeNombreDeBaseDeDatos(): IO[String] = ???
+```
+
+En lugar de conectarse a la base de datos, leer el valor y devolverlo como resultado, esta función devuelve un tipo IO en cuyo valor contiene el código a ejecutar para la objención del valor.
+De esta forma, he convertido la función en una función pura.
+
+```scala
+case class ToyIO[A](value: () => A){
+    def run(): A = value()
+  }
+```
+
+Un sistema de efectos permite al programador combinar efectos como por ejemplo: 
+
+si tengo  f: A => IO[B] y g: B => IO[C], puedo construir h: A => IO[C]
+
+Entonces puedo combinar mis efectos sin ejecutarlos!! Así, mi programa devuelve como resultado una estructura de datos enorme que describe
+la ajecución compuesta y condicionada de efectos. Una vex obtengo este objeto final, solo tengo que llamar al metoto 'run' y el runtime del sistema de efectos
+va a recorrer la estructura de datos y va a ir ejecutando cada trozo de código con efectos que lo compone.
+Una vez mas, he separado mi programa en dos partes, una que contiene mi lógica de negocio, que es totalmente pura y que da como resultado una descripción de
+los side effects a ejecutar. Y luego un runtime que ejecuta de forma ordenada todos los side effects.
+
+
+
+
 ##### 4.5. Immutabilidad
 
 ##### 4.5.1 Beneficios
