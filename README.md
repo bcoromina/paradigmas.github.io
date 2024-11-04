@@ -418,12 +418,12 @@ addOnePure es pues una función pura, libre de side effects y esto nos permite c
 En este caso, en addTwoComposed, obtenemos los String a printar correspondientes a la primera y a la segunda llamada a addOnePure y
 sólo ejecutamos el sideeffect de la segunda llamada porque contiene el resultado final.
 
-Cómo seria una versión más genérica de esta composición de enteros?
+Cómo sería una versión más genérica de esta composición de enteros? (Writer Monad)
 
 Podría acumular todos mis side effects en una List[String] y tener una función para ejecutarlos que printara solo el último como ahora,
 que printara los resultados intermedios, que printara los resultados pares, etc...
 
-Nótese que en este punto me resulta muy fácil cambiar la ejecución de side effects de un println a un writea base de datos.
+Nótese que en este punto me resulta muy fácil cambiar la ejecución de side effects de un println a un write a base de datos.
 
 El hecho de separar el cálculo de la ejecución de los side effects me permite componer mis funciones y me permite controlar de forma independiente
 la ejecución de estos side effects.
@@ -467,11 +467,12 @@ Compo las funciones puras son altamente composables, se trata de reducir su tama
 
 Necesita un computador un programa escrito de forma funcional pura?
 
-La respuesta es: no. Un computador necesita un lista de operaciones a ejecutar una detras de otra sin mayor estructura.
+La respuesta es: no. Un computador necesita un lista de operaciones a ejecutar una detras de otra sin mayor estructura. 
+Como una máquina de Turing.
 
 Quién necesita funciones puras y pqueñas, y entodo caso construir sistemas complejos a partir de su composición? Los humanos.
 
-Entonces el código lo escribimos no para la máquina si no para un humano. Ya sea un companyero o un yo del futuro que necesita entender lo que se hizo en su día.
+Entonces el código lo escribimos no para la máquina si no para un humano. Ya sea un compañero o un yo del futuro que necesita entender lo que se hizo en su día.
 
 Un lenguaje de programación es un lenguage de comunicación entre humanos especializado en formalizar determinado tipo de problemas relacionados con el procesado de información.
 
@@ -546,7 +547,25 @@ los side effects a ejecutar. Y luego un runtime que ejecuta de forma ordenada to
 ##### 4.5. Immutabilidad
 
 ##### 4.5.1 Beneficios
+
+Thread safety: Si no tengo un estado compartido y modificable de forma concurrente me ahorro un buen conjunto de problemas.
+- Race conditions
+- Dead locks
+- ...
+
+El hecho de guardar versiones de una estructura de datos a lo largo del tiempo, facilita la implementación de funionalidades como:
+- undo/redo
+- history tracking
+- time traveling debugging
+
+ 
+
 ##### 4.5.2 Path Copying y Structural Sharing
+
+Convertimos nuestros datos mutables en inmutables y le añadimos un "sistema de control de versiones".
+
+![image](https://github.com/user-attachments/assets/0a14253f-e771-4fad-ad58-e15eca615351)
+
 
 
 ## **Parte 2**: Lenguaje Scala
