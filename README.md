@@ -603,9 +603,38 @@ Ejemplos:
    del programa significa: cumpliendo las leyes del álgebra (sean explícitas o implícitas)
 
    El programador debe valorar según el caso si vale la pena hacer las leyes explícitas y comprobar su cumplimiento con test unitarios.
-    
-   
 
+Para definir tipos complejos se utiliza la composición de tipos: Algebraic Data Types
+
+- Product Types:
+      case class Person(name: String, age: Int)
+- Union Type:
+      sealed trait Fruit
+      case object Orange extends Fruit
+      case object Apple  extends Fruit
+    
+##### 4.7. Características de un lenguaje funcional   
+- Funciones como ciudadanos de primera: Las puedo tratar como valores
+   - Asignarlas a un valor
+   - Recibirlas en una función como parámetro
+   - Devolverlas como resultadode una función
+   - lambdas
+   - ...
+      
+- Immutabilidad
+- ADT's y pattern matching
+- Usa recursividad sobre iteración
+- Lazy evaluation: Permite definir estructuras de datos infinitas
+
+Lenguajes:
+
+- Programación funcional pura: Haskell, Elixir/Erlang, F#
+- FP & OOP: Scala
+- Functional first: Clojure
+- OOP pero con elementos de FP
+      - Java: HoF, Optional, 'final' fuerza immutabilidad, Records como product types, lambdas..
+      - c#: readonly, Linq API funcional, pattern matching
+      - python: HoF, lambdas, 'frozenset' para immutabilidad, pattern matching 
 
 ## **Parte 2**: Lenguaje Scala
 
