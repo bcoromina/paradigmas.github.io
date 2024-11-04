@@ -567,6 +567,45 @@ Convertimos nuestros datos mutables en inmutables y le añadimos un "sistema de 
 ![image](https://github.com/user-attachments/assets/0a14253f-e771-4fad-ad58-e15eca615351)
 
 
+##### 4.6. Álgebra
+
+La programación funcional invita a separar los datos de las funciones puras que operan con ellos. Por contra, OOP empuja mas a tener una objeto que empaqueta datos y funciones.
+
+Al definir unos tipos de datos y unas funciones puras que operan con ellos emerge el concepto de álgebra si le añadimos unas leyes.
+
+Ejemplos:
+ - El tipo de datos Int, una operació asociativa + , un elemento neutro para la operació asociativa 0.
+   Ley associativa: (a + b) + c = a + (b + c)
+   Ley de identidad: a + 0 = 0 + a = a
+   Ya tengo un álgebra definida que se llama Monoide
+ - Monoide con imágenes.
+   Tipo: Imagenes con fondo transparente
+   Operación: Superposición (pintar encima como las capas de un mapa)
+   Elemento neutro: Imagen transparente
+
+ Qué interés tiene un Monoide? Los monoides van perfecto para paralelizar: Particiono mis datos en grupos de imagenes, los distribuyo entre los workers 
+ (threads, nodos en un cluster, ...), compongo los resultados parciales con la operación asociativa. La computación tardará tanto como tarde el grupo 
+ mas lento aprox. 
+    
+ - Repositorio Clave-Valor
+   Tipo de datos: clase Cliente
+   Operaciones: get y put
+   Ley: si hago un put y después un get, el get tiene que darme el mismo elemento que he puesto en el put.
+
+   Puedo definir el repositorio como una interfaz y testear que sus implementaciones cumplen las leyes.
+   Este caso es simple y obvio pero con interfaces más complejas tiene todo el sentido asegurar que las implementaciones cumplen con el contrato 
+   especificado en el interfaz (+ leyes).
+   Normalmente no se especifican leyes pero existen de forma implícita y confiamos que quien realice una implementación de la interfaz deduzca las 
+   leyes a partir de los nombres de las funciones como put y get.
+
+   Liskov Substitution Principle: Si B es subtipo de A, debo poder substituir los objetos tipo A por los tipo B sin alterar el funcionamiento del 
+   programa. En el ejemplo: debo poder substituir IKeyValueRepo por RedisRepo sin alterar el funcionamiento del programa. Sin alterar el funcionamiento 
+   del programa significa: cumpliendo las leyes del álgebra (sean explícitas o implícitas)
+
+   El programador debe valorar según el caso si vale la pena hacer las leyes explícitas y comprobar su cumplimiento con test unitarios.
+    
+   
+
 
 ## **Parte 2**: Lenguaje Scala
 
