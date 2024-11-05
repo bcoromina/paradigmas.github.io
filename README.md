@@ -29,11 +29,13 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
 
 ### 4. Programación funcional
 
+     4.1 Origen de la programación funcional
+
      4.2. Principios
 
          4.2.1 Función matemàtica y sus propiedades
          4.2.2 Ejemplos de side effect
-         4.2.3 Expresiones vs statemen
+         4.2.3 Expresiones vs statement
          4.2.4 Composabilidad
 
     4.3. Beneficios de la programación funcional
@@ -53,52 +55,51 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
         4.5.1 Beneficios
         4.5.2 Path Copying y Structural Sharing
 
+    4.6 Álgebra
+
+    4.7 Características de un lenguaje funcional
+    
+
 ## **Parte 2**: Lenguaje Scala
-
-
 
     1. Porqué Scala
         
         1.1.1 Multiparadigma: OOP, FP, actores ...
-        1.1.2 Killer Apps: Spark, Akka, PLay Framework....
+        1.1.2 Killer Apps: Spark, Akka, Play Framework....
 
-    2. Manejo de side effects
+    2 Algebraic Data Types
+        2.1 Product Types
+        2.2 Union Types        
+        2.3 Case Classes y Pattern matching
+    
+    3. Manejo de side effects
 
-        2.1 Option vs null
-        2,2 Try vs Exceptions
-        2.3 Either
-        2.4 List
+        3.1 Option vs null
+        3,2 Try vs Exceptions
+        3.3 Either
+        3.4 List
 
-    3 Case Classes y Pattern matching
+    4 High Order Functions
+        4.1 Currying
+        4.2 Partially applied functions
 
-    4 Algebraic Data Types
-        4.1 Product Types
-        4.2 Union Types
-        4.3 De OOP a Algebra: Datos + transaformaciones (funciones puras)
-        4.4 Monoide como ejemplo de álgebra
-            4.4.1 Definición y propiedades
-            4.4.2 Ejemplo con números enteros
-            4.4.3 Ejemplo con imágenes
+    5 Genéricos
 
-    5 High Order Functions
+    6 Colecciones
+        6.1 Definición recursiva de tipos
+        6.2 Operaciones con fluent API
 
-    6 Genéricos
+    7 For comprehension (map, flatten, flatMap)
 
-    7 Colecciones
-        7.1 Definición recursiva de tipos
-        7.2 Operaciones con fluent API
+    8. Herencia vs Type Classes
 
-    8 For comprehension (map, flatten, flatMap)
+    9 Recursividad
 
-    9. Herencia vs Type Classes
-
-    10 Recursividad
-
-    11 Mónada
-        11.1 Definición
-        11.2 Ejemplos: Option, Try, List...
-        11.3 Mónadas para efectos
-        11.4 Ejercicio: Programación de una IO monad
+    10 Mónada
+        10.1 Definición
+        10.2 Ejemplos: Option, Try, List...
+        10.3 Mónadas para efectos
+        10.4 Ejercicio: Programación de una IO monad
     
         
 
@@ -167,7 +168,7 @@ RPC parte de la base que una llamada a través de la red no és diferente a una 
 
 Otro problema de este paradigma es que obtenemos un código en el que se mezclan contínuamente las dos abstracciones dirigidas a cada tipo de scalabilidad. Acabas hardcodeando qué partes de tu aplicación van a utilizar Threads para scale up y cuales van a utilizar RPC para scale out.
 
-#### 2.1- Qué es un actor
+#### 2.2- Qué es un actor
 
 Carl Hewitt 1973 definió el modelo de actores.
 
@@ -454,9 +455,12 @@ Separo el testing del cálculo de la lógica de negocio de la ejecución de los 
 
 
 ##### 4.3.2 Local reasoning (7 items en mente)
-    "The Magical Number Seven, Plus or Minus Two" by psychologist George A. Miller (1956). Miller suggested that the average human can hold about 7 ± 2 items in their short-term memory (STM) at one time.
+    "The Magical Number Seven, Plus or Minus Two" by psychologist 
+    George A. Miller (1956). 
+    Miller suggested that the average human can hold about 
+    7 ± 2 items in their short-term memory (STM) at one time.
 
-La carga cognitiva de un programa cuyo comportamiento depende de estados internos del propio programa en su conjunto ni i/o de un contexto externo de sistemas dependientes es muy grande. 
+La carga cognitiva de un programa cuyo comportamiento depende de estados internos del propio programa en su conjunto i/o de un contexto externo de sistemas dependientes es muy grande. 
 
 Ejemplo: Falla una función porque un memória compartida de forma asíncrona esta en un estado inesperado. Quién y porqué ha puesto la memória en aquel estado?
 
@@ -467,6 +471,7 @@ Compo las funciones puras son altamente composables, se trata de reducir su tama
 
 
 ##### 4.3.3 Composición, la escéncia de la computación?
+
 
 Necesita un computador un programa escrito de forma funcional pura?
 
@@ -485,6 +490,7 @@ Por otra parte, la composición tiene raíces profundas en las matemàticas, esp
 ##### 4.4. Side Efffects
 
 ##### 4.4.1 Segregación de código puro. Aplicación en arquitectura hexagonal
+
 
 El concepto de función pura se puede aplicar sin mas. A pesar de que existen sistemas de efectos que permiten manejar los side effects como computaciones puras, se pueden aplicar conceptos de programación funcional en cualquier code base.
 
@@ -509,7 +515,7 @@ En general, se puede aplicar el concepto de función pura y composabilidad como 
 
 El objetivo de un sistema de efectos es manejar los side effects de una forma 100% functional. Se trata pues de describir y controlar la ejecución de los side effects.
 
-Para la descropción de los efectos podemos empezar clasificándolos en las siguientes categorías:
+Para la descripción de los efectos podemos empezar clasificándolos en las siguientes categorías:
 
 - I/O: Leer o escribir de un fichero, base de datos, red...
 - State Effects: Mutar un estado
