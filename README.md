@@ -147,7 +147,7 @@ Ejemplos:
 
 #### 2.1- Saliendo del paradigma convencional
 
-Entre 1960 y 1070 fueron creados los primeros lenguajes orientados a objetos. Sin embargo, Alan Kay, al que se le otorga el acuñamiento del término, lo definia de una forma que se asemeja más al modelo de actores a cómo se definie la OOP hoy en día.
+Entre 1960 y 1070 fueron creados los primeros lenguajes orientados a objetos. Sin embargo, Alan Kay, al que se le otorga el acuñamiento del término, lo definía de una forma que se asemeja más al modelo de actores a cómo se definie la OOP hoy en día.
 Alan Kay definia la comunicación entre objetos como un intercambio de mensajes, no como una llamada a un método.
 https://adabeat.com/fp/the-history-of-functional-programming/
 
@@ -176,14 +176,14 @@ El modelo de actores proporciona una abstracción única para concurrencia y esc
 
 ***Actor***: El actor es la unidad básica de computación en el modelo de actores. 
   - Puede recibir mensajes que procesa secuencialmente según el orden de llegada. Los guarda en una cola
-  - Contiene estado que puede ser modificado en base a los mmensajes recibidos.
+  - Contiene estado que puede ser modificado en base a los mensajes recibidos.
   - Puede mandar mensajes a otros actores
   - Puede crear otros actores generando un árbol jerárquico y manejando su ciclo de vida. Si un actor peta, su supervisor es notificado y puede decidir qué acciones aplicar.
   
 El modelo de concurrencia utilizado consiste en un único thread (o pool de threads, uno por core) que mediante un scheduler va ejecutando cada actor.
-Por ejecutar un actor se entiende comprovar si tiene mensajes en la cola y llamar a la lógica de proceso associada. Así pues, un solo thread es compartido por varios actores con lo que un actor no debe contener código bloqueante ya que bloquearía la ejecución de otros actores.
+Por ejecutar un actor se entiende comprobar si tiene mensajes en la cola y llamar a la lógica de proceso associada. Así pues, un solo thread es compartido por varios actores con lo que un actor no debe contener código bloqueante ya que bloquearía la ejecución de otros actores.
 
-Location transparency: Un actor tiene una dirección tipo el path de un fichero que lo localiza en el árbol jerárquico y permite localizarlo para mandar-le mensajes. En el caso de un sistema distribuido formado con varios nodos en el que se ejecuta un sistema de actores, la localización de un actor en concreto en el cluster es transparente. Es decir, en el momento de mmandar un mensaje a un actor se utiliza la misma API tanto si el actor esta en la misma máquina o está en remoto.
+Location transparency: Un actor tiene una dirección similar al path de un fichero que lo localiza en el árbol jerárquico y permite localizarlo para mandarle mensajes. En el caso de un sistema distribuido formado por varios nodos en el que se ejecuta un sistema de actores, la localización de un actor en concreto en el cluster es transparente. Es decir, en el momento de mandar un mensaje a un actor se utiliza la misma API tanto si el actor esta en la misma máquina o está en remoto.
 
 Ya no tenemos una doble API para scale up y scale out.
 
@@ -258,19 +258,20 @@ La **asincronía** es una forma de implementar un sistema concurrente. Hace refe
 
 
 Así pues Reactive Programing se basa en la programación asíncrona y orientada a mensajes: Modelo de Actores
+
 - Elasticidad que proporciona la configuración en cluster
 - Resiliencia: 
-    - A nivel de actor: Jerarquía de actores con supervisor. Cuando hay una excepción en un Actor y este peta, su actor supervisor en la jerarquía determina qué haver. Normalmente poner en marxa otra instancia. Lo importante es que el fallo no se propaga. Let it crash.
+    - A nivel de actor: Jerarquía de actores con supervisor. Cuando hay una excepción en un Actor y este peta, su actor supervisor en la jerarquía determina qué hacer. Normalmente poner en marcha otra instancia. Lo importante es que el fallo no se propaga. Let it crash.
     - A nivel de nodo del cluster: Actor Rebalancing en sistemas de actores con Actor   Sharding (Kubernetes como pareja de baile)
 
 Vemos que la resiliencia va más allá de la toleráncia a fallos. No se trata de que ante fallos el sistema continue funcionando de forma degradada sino que el sistema se recupere.
 
 
 
-**Implementaciones:** Akka/Pekko en Scala y Akka.Net en c# son implementaciones, Groovy GPars, Elixir/Erlang de un ReactiveSystem basado en el Modelo de Actores.
+**Implementaciones:** Akka/Pekko en Scala, Groovy GPars, Elixir/Erlang y Akka.Net en c# son implementaciones, de un ReactiveSystem basado en el Modelo de Actores.
     Elixir/Erlang es monoparadigma, solo puedo hacer programas siguiendo el modelo de actores (procesos maquina virtual BEAM).
     Scala/C# son multiparadigma.
-    Erlang es un lenguaje que se compila a bytecodes a ejecutar en la máquina virtual BEAM que es una implementacón del modelo ed actores.
+    Erlang es un lenguaje que se compila a bytecodes a ejecutar en la máquina virtual BEAM que es una implementacón del modelo de actores.
     Una de las principales diferencias con Akka es que BEAM está optimizado para sistemas con baja laténcia. Shcheduler preemptivo limita la duración de ejecución de los procesos/actores en los threads de sistema operativo.
     Nació en Ericson para equipos de telecomunicaciones y ahora lo usan Whatsapp, Discord, RabbitMQ, etc...
 
@@ -279,6 +280,7 @@ Vemos que la resiliencia va más allá de la toleráncia a fallos. No se trata d
 
 
 Un buen ejemplo de Reactive Programing es Akka Streams. 
+Programación declarativa.
 Evento vs mensaje
 
 ### 4. Programación funcional
@@ -287,8 +289,8 @@ Evento vs mensaje
 
 Lisp, el primer lenguage de programación funcional fué desarrollado en 1960 en el MIT.
 Los primeros lenguajes de progamación funcional estuvieron inspirados en el Lambda Calculus (Alonzo Church 1930).
-Lambda Calculus es un sistema formal matemático que permiten describir una compitación en base a la abstraccióne de funciones y su aplicación.
-En otras palabras, el lambda calculus describe una computación como la aplicación de una función a sus argumentos. Las funciones son 'first-class citizen'. Pueden ser pasadas como argumentos y ser devueltas como valores.   
+Lambda Calculus es un sistema formal matemático que permiten describir una computación en base a la abstracción de funciones y su aplicación.
+En otras palabras, el lambda calculus describe una computación como la aplicación de una función a sus argumentos. Las funciones son 'first-class citizens'. Pueden ser pasadas como argumentos y ser devueltas como valores.   
 
 
 ##### 4.2. Principios
@@ -317,7 +319,7 @@ Notese que una función matemática o función pura no puede hacer side effects.
       globalCounter += 1  // Modifies global state
     }
   ```
-- Mutar unn objeto o estructura de datos
+- Mutar un objeto o estructura de datos
 
 ```scala
 class Person(var name: String)
@@ -331,6 +333,7 @@ Es un side effect mutar una variable dentro de la misma función?
 
 
 ##### 4.2.3 Expresiones vs statements
+
 
 Statement: Línea de código o fragmento que tiene como objetivo realizar una acción (Side effect).
         Estilo imperativo:
@@ -376,7 +379,7 @@ addOneWithSideEffect es una función que realiza una operación e imprime el res
 Sinembargo, dada la función addOneWithSideEffect no es posible construir addTwoWithSideEffect como una función que suma 2 e imprime el resultado
 por pantalla. Si lo intentamos, al ejecutar la función resultatante hay dos println, una con el resultado parcial y otro con el resultado final.
 
-Los ide effects se ejecutan de forma no controlada, entrelazada con el resto de la funcionalidad. 
+Los side effects se ejecutan de forma no controlada, entrelazada con el resto de la funcionalidad. 
 
 ```scala
   def addOne(x: Int): Int = x + 1
@@ -416,7 +419,7 @@ de la función.
 addOnePure es pues una función pura, libre de side effects y esto nos permite combinarla para construir addTwoComposed.
 
 En este caso, en addTwoComposed, obtenemos los String a printar correspondientes a la primera y a la segunda llamada a addOnePure y
-sólo ejecutamos el sideeffect de la segunda llamada porque contiene el resultado final.
+sólo ejecutamos el side effect de la segunda llamada porque contiene el resultado final.
 
 Cómo sería una versión más genérica de esta composición de enteros? (Writer Monad)
 
