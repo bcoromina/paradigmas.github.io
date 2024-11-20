@@ -699,3 +699,36 @@ val persion = Person
         11.4 Ejercicio: Programación de una IO monad
 
 
+
+
+11.4 Programación de una IO monad
+
+```scala
+     case class IO[A](f: () => A){
+
+        def runUnsafe: A = f()
+        def map[B](g: A => B): IO[B] = IO(() => g(runUnsafe))
+
+        def flatMap[B](g: A => IO[B]): IO[B] = IO( () => g(runUnsafe).runUnsafe )
+      }
+      
+      val l: IO[Unit] = IO(() => println("Name: "))
+        .flatMap( _ =>
+          IO( () => readLine() )
+            .flatMap( name =>
+              IO( () => println("Hello: " + name) )
+            ).map( _ =>
+              ()
+            )
+      )
+
+      val program = for{
+        _ <- IO( () => println("Name: ") )
+        name <- IO( () => readLine())
+        _ <- IO( () => println("Hello: " + name) )
+      }yield ()
+
+      println("")
+
+      program.runUnsafe
+```
