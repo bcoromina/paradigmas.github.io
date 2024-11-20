@@ -673,10 +673,7 @@ val persion = Person
         4.1 Product Types
         4.2 Union Types
         4.3 De OOP a Algebra: Datos + transaformaciones (funciones puras)
-        4.4 Monoide como ejemplo de álgebra
-            4.4.1 Definición y propiedades
-            4.4.2 Ejemplo con números enteros
-            4.4.3 Ejemplo con imágenes
+       
 
     5 High Order Functions
 
