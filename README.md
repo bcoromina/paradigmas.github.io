@@ -21,6 +21,7 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
     2.2. Qué es un actor
     2.3. Sistemas resilientes
     2.4. Ejemplos
+    2.5. Contra ejemplos
 
 ### 3. Paradigma Reactivo
 
@@ -216,7 +217,24 @@ Escalabilidad en cluster és muy potente pero implica tener un sistema distribui
 #### 2.4- Ejemplos
 
 
-2.4.1. Banca
+
+2.4.1. IoT
+
+
+Nuestra aplicación recibe datos de sensores. Pongamos que los sensores miden distintos parámetros relacionados con la agricultura: PH de la tierra, humedad, lluvia, viento, luz, nutrientes del suelo, etc..
+Nuestra empresa es una multinacional que distribuye millones y millones de sensores por todo el mundo. Los sensores envian periódicamente
+información a nuestro data center. Cada dato es guardado en un histórico para el análisis posterior y también se generan alármas si se superan determinados umbrales.
+
+Con millones de sensores enviando datos periódicamente tenemos un nivel de concurrencia que no se puede manejar con threads. Además cada petición 
+requiere una potencia de cómputo muy baja con lo que los ciclos de CPU debidos al context switching entre thread respeto a los ciclos de CPU requeridos 
+para procesar el dato harían nuestra aplicación altamente ineficiente.
+
+Con el modelo de actores, cada sensor sería un actor que procesaría los mensajes en el orden recibido gracias a su cola de mensajes. El corto tiempo 
+de proccesado de los mensajes permite no bloquear el thread de ejecución.
+
+
+
+2.4.2. Banca
 
 Un Ledger es un componente del un sistema bancario encargado de llevar la cuanta de cuandto dinero hay en cada cuenta. El ledger recibe transacciones que va a ejecutar o no en función de una serie de reglas de negocio. La regla de negocio mas sencilla es que para substraer dinero de una cuenta tiene que haber suficiente. Podemos pensar en una transacción como la orden de traspasar dinero de una cuenta a la otra.
 
@@ -225,6 +243,17 @@ Tanto el volumen de cuentas de usuarios como el número de transacciones pueden 
 - Diseño en un paradigma de concurrencia con Threads y estado centralizado:
 
   Cada transacción es procesada por un Thread y el estado se guarda en una base de datos relacional.
+
+    - Se recibe la petición/transacción financiera en un thread
+    - Se inicia una transacción de base de datos
+    - Se lee el estadod de las cuentas
+    - Se aplica la lógica de negocio
+    - Se escribe el nuevo estado en la BD
+    - Se cierra la tranbsacción de base de datos
+    - Se manda una respuesta a la petición
+
+    **Cuál es la unidad de concurrencia? La petición. Si tengo un solo procesador, este va ejecutando alternativamente las peticiones en curso.
+
 
   De entrada el número de transacciones concurrentes en una instancia de nuestro servicio viene limitado por el número de threads que podamos guardar     en memória y, si hay muchas, el rendimiento de nuestra aplicación se va a ver mermado por el desperdicio de CPU causado por el context switching.
     
@@ -250,6 +279,10 @@ duración media 200 ms
 - Diseño con el paradigma de actores y estado distribuido:
 
 Aplicando el modelo de actores vamos a crear un actor para cada cuenta. El actor será el único encargado de mantener el estado de la cuenta y a modificarlo en base a las reglas de negocio. 
+
+**Cuál es la unidad de concurréncia? La cuenta. Si tengo un solo procesador, este va ejecutando alternativammente cada cuenta, es decir, los
+comandos de cada cuenta.
+
 Cuando se reciba una transacción transfiriendo dinero de la cuenta A a la cuenta B, nuestro sistema va a enviar un comando al actor A y un comando actor B. Vamos a substituir lo que antes hacíamos con una transacción ACID por una implementación própia de transacción siguiendo el patró 2PC o Saga.
 Como un actor ejecuta los comandos recibidos por orden de llegada no habrá poroblemas de concurrencia. No hay estado compartido, no hay problemas de concurrencia.
 
@@ -272,11 +305,21 @@ Location transparency: el actor de la cuenta A y el actor de la cuenta B pueden 
 se realiza de forma transparente.
 
 
+#### 2.4- Contra Ejemplos
 
 
+El modelo de actores encaja bien para sistemas de alta concurrencia o computaciones que se puedan paralelizar. Por lo tanto no encaja bien cuando:
 
+- Algoritmos lineales no paralelizables
+- Batch processing monotarea no paralelizable
+- Systemas que necesitan con frequencia sincronización mediante un estado global
+- Systemas con relaciones jerárquicas profundas
+- Aplicaciones que necesitan comunicaciones síncronas
+- Hard real time systems.
+- Tareas de entrenamiento de machine learning en un dataset grande
 
-Ejemplos: Banca, IoT
+    
+
 
 
 
