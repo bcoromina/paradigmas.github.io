@@ -310,7 +310,7 @@ actores-cuenta y esperando sus resultados para componer el resultado final.
 En cierta forma, el listado de acciones a realizar para una transacción, se trocea en actores y su ejecución se controla a través de los comandos o mensajes que se intercanvian los actores. Equivalente al trozeo "descontrolado" que haría un thread de un listado de acciones al ejecutarlo de forma entrelazada con otros threads. Equiavlente también al trozeo que hacen las corutinas de Kotlin.
 
 
-#### 2.4- Contra Ejemplos
+#### 2.4- Contra Ejemplos y conclusiones
 
 
 El modelo de actores encaja bien para sistemas de alta concurrencia o computaciones que se puedan paralelizar. Por lo tanto no encaja bien cuando:
@@ -324,6 +324,8 @@ El modelo de actores encaja bien para sistemas de alta concurrencia o computacio
 
 
   El modelo de actores es un modelo de concurrencia. Cuando la concurrencia no es tu principal problema, el modelo de actores no encaja bien.
+
+  Descomponer un secuéncia de pasos en comandos que van a ejecutar actores de forma asíncrona hace que los programas se estructuren de forma muy diferente. Es una cambio de paradigma.
 
 
 
