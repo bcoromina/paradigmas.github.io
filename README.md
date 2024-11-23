@@ -304,21 +304,26 @@ Así pues tenemos un sistema stateful, el actor de la cuenta A está en un deter
 Location transparency: el actor de la cuenta A y el actor de la cuenta B pueden estar en distintos nodos pero la comunicación con estos actores 
 se realiza de forma transparente.
 
+Hace fala un actor que coordine la transacción. Este actor se va a crear al vuelo y va a implementar el 2PC o Saga, enviando los comandos a los
+actores-cuenta y esperando sus resultados para componer el resultado final.
+
+En cierta forma, el listado de acciones a realizar para una transacción, se trocea en actores y su ejecución se controla a través de los comandos o mensajes que se intercanvian los actores. Equivalente al trozeo "descontrolado" que haría un thread de un listado de acciones al ejecutarlo de forma entrelazada con otros threads. Equiavlente también al trozeo que hacen las corutinas de Kotlin.
+
 
 #### 2.4- Contra Ejemplos
 
 
 El modelo de actores encaja bien para sistemas de alta concurrencia o computaciones que se puedan paralelizar. Por lo tanto no encaja bien cuando:
 
-- Algoritmos lineales no paralelizables
+- Algoritmos lineales no paralelizables. Fibonacci cada elemento nuevo depende del anterior
 - Batch processing monotarea no paralelizable
-- Systemas que necesitan con frequencia sincronización mediante un estado global
-- Systemas con relaciones jerárquicas profundas
-- Aplicaciones que necesitan comunicaciones síncronas
-- Hard real time systems.
-- Tareas de entrenamiento de machine learning en un dataset grande
+- Systemas que necesitan con frequencia sincronización mediante un estado global (sistemas de edición colectiva.Ej: Google Docs)
+- Systemas con relaciones jerárquicas profundas (mejor OOP que actores)
+- Aplicaciones que necesitan comunicaciones síncronas. Los actores van con un sistema de mensajes asíncrono. (R&F en banca)
+- Hard real time systems. El intercambio de mensajes asíncrono no promete un tiempo de ejecución determinista
 
-    
+
+  El modelo de actores es un modelo de concurrencia. Cuando la concurrencia no es tu principal problema, el modelo de actores no encaja bien.
 
 
 
