@@ -20,6 +20,7 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
     2.1. Saliendo del paradigma convencional
     2.2. Qué es un actor
     2.3. Sistemas resilientes
+    2.4. Ejemplos
 
 ### 3. Paradigma Reactivo
 
@@ -210,7 +211,71 @@ Aislamiento de fallos es la propiedad del sistema que permite ser resiliente ant
 El modelo de programación de actores (concurrencia y location transparency) permite escribir "código escalable". Para scale out hay que utilizar un sistema de autoescalado como el de K8S o AWS. 
 
 Escalabilidad en cluster és muy potente pero implica tener un sistema distribuido y los sistemas distribuidos vienen con sus propias complejidades. Ejemplo: split brain.
+
+
+#### 2.4- Ejemplos
+
+
+2.4.1. Banca
+
+Un Ledger es un componente del un sistema bancario encargado de llevar la cuanta de cuandto dinero hay en cada cuenta. El ledger recibe transacciones que va a ejecutar o no en función de una serie de reglas de negocio. La regla de negocio mas sencilla es que para substraer dinero de una cuenta tiene que haber suficiente. Podemos pensar en una transacción como la orden de traspasar dinero de una cuenta a la otra.
+
+Tanto el volumen de cuentas de usuarios como el número de transacciones pueden crecer enormemente a medida que nuestro banco se expande mundialmente.
+
+- Diseño en un paradigma de concurrencia con Threads y estado centralizado:
+
+  Cada transacción es procesada por un Thread y el estado se guarda en una base de datos relacional.
+
+  De entrada el número de transacciones concurrentes en una instancia de nuestro servicio viene limitado por el número de threads que podamos guardar     en memória y, si hay muchas, el rendimiento de nuestra aplicación se va a ver mermado por el desperdicio de CPU causado por el context switching.
     
+  Si además le añadimos una base de datos relacional que escala con un modelo de líder y réplicas, donde las escrituras se hacen en el leader y se        replican asíncronamente en las réplicas estamos creando un cuello de botella en el líder. Escalar por data sharding no funcionaria debido a las         transacciones entre cuentas de distintos shards.
+    
+  Una cuenta puede estar involucrada en varias transacciones simultaneas, por lo que parece ideal que nuestra base de datos sea relacional y que          cumpla con las reglas ACID en las transacciones. Sinembargo los bloqueos en base de datos que de ello se derivan van también a limitar la             
+  escalabilidad de nuestro sistema.
+
+
+Litte's law (teoría de colas):
+
+L=λ⋅W
+
+L: Número medio de peticiones en el sistema en un momento determinado
+λ: Request per second
+W: Tiempo medio en cursar una petición
+
+
+2 000 000 transacciones simultaneas
+duración media 200 ms
+10 000 000 tx / sec
+
+- Diseño con el paradigma de actores y estado distribuido:
+
+Aplicando el modelo de actores vamos a crear un actor para cada cuenta. El actor será el único encargado de mantener el estado de la cuenta y a modificarlo en base a las reglas de negocio. 
+Cuando se reciba una transacción transfiriendo dinero de la cuenta A a la cuenta B, nuestro sistema va a enviar un comando al actor A y un comando actor B. Vamos a substituir lo que antes hacíamos con una transacción ACID por una implementación própia de transacción siguiendo el patró 2PC o Saga.
+Como un actor ejecuta los comandos recibidos por orden de llegada no habrá poroblemas de concurrencia. No hay estado compartido, no hay problemas de concurrencia.
+
+![image](https://github.com/user-attachments/assets/cc3a9e1c-9587-48b9-9c65-c46e57d7e8ad)
+
+Las librerías de actores más potentes proporcionan las funcionalidades de sharding y clustering.
+El clustering nos permite formar un conjunto de nodos de forma coordinada compartiendo el mismo sistema de actores.
+El sharding distribuye instancias de actor entre los nodos del cluster.
+
+Ulitizando el sistema de actores junto con las técnicas de sharding y clustering obtenemos un sistema altamente escalable.
+
+Qué hay de la base de datos? Cuando el actor se crea se carga el estado de la base de datos y se escribe cada vez que se modifica.
+Observese que no necesitamos las garantias ACID a la hora de interactuar con la base de datos. 
+Entonces podemos utilizar una base de datos no relacional optimizada para escrituras como Cassandra.
+Además Cassandra tiene un cluster de topología en anillo altamente escalable.
+
+Así pues tenemos un sistema stateful, el actor de la cuenta A está en un determminado nodo.
+
+Location transparency: el actor de la cuenta A y el actor de la cuenta B pueden estar en distintos nodos pero la comunicación con estos actores 
+se realiza de forma transparente.
+
+
+
+
+
+
 Ejemplos: Banca, IoT
 
 
