@@ -15,35 +15,29 @@ https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-sca
 
 
 
-
-
 - Rediseño de almacén automático con Actores.
 
   https://www.youtube.com/watch?v=x4wzLLYEv9g
+
+  Visión simplificada de los elementos un almacén automatizado:
+
+	- SKU: Stock Keeping Units. Cajas cartón, cubetas, etc.. Se identifican con un tag RFID
+  	- Elementos de transporte: Cintas transportadoras
+	- Estanterías de almacenaje de SKU.
+	- SRM: Storage and Retrieve Machine. Coje SKU de cinta transportadora y la pone en la estantería.
   
-  Cuando la caja pasa por un punto de notificación manda un mensaje que contiene: boxId, locationId, additionalData
-  Al recibir una notificación de una caja en un punto hay que aplicar reglas de negocio: 
-  	- actualizar el estado
-  	- responder con un mensaje que contiene un transporte
-  
-   ______________________________	
-  |				 |	 
-  |  Warehouse Management System |	
-  |______________________________|  
-  |				 |	 
-  |      Transport System        |	
-  |______________________________|  
-  |				 |	 
-  |          Hardware            |	
-  |______________________________| 	
-  
-  	
-  
-  Notificacióm: TS ---- LC1, Position1 ----> WMS 
-  Respuesta:    WMS ---- LC1, Transport(A -> B) ----> TS
-  
-  
-  Layout Subsistema de entradas: Proceso de entradas hasta celda
+  En distintos puntos del almacen se dispone de lectores RFID. En estos puntos el hardware notifica al software con un mensaje	
+  que contiene que contiene: boxId, locationId, additionalData.
+
+
+  Para el propósito de este ejercicio nos vamos a centrar en el circuito de entradas.
+  Circuito en el que se descargan las cajas del camión, y tras passar una serie de controles
+  se transportan por cinta hasta los SRM que las almacenan en las estanterías con cierto criterio.
+  Por simplicidad, vamos a verificar que las cajas no excedan de un determinado peso y según el volumen que vamos a obtener de un escaner volumétrico,
+  las vamos a clasificar en dos categorías: pequeñas y grandes.
+
+
+Layout Subsistema de entradas: Proceso de entradas hasta celda
   
   
   
@@ -55,7 +49,7 @@ https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-sca
 										        y |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
   											  x->	
   												
-  InitialScannerScale -> VolumetricScanner (wide, length, high) -> BigBoxAislePickUp  
+  InitialScale --------> VolumetricScanner (wide, length, high) -> BigBoxAislePickUp  
 	|	  	           |	                        -> LittleBoxAislePickUp
 	v	                   v
      Reject1    	        Reject2
@@ -65,10 +59,44 @@ https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-sca
 										     	ʌ |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
 										     	| |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
 										        y |_|_|_|_|_|_|_|_|_|_|_|_|_|_| 
-  											  x->												
-  
-  
-  
+  											  x->				
+
+
+ 
+
+  El sistema tiene dos capas WMS y Hardware/Transaport System
+
+ - WMS: Se encarga de los procesos logísticos (entradas, preparaación de pedidos, etc...)
+   y de mantener el mapa de almacén (dónde está y qué contiene cada caja)
+ - Hwd/Ts: Se encarga de interactuar con la maquinaria. Ejecuta transportes para mover cajas de un punto a otro del almacén
+   
+
+   ______________________________	
+  |				 |	 
+  |  Warehouse Management System |	
+  |______________________________|  
+  |				 |	 
+  |  Hardware / Transport System |	
+  |______________________________| 	
+
+Al recibir una notificación de una caja en un punto hay que aplicar reglas de negocio: 
+  	- actualizar el estado. Actualizar la ubicación de la caja
+	- decidir qué hacer con la caja en base a las reglas de negocio
+  	- responder con un mensaje que contiene un transporte
+
+  Esta sería la secuencia de mensajes para el proceso de entrada del layout anterior:
+
+	1- WMS recibe mensaje de InitialScannerScale. Contenido: boxId = 1, locationId= InitialScannerScale, additionalData = peso : 10Kg
+	2- WMS registra que la caja 1 se encuentra en InitialScannerScale
+	3- WMS aplica regla de negocio. Como el peso es menor que el máximo se genera un transporte para la caja 1 de InitialScannerScale a VolumetricScanner
+	4- WMS manda en mensaje de transporte a la capa Hwd/TS que lo ejecuta
+	5- WMS recibe un mensaje conforme la caja ha llegado a VolumetricScanner.Contenido: boxId = 1, locationId= VolumetricScanner, additionalData = x : 10, y : 24, z : 5
+	6- WMS calcula volumen y decide que la caja es pequeña. Crea transporte a LittleBoxAislePickUp
+        7- WMS recibe mensaje que boxId = 1, locationId= LittleBoxAislePickUp
+	8- WMS busca celda vacía en estantería y envia transporte a celda
+
+  	
+
   Dominio:
   
   case class Box(barcodeId: String, width: Int, height: Int, length: Int)
@@ -85,20 +113,39 @@ https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-sca
   
   
   PROBLEMA: 
-  	Dado que hay métricas críticas de flujo de cajas en determinados puntos
-  
-  
-  Por threads: 
-  	Cada mensaje es procesado por un thread 'tradicional' (de sistema operativo). En el procesado se realizan llamadas bloqueantes a base de datos.
-  
-  
-  
-  Actor por caja: Estado 
-  
-  
-  
-  class LoadCarrierActor(id: String, position: WharehouseLocation, transporte: Option[Transaport], lastLocationSeen: WharehouseLocation)
-  
+
+  La empresa que está comercializando este software de almacén cada vez vente almacenes más grandes y con unos flujos de cajas más exigentes.
+  En el diseño inicial, cada mensaje proviniente de Hwd/TS se cursa en un thread que termina cuando se ha generado la reacción pertinente (normalmente enviar un transporte)   
+  Sin embargo este diseño presenta problemas de escalabilidad. Cuando hay muchas cajas en el systema aparecen retardos en la creación de transportes y 
+  no se alcanzan las métricas deseadas en cuanto al flujo de cajas en determinados puntos.
+
+  Se pide rediseñar el sistema de WMS con un cambio de paradigma enfocado a la alta concurrencia.
+  La respuesta debe incluir qué unidad de concurrencia se va a escojer.
+
+
+
+
+  SOLUCIÓN:
+
+  1- Actor por caja: Estado 
+	class LoadCarrierActor(id: String, position: WharehouseLocation, transporte: Option[Transaport], lastLocationSeen: WharehouseLocation)
+     El estado es el asociado a la caja:
+	- Ubicación
+        - Peso y medidas 
+	- Transporte activo
+
+    Si pensamos la caja como una Event Sourced Entity, tenemos la história de la caja como una sucesion de eventos: 
+	LocationNotification, TransportCreated, TransportCompleted
+
+     
+    Escalabilidad: Permite millones de cajas cambiando su estado de una forma altamente concurrente
+    Escalable con el flujo de cajas.
+
+   
+  2- Actor por punto de almacén
+	Permite calcular los transportes para las cajas en el orden de llegada pero al mismo tiempo pueden ser cuellos de botella.
+	Escalable con las dimensiones del almacén.
+	
   
  
   
