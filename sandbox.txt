@@ -1,18 +1,6 @@
 
-
-- Dosier de teoria
-- Repository de github amb exemples i solucions
-
-
-
-
-
 - Toy IO, monad for effect vs future. Fp for mortals?
 https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-scala-14419039a423
-
-- Model d'actors. Reactive paradigm, akka streams, reactive manifesto
-- Java virtual threads. Java 21
-
 
 
 - Rediseño de almacén automático con Actores.
@@ -90,7 +78,7 @@ Al recibir una notificación de una caja en un punto hay que aplicar reglas de n
 	2- WMS registra que la caja 1 se encuentra en InitialScannerScale
 	3- WMS aplica regla de negocio. Como el peso es menor que el máximo se genera un transporte para la caja 1 de InitialScannerScale a VolumetricScanner
 	4- WMS manda en mensaje de transporte a la capa Hwd/TS que lo ejecuta
-	5- WMS recibe un mensaje conforme la caja ha llegado a VolumetricScanner.Contenido: boxId = 1, locationId= VolumetricScanner, additionalData = x : 10, y : 24, z : 5
+	5- WMS recibe un mensaje conforme la caja ha llegado a VolumetricScanner. Contenido: boxId = 1, locationId= VolumetricScanner, additionalData = x : 10, y : 24, z : 5
 	6- WMS calcula volumen y decide que la caja es pequeña. Crea transporte a LittleBoxAislePickUp
         7- WMS recibe mensaje que boxId = 1, locationId= LittleBoxAislePickUp
 	8- WMS busca celda vacía en estantería y envia transporte a celda
@@ -119,10 +107,11 @@ Al recibir una notificación de una caja en un punto hay que aplicar reglas de n
   Sin embargo este diseño presenta problemas de escalabilidad. Cuando hay muchas cajas en el systema aparecen retardos en la creación de transportes y 
   no se alcanzan las métricas deseadas en cuanto al flujo de cajas en determinados puntos.
 
-  Se pide rediseñar el sistema de WMS con un cambio de paradigma enfocado a la alta concurrencia.
+  1- Se pide rediseñar el sistema de WMS con un cambio de paradigma enfocado a la alta concurrencia.
   La respuesta debe incluir qué unidad de concurrencia se va a escojer.
 
-
+  2- Como el pasillo de cajas pequeñas está muy lleno se decide ampliar el almacén añadiendo otro pasillo de cajas pequeñas. Ahora hay LittleBoxAislePickUp01 y LittleBoxAislePickUp02. Cuando una caja llega al scanner volumétrico tengo que balancear las cajas pequeñas entre uno y otro en base a los transportes en curso con destino LittleBoxAislePickUp01 y LittleBoxAislePickUp02. Como encajarías esta necesidad en el sistema? Cómo obtendías estos transportes de forma eficiente?
+  	
 
 
   SOLUCIÓN:
@@ -141,10 +130,13 @@ Al recibir una notificación de una caja en un punto hay que aplicar reglas de n
     Escalabilidad: Permite millones de cajas cambiando su estado de una forma altamente concurrente
     Escalable con el flujo de cajas.
 
+    NOTA: Un actor por punto de almacén me permite escalar con las dimensiones del almacén pero no con el flujo de cajas
    
-  2- Actor por punto de almacén
-	Permite calcular los transportes para las cajas en el orden de llegada pero al mismo tiempo pueden ser cuellos de botella.
-	Escalable con las dimensiones del almacén.
+  2- Añadir un Actor por punto de almacén (LittleBoxAislePickUp01 y LittleBoxAislePickUp02)
+	Cuando se crea un transporte a estos destinos, se manda un mensaje al actor correspondiente informando del transporte creado.
+	De esta forma el actor me sirve como rejistro de transportes.
+
+  
 	
   
  
