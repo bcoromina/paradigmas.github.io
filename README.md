@@ -810,7 +810,17 @@ val persion = Person
         11.3 Mónadas para efectos
         11.4 Ejercicio: Programación de una IO monad
 
+3. Case classes y Pattern Matching
 
+   Métodos añadidos a una case class:
+   
+   - apply: Composición. Factory method
+   - unapply: Descomposición. Extract method
+   - equals: Structural equality (not reference equality). Compara cada uno de sus elementos
+   - hash code: Como equals pero puede tener colisiones
+   - copy: Crear copias de objetos introduciendo modificaciones
+   - Product Methods: productAriry, productIterator, etc...
+   - Serializable
 
 
 11.4 Programación de una IO monad
