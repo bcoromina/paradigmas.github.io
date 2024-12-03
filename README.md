@@ -138,6 +138,13 @@ Ejemplos:
     Ante dos programas que resuelven el mismo problema (equivalentes funcionalmente) se puede detectar que se ha seguido un paradigma de programación distinto en cada uno de ellos cuando presentan diferéncias conceptuales significativas más allá de la sintaxi. Si simplemente podemos traducir un programa al otro traduciendo la sintaxis y poco más, estamos dentro del mismo paradigma. Si por el contrario tenemos que reescribir-lo usando abstracciones y conceptos nuevos, hemos cambiado de paradigma. 
         
 
+Aunque históricamente los cambios de paradigma han significado la transición de una visión del mundo a una nueva visión a veces incompatible con la alnterior,
+a veces complementaria.
+
+La cosmología copernicana (la tierra no es el centro del universo) fue incompatible con lo anterior.
+La teoria de la relatividad no invalida la mecánica clasica. Proporciona herramientas para entender fenomenos a otras escalas (ej: velocidades cerca de la velocidad de la luz). O la mecánica cuántica a escala subatómica. Pero si tengo que calcular la velocidad a la que una manzana cae de un árbol, la mecánica clàssica va estupenda. 
+
+Veremos que conocer paradigmas de programación nos amplia la caja de herramientas para poder seleccionar la más adecuada según el problema que tengamos delante. 
 
 
  
