@@ -127,13 +127,17 @@ Los paradigmas de programación proporcionan al desarrollador o arquitecto de so
 </div>
 
 Ejemplos:
-- **Imperativo**: 
-    - Procedural: C
-    - Object Oriented Programming
+- **Imperativo**: Un programa es una lista de instrucciones.
+    - Procedural: C.
+          No Goto's sino procedures (dejamos el termino funciones para la programación funcional).
+          Pieza fundamental de construcción es el procedimento
+    - Object Oriented Programming. Encapsula estado en los procedures (como un  clojure) así puedes tener varios procedimientos con distinto estado (encapsulamiento en objetos)
+      "An object is just a poor man's clojure", Norman Adams.
+      Pieza fundamental de construcción es el objeto/clase
 - **Logic programming**: Basados en logica formal como Prolog 
 - **Reactive Programming**: El resultado deseado es descrito como la propagación de elementos a traves de un flujo de datos. 
-- **Funcional programming**
-
+- **Funcional programming**: Un programa es una función.
+  
 **Definición pragmática**
     Ante dos programas que resuelven el mismo problema (equivalentes funcionalmente) se puede detectar que se ha seguido un paradigma de programación distinto en cada uno de ellos cuando presentan diferéncias conceptuales significativas más allá de la sintaxi. Si simplemente podemos traducir un programa al otro traduciendo la sintaxis y poco más, estamos dentro del mismo paradigma. Si por el contrario tenemos que reescribir-lo usando abstracciones y conceptos nuevos, hemos cambiado de paradigma. 
         
