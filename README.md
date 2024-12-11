@@ -67,41 +67,43 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
     1. Porqué Scala
         
         1.1.1 Multiparadigma: OOP, FP, actores ...
-        1.1.2 Killer Apps: Spark, Akka, Play Framework....
+        1.1.2 Killer Apps: Spark, Akka, PLay Framework....
 
-    2 Algebraic Data Types
-        2.1 Product Types
-        2.2 Union Types        
-        2.3 Case Classes y Pattern matching
-    
-    3. Manejo de side effects
+    2. Manejo de side effects
 
-        3.1 Option vs null
-        3,2 Try vs Exceptions
-        3.3 Either
-        3.4 List
+        2.1 Option vs null
+        2,2 Try vs Exceptions
+        2.3 Either
+        2.4 List
 
-    4 High Order Functions
-        4.1 Currying
-        4.2 Partially applied functions
+    3 Case Classes y Pattern matching
 
-    5 Genéricos
+    4 Algebraic Data Types
+        4.1 Product Types
+        4.2 Union Types
+        4.3 De OOP a Algebra: Datos + transaformaciones (funciones puras)
+       
 
-    6 Colecciones
-        6.1 Definición recursiva de tipos
-        6.2 Operaciones con fluent API
+    5 High Order Functions
+        - Decorator pattern -> HoF wrappers
 
-    7 For comprehension (map, flatten, flatMap)
+    6 Genéricos
 
-    8. Herencia vs Type Classes
+    7 Colecciones
+        7.1 Definición recursiva de tipos
+        7.2 Operaciones con fluent API
 
-    9 Recursividad
+    8 For comprehension (map, flatten, flatMap)
 
-    10 Mónada
-        10.1 Definición
-        10.2 Ejemplos: Option, Try, List...
-        10.3 Mónadas para efectos
-        10.4 Ejercicio: Programación de una IO monad
+    9. Herencia vs Type Classes (composition over inheritance)
+
+    10 Recursividad
+
+    11 Mónada
+        11.1 Definición
+        11.2 Ejemplos: Option, Try, List...
+        11.3 Mónadas para efectos
+        11.4 Ejercicio: Programación de una IO monad
     
         
 
@@ -802,6 +804,7 @@ val persion = Person
        
 
     5 High Order Functions
+        - Decorator pattern -> HoF wrappers
 
     6 Genéricos
 
@@ -811,7 +814,7 @@ val persion = Person
 
     8 For comprehension (map, flatten, flatMap)
 
-    9. Herencia vs Type Classes
+    9. Herencia vs Type Classes (composition over inheritance)
 
     10 Recursividad
 
