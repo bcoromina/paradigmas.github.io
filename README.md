@@ -331,6 +331,7 @@ El modelo de actores encaja bien para sistemas de alta concurrencia o computacio
 - Algoritmos lineales no paralelizables. Fibonacci cada elemento nuevo depende del anterior
 - Batch processing monotarea no paralelizable
 - Systemas que necesitan con frequencia sincronización mediante un estado global (sistemas de edición colectiva.Ej: Google Docs)
+  Akka Distributed Data: Conflict Free Replicated Data Types (CRDTs).
 - Systemas con relaciones jerárquicas profundas (mejor OOP que actores)
 - Aplicaciones que necesitan comunicaciones síncronas. Los actores van con un sistema de mensajes asíncrono. (R&F en banca)
 - Hard real time systems. El intercambio de mensajes asíncrono no promete un tiempo de ejecución determinista
