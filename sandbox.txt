@@ -136,9 +136,154 @@ Al recibir una notificación de una caja en un punto hay que aplicar reglas de n
 	Cuando se crea un transporte a estos destinos, se manda un mensaje al actor correspondiente informando del transporte creado.
 	De esta forma el actor me sirve como rejistro de transportes.
 
+-------------------------------------------------------------------------------------------------------
+
+
+Ejercicio: 
+	Uso de monada de manejo de errores: Option, Either o Try
+	Monoid y Semigroup
+
+Dado el siguiente dominio:
+
+trait Location
+case class Transport(origin: Location, destination: Location)
+
+1- Definir e implementar una función de composición de transportes.  
+2- Se podría considerar Transporte y su composición un Semigroup? y un Monoid?
+
+SOLUCION:
+
+1- def compose(ta: Transport, tb: Transport): Option[Transport] = {
+    if(ta.destination == tb.origin)
+      Some(Transport(ta.origin, tb.destination))
+    else
+      None
+  }
+2- Para un Semigroup necesitamos un conjunto/typo, Transport en este caso, y también una operación associativa, la composición de transportes lo es.
+si A->B cmp B->C = A->C
+A->B cmp (B->C  cmp C->D) === (A->B cmp B->C) cmp C->D
+
+Para un monoide haría falta un elemento Zero que podria ser B->B
+A->B cmp B->B = A-> B
+Pero no tendríamos un elemento Zero universal sino que dependería del transporte donde se aplicara 
+   
+
+-------------------------------------------------------------------------------------------------------
+Comentar ImpureComputations en clase. Sirve también para introducir lenguaje Scala
+
+object ImpureComputations {
+
+  def printMessage(msg: String): Unit = {
+    println(s"Message: $msg")
+  }
+  ////////////////////////////////////////////////////
+  var counter: Int = 0
+
+  def incrementCounter(): Unit = {
+    counter += 1
+  }
+  ////////////////////////////////////////////////////
+  val listBuffer = scala.collection.mutable.ListBuffer(1, 2, 3)
+
+  def addElement(elem: Int): Unit = {
+    listBuffer += elem
+  }
+
+  ///////////////////////////////////////////////////
+
+  def fillList(num: Int): List[Int] = {
+    var c = 0
+    val list = scala.collection.mutable.ListBuffer[Int]()
+    while(c < num){
+      list.addOne(c)
+      c = c + 1
+    }
+    list.toList
+  }
+
+  ////////////////////////////////////////////////////
+  def readUserInput(): String = {
+    scala.io.StdIn.readLine() // Side effect: depends on external input
+  }
+  ////////////////////////////////////////////////////
+  def divide(a: Int, b: Int): Int = {
+    if (b == 0) throw new ArithmeticException("Division by zero!")
+    else a / b
+  }
+  ////////////////////////////////////////////////////
+  def writeFile(filename: String, content: String): Unit = {
+    val writer = new PrintWriter(new File(filename))
+    writer.write(content)
+    writer.close()
+  }
+  ////////////////////////////////////////////////////
+  def getCurrentTime(): Long = {
+    System.currentTimeMillis()
+  }
+
+  ///////////////////////////////////////////////////
+  def getRandomNumber(): Int = {
+    Random.nextInt(100)
+  }
+
+  ///////////////////////////////////////////////////
+
+  import scala.io.Source
   
+  def fetchWebPage(url: String): String = Source.fromURL(url).mkString
+    
+
+  ///////////////////////////////////////////////////
+  import java.sql.{Connection, DriverManager}
+
+  def insertIntoDatabase(): Unit = {
+    val connection: Connection = DriverManager.getConnection("jdbc:h2:mem:test")
+    val statement = connection.createStatement()
+    statement.executeUpdate("CREATE TABLE users (id INT, name VARCHAR(100))")
+    statement.executeUpdate("INSERT INTO users VALUES (1, 'Alice')") // Side effect: modifies database
+    connection.close()
+  }
+  ///////////////////////////////////////////////////
+
+
+}
+
+// Side effect: modifies the console
+// Side effect: modifies external state
+// Side effect: modifying mutable state
+// Side effect: throws an exception
+// Side effect: modifies external file system
+// Side effect: non-deterministic function
+/// Side effect: depends on external data
+
+
+//Rewrite the following function in a pure-functional style:
+object Problem {
+  def addTimestamp(str: String): String = {
+    val t = System.currentTimeMillis()
+    t.toString + ":" + str
+  }
+}
+
+//Solution
+trait IClock {
+  def getMillis(): Long
+}
+
+class EpochClock extends IClock {
+  override def getMillis(): Long = System.currentTimeMillis()
+}
+
+object Solution {
+  def addTimestamp(str: String, clock: IClock): String = {
+    val t = clock.getMillis()
+    t.toString + ":" + str
+  }
+}
 	
-  
+
+
+
  
   
   
