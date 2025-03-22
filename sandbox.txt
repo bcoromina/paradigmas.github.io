@@ -163,6 +163,18 @@ SOLUCION:
 si A->B cmp B->C = A->C
 A->B cmp (B->C  cmp C->D) === (A->B cmp B->C) cmp C->D
 
+La composición puede fallar devolviendo None => NO ES UN SEMIGROUP
+Como lo converiríammos en Semigroup?
+
+import cats.Semigroup
+
+implicit val transportSemigroup: Semigroup[Option[Transport]] = new Semigroup[Option[Transport]] {
+  def combine(x: Option[Transport], y: Option[Transport]): Option[Transport] = (x, y) match {
+    case (Some(t1), Some(t2)) if t1.end == t2.start => Some(Transport(t1.start, t2.end))
+    case _ => None
+  }
+}
+
 Para un monoide haría falta un elemento Zero que podria ser B->B
 A->B cmp B->B = A-> B
 Pero no tendríamos un elemento Zero universal sino que dependería del transporte donde se aplicara 
