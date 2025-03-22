@@ -163,7 +163,7 @@ SOLUCION:
 si A->B cmp B->C = A->C
 A->B cmp (B->C  cmp C->D) === (A->B cmp B->C) cmp C->D
 
-La composición puede fallar devolviendo None => NO ES UN SEMIGROUP
+La composición no siempre está definida, puede devolver None => NO ES UN SEMIGROUP
 Como lo converiríammos en Semigroup?
 
 import cats.Semigroup
