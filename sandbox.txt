@@ -325,6 +325,48 @@ object UserService {
 }
 
 
+///////////////////////////////////////////////////////////////////////////
+
+object LambdaCalculus {
+
+  sealed trait MyBoolean {
+    def apply[A](a: A, b: A): A
+  }
+
+  case object True extends MyBoolean {
+    override def apply[A](a: A, b: A): A = a
+  }
+
+  case object False extends MyBoolean {
+    override def apply[A](a: A, b: A): A = b
+  }
+
+  def ifThen[A](b: MyBoolean, trueBranch: A, falseBranch: A):A = b(trueBranch, falseBranch)
+
+  ////////////////////////////////////////////////////
+
+  def sumaA(x: Int): Int => Int = y => x + y
+
+  val siete = sumaA(5)(2)
+
+  def suma(x: Int, y: Int): Int = x + y
+
+  val sum: Int => Int => Int = (suma _).curried
+
+
+  assert(sumaA(5)(2) == sum(5)(2))
+
+}
+
+
+test("functional ifElse "){
+    assert(ifThen(True, 5, 2) == 5)
+    assert(ifThen(False, () => 5, () => {
+      println("false path")
+      2
+    })() == 2)
+  }
+
 
 
  
