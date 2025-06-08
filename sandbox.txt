@@ -1,4 +1,18 @@
 
+Evaluacion:
+
+- 30% ejercicio actores
+- 10% Refactor nulls
+- 10% Warehouse domain + strategy
+- 10% Fluent API
+- 10% Type classes
+- 20% Opinion articulo
+- 5% Ejercicio time stamp
+- 5% Recursion
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
 - Toy IO, monad for effect vs future. Fp for mortals?
 https://medium.com/wix-engineering/demystifying-functional-effect-systems-in-scala-14419039a423
 
