@@ -3,8 +3,7 @@
 **Enfoque del curso**
 
 <div style="text-align: justify;">
-Des de los orígenes de la ciencia de la computación, se han creado distintos paradigmas de programación que han proporcionado soluciones y puntos de vista diferentes a los problemas y retos que plantea la construción de programas informáticos. El presente curso pretende dar a conocer algunos de los paradigmas de mayor relevancia más allá de la orientación a objetos que se utilizará como punto de partida para su exploración. El objetivo del curso es enriquecer la visión y recursos del alumno para que adquiera el criterio que le permita utilizar el paradigma adecuado para cada problema. Se hará especial atención en el paradigma funcional con lenguage Scala, ya que al ser
-multiparadigma se erige como ideal para que el alumno pueda realizar una transición suave de OOP a Programación Funcional.
+Desde los orígenes de la ciencia de la computación, se han creado distintos paradigmas de programación que han proporcionado soluciones y puntos de vista diferentes a los problemas y retos que plantea la construcción de programas informáticos. El presente curso pretende dar a conocer algunos de los paradigmas de mayor relevancia más allá de la orientación a objetos que se utilizará como punto de partida para su exploración. El objetivo del curso es enriquecer la visión y recursos del alumno para que adquiera el criterio que le permita utilizar el paradigma adecuado para cada problema. Se hará especial atención en el paradigma funcional con lenguaje Scala, ya que al ser multiparadigma se erige como ideal para que el alumno pueda realizar una transición suave de OOP a Programación Funcional.
 </div>
 
 
@@ -44,7 +43,7 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
 
         4.3.1 Testing: Funciones deterministas sin contexto
         4.3.2 Local reasoning (7 items en mente)
-        4.3.3 Composición, la escéncia de la computación
+        4.3.3 Composición, la esencia de la computación
 
 
     4.4. Side Efffects
@@ -52,7 +51,7 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
         4.4.1 Segregación de código puro. Aplicación en arquitectura hexagonal
         4.4.2 Concepto de sistema de efectos
 
-    4.5. Immutabilidad
+    4.5. Inmutabilidad
 
         4.5.1 Beneficios
         4.5.2 Path Copying y Structural Sharing
@@ -64,7 +63,7 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
 
 ## **Parte 2**: Lenguaje Scala
 
-    1. Porqué Scala
+    1. ¿Por qué Scala?
         
         1.1.1 Multiparadigma: OOP, FP, actores ...
         1.1.2 Killer Apps: Spark, Akka, PLay Framework....
@@ -81,7 +80,7 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
     4 Algebraic Data Types
         4.1 Product Types
         4.2 Union Types
-        4.3 De OOP a Algebra: Datos + transaformaciones (funciones puras)
+        4.3 De OOP a Algebra: Datos + transformaciones (funciones puras)
        
 
     5 High Order Functions
@@ -113,12 +112,12 @@ multiparadigma se erige como ideal para que el alumno pueda realizar una transic
 ### 1. Qué es un paradigma de programación
 
 <div style="text-align: justify;">
-Ante el reto que presenta construir programas informáticos han ido apaerciendo distintos paradigmas de programación. Cada uno pone el foco en diferentes dimensiones del problema proporcionando un punto de vista o enfoque particular. 
+Ante el reto que presenta construir programas informáticos han ido apareciendo distintos paradigmas de programación. Cada uno pone el foco en diferentes dimensiones del problema proporcionando un punto de vista o enfoque particular. 
 
 Ejemplos de dimensiones pueden ser:
 
-- modelo de ejecución: Cómo ejecuto los Side Effects? 
-- organización del código: OOP agrupa estado y comportamiento en una classe.
+- modelo de ejecución: ¿Cómo ejecuto los Side Effects? 
+- organización del código: OOP agrupa estado y comportamiento en una clase.
 - modelo de concurrencia: Threads con código bloqueante, Green Threads, Actores... 
 
 
@@ -131,26 +130,26 @@ Los paradigmas de programación proporcionan al desarrollador o arquitecto de so
 Ejemplos:
 - **Imperativo**: Un programa es una lista de instrucciones.
     - Procedural: C.
-          No Goto's sino procedures (dejamos el termino funciones para la programación funcional).
-          Pieza fundamental de construcción es el procedimento
+          No Goto's sino procedures (dejamos el término funciones para la programación funcional).
+          Pieza fundamental de construcción es el procedimiento.
     - Object Oriented Programming. Encapsula estado en los procedures (como un  clojure) así puedes tener varios procedimientos con distinto estado (encapsulamiento en objetos)
       "An object is just a poor man's clojure", Norman Adams.
-      Pieza fundamental de construcción es el objeto/clase
-- **Logic programming**: Basados en logica formal como Prolog 
-- **Reactive Programming**: El resultado deseado es descrito como la propagación de elementos a traves de un flujo de datos. 
+      Pieza fundamental de construcción es el objeto/clase.
+- **Logic programming**: Basados en lógica formal como Prolog 
+- **Reactive programming**: El resultado deseado es descrito como la propagación de elementos a través de un flujo de datos. 
 - **Funcional programming**: Un programa es una función.
   
 **Definición pragmática**
-    Ante dos programas que resuelven el mismo problema (equivalentes funcionalmente) se puede detectar que se ha seguido un paradigma de programación distinto en cada uno de ellos cuando presentan diferéncias conceptuales significativas más allá de la sintaxi. Si simplemente podemos traducir un programa al otro traduciendo la sintaxis y poco más, estamos dentro del mismo paradigma. Si por el contrario tenemos que reescribir-lo usando abstracciones y conceptos nuevos, hemos cambiado de paradigma. 
+    Ante dos programas que resuelven el mismo problema (equivalentes funcionalmente) se puede detectar que se ha seguido un paradigma de programación distinto en cada uno de ellos cuando presentan diferencias conceptuales significativas más allá de la sintaxis. Si simplemente podemos traducir un programa al otro traduciendo la sintaxis y poco más, estamos dentro del mismo paradigma. Si por el contrario tenemos que reescribir-lo usando abstracciones y conceptos nuevos, hemos cambiado de paradigma. 
         
 
 Aunque históricamente los cambios de paradigma han significado la transición de una visión del mundo a una nueva visión a veces incompatible con la alnterior,
 a veces complementaria.
 
 La cosmología copernicana (la tierra no es el centro del universo) fue incompatible con lo anterior.
-La teoria de la relatividad no invalida la mecánica clasica. Proporciona herramientas para entender fenomenos a otras escalas (ej: velocidades cerca de la velocidad de la luz). O la mecánica cuántica a escala subatómica. Pero si tengo que calcular la velocidad a la que una manzana cae de un árbol, la mecánica clàssica va estupenda. 
+La teoría de la relatividad no invalida la mecánica clásica. Proporciona herramientas para entender fenómenos a otras escalas (ej: velocidades cerca de la velocidad de la luz). O la mecánica cuántica a escala subatómica. Pero si tengo que calcular la velocidad a la que una manzana cae de un árbol, la mecánica clásica va estupenda. 
 
-Veremos que conocer paradigmas de programación nos amplia la caja de herramientas para poder seleccionar la más adecuada según el problema que tengamos delante. 
+Veremos que conocer paradigmas de programación nos amplía la caja de herramientas para poder seleccionar la más adecuada según el problema que tengamos delante. 
 
 
  
@@ -163,8 +162,8 @@ Veremos que conocer paradigmas de programación nos amplia la caja de herramient
 
 #### 2.1- Saliendo del paradigma convencional
 
-Entre 1960 y 1070 fueron creados los primeros lenguajes orientados a objetos. Sin embargo, Alan Kay, al que se le otorga el acuñamiento del término, lo definía de una forma que se asemeja más al modelo de actores a cómo se definie la OOP hoy en día.
-Alan Kay definia la comunicación entre objetos como un intercambio de mensajes, no como una llamada a un método.
+Entre 1960 y 1070 fueron creados los primeros lenguajes orientados a objetos. Sin embargo, Alan Kay, al que se le otorga el acuñamiento del término, lo definía de una forma que se asemeja más al modelo de actores a cómo se define la OOP hoy en día.
+Alan Kay definía la comunicación entre objetos como un intercambio de mensajes, no como una llamada a un método.
 https://adabeat.com/fp/the-history-of-functional-programming/
 
 El paradigma de programación más extendido es el de OOP con un modelo de concurrencia basado en Threads ( o light threads/fibers) y utilizando RPC.
@@ -174,14 +173,14 @@ Un sistema puede escalar a dos niveles:
 - *scale up*(vertical): utilización de más CPUs dentro de la misma máquina
 - *scale out*(horizontal): añadiendo máquinas o nodos al sistema distribuido
 
-La concurrencia es un medio para conseguir escalabilidad. Si tengo que ejecutar dos compuntaciones incorreladas, las ejecuto "al mismo tiempo" (en paralelo o de forma entrelazada).
+La concurrencia es un medio para conseguir escalabilidad. Si tengo que ejecutar dos computaciones incorreladas, las ejecuto "al mismo tiempo" (en paralelo o de forma entrelazada).
 
-Ante un incremento de la demanda es deseable un augmento de los recursos requeridos con una relación lineal o inferior. Además, la relación entre demanda y complejidad de la aplicación queremos que mantenga un buen equilibrio.
+Ante un incremento de la demanda es deseable un aumento de los recursos requeridos con una relación lineal o inferior. Además, la relación entre demanda y complejidad de la aplicación queremos que mantenga un buen equilibrio.
 
 El paradigma convencional utiliza Threads para scale up y RPC para scale down.
 RPC parte de la base que una llamada a través de la red no és diferente a una llamada en la misma máquina. Si se realiza en modo síncrono va a bloquear el thread que hace la llamada con lo que vamos a hacer un uso poco eficiente de los recursos. Si hacemos una llamada asíncrona, tendremos que especificar una función de callback lo que añade complejidad a la aplicación. Puedes acabar con un callback hell si en la callback hacer otra llamada que necesita su callback, etc...
 
-Otro problema de este paradigma es que obtenemos un código en el que se mezclan contínuamente las dos abstracciones dirigidas a cada tipo de scalabilidad. Acabas hardcodeando qué partes de tu aplicación van a utilizar Threads para scale up y cuales van a utilizar RPC para scale out.
+Otro problema de este paradigma es que obtenemos un código en el que se mezclan contínuamente las dos abstracciones dirigidas a cada tipo de escalabilidad. Acabas hardcodeando qué partes de tu aplicación van a utilizar Threads para scale up y cuales van a utilizar RPC para scale out.
 
 #### 2.2- Qué es un actor
 
@@ -197,7 +196,7 @@ El modelo de actores proporciona una abstracción única para concurrencia y esc
   - Puede crear otros actores generando un árbol jerárquico y manejando su ciclo de vida. Si un actor peta, su supervisor es notificado y puede decidir qué acciones aplicar.
   
 El modelo de concurrencia utilizado consiste en un único thread (o pool de threads, uno por core) que mediante un scheduler va ejecutando cada actor.
-Por ejecutar un actor se entiende comprobar si tiene mensajes en la cola y llamar a la lógica de proceso associada. Así pues, un solo thread es compartido por varios actores con lo que un actor no debe contener código bloqueante ya que bloquearía la ejecución de otros actores.
+Por ejecutar un actor se entiende comprobar si tiene mensajes en la cola y llamar a la lógica de proceso asociada. Así pues, un solo thread es compartido por varios actores con lo que un actor no debe contener código bloqueante ya que bloquearía la ejecución de otros actores.
 
 Location transparency: Un actor tiene una dirección similar al path de un fichero que lo localiza en el árbol jerárquico y permite localizarlo para mandarle mensajes. En el caso de un sistema distribuido formado por varios nodos en el que se ejecuta un sistema de actores, la localización de un actor en concreto en el cluster es transparente. Es decir, en el momento de mandar un mensaje a un actor se utiliza la misma API tanto si el actor esta en la misma máquina o está en remoto.
 
@@ -206,7 +205,7 @@ Ya no tenemos una doble API para scale up y scale out.
 
 ***Aislamiento de fallos****: Al ser el actor la unidad básica de computación, pueden ocurrir fallos o excepciones en su lógica. Un fallo no controlado en un actor lo para y notifica a su supervisor que aplicará la lógica de gestión de errores. El fallo queda, sin embargo aislado, no se propaga por el sistema como una excepción a través de la pila de llamadas.
 
-***Bajo acoplamiento***: El intercambio de mensajes de forma asíncrona entre las unidades de computacón da lugar a sistemas mucho menos acoplados que los que produce la orientación a objetos donde un objeto ejecuta el método de otro a través de una instancia.
+***Bajo acoplamiento***: El intercambio de mensajes de forma asíncrona entre las unidades de computación da lugar a sistemas mucho menos acoplados que los que produce la orientación a objetos donde un objeto ejecuta el método de otro a través de una instancia.
 
 
 #### 2.3- Sistemas resilientes
@@ -236,7 +235,7 @@ Escalabilidad en cluster és muy potente pero implica tener un sistema distribui
 
 Nuestra aplicación recibe datos de sensores. Pongamos que los sensores miden distintos parámetros relacionados con la agricultura: PH de la tierra, humedad, lluvia, viento, luz, nutrientes del suelo, etc..
 Nuestra empresa es una multinacional que distribuye millones y millones de sensores por todo el mundo. Los sensores envian periódicamente
-información a nuestro data center. Cada dato es guardado en un histórico para el análisis posterior y también se generan alármas si se superan determinados umbrales.
+información a nuestro data center. Cada dato es guardado en un histórico para el análisis posterior y también se generan alarmas si se superan determinados umbrales.
 
 Con millones de sensores enviando datos periódicamente tenemos un nivel de concurrencia que no se puede manejar con threads. Además cada petición 
 requiere una potencia de cómputo muy baja con lo que los ciclos de CPU debidos al context switching entre thread respeto a los ciclos de CPU requeridos 
@@ -249,7 +248,7 @@ de proccesado de los mensajes permite no bloquear el thread de ejecución.
 
 2.4.2. Banca
 
-Un Ledger es un componente del un sistema bancario encargado de llevar la cuanta de cuandto dinero hay en cada cuenta. El ledger recibe transacciones que va a ejecutar o no en función de una serie de reglas de negocio. La regla de negocio mas sencilla es que para substraer dinero de una cuenta tiene que haber suficiente. Podemos pensar en una transacción como la orden de traspasar dinero de una cuenta a la otra.
+Un Ledger es un componente del un sistema bancario encargado de llevar la cuenta de cuánto dinero hay en cada cuenta. El ledger recibe transacciones que va a ejecutar o no en función de una serie de reglas de negocio. La regla de negocio mas sencilla es que para substraer dinero de una cuenta tiene que haber suficiente. Podemos pensar en una transacción como la orden de traspasar dinero de una cuenta a la otra.
 
 Tanto el volumen de cuentas de usuarios como el número de transacciones pueden crecer enormemente a medida que nuestro banco se expande mundialmente.
 
@@ -259,20 +258,20 @@ Tanto el volumen de cuentas de usuarios como el número de transacciones pueden 
 
     - Se recibe la petición/transacción financiera en un thread
     - Se inicia una transacción de base de datos
-    - Se lee el estadod de las cuentas
+    - Se lee el estado de las cuentas
     - Se aplica la lógica de negocio
     - Se escribe el nuevo estado en la BD
-    - Se cierra la tranbsacción de base de datos
+    - Se cierra la transacción de base de datos
     - Se manda una respuesta a la petición
 
-    **Cuál es la unidad de concurrencia? La petición. Si tengo un solo procesador, este va ejecutando alternativamente las peticiones en curso.
+    **¿Cuál es la unidad de concurrencia? La petición. Si tengo un solo procesador, este va ejecutando alternativamente las peticiones en curso.
 
 
   De entrada el número de transacciones concurrentes en una instancia de nuestro servicio viene limitado por el número de threads que podamos guardar     en memória y, si hay muchas, el rendimiento de nuestra aplicación se va a ver mermado por el desperdicio de CPU causado por el context switching.
     
   Si además le añadimos una base de datos relacional que escala con un modelo de líder y réplicas, donde las escrituras se hacen en el leader y se        replican asíncronamente en las réplicas estamos creando un cuello de botella en el líder. Escalar por data sharding no funcionaria debido a las         transacciones entre cuentas de distintos shards.
     
-  Una cuenta puede estar involucrada en varias transacciones simultaneas, por lo que parece ideal que nuestra base de datos sea relacional y que          cumpla con las reglas ACID en las transacciones. Sinembargo los bloqueos en base de datos que de ello se derivan van también a limitar la             
+  Una cuenta puede estar involucrada en varias transacciones simultáneas, por lo que parece ideal que nuestra base de datos sea relacional y que          cumpla con las reglas ACID en las transacciones. Sinembargo los bloqueos en base de datos que de ello se derivan van también a limitar la             
   escalabilidad de nuestro sistema.
 
 
@@ -293,11 +292,11 @@ duración media 200 ms
 
 Aplicando el modelo de actores vamos a crear un actor para cada cuenta. El actor será el único encargado de mantener el estado de la cuenta y a modificarlo en base a las reglas de negocio. 
 
-**Cuál es la unidad de concurréncia? La cuenta. Si tengo un solo procesador, este va ejecutando alternativammente cada cuenta, es decir, los
+**¿Cuál es la unidad de concurrencia? La cuenta. Si tengo un solo procesador, este va ejecutando alternativamente cada cuenta, es decir, los
 comandos de cada cuenta.
 
-Cuando se reciba una transacción transfiriendo dinero de la cuenta A a la cuenta B, nuestro sistema va a enviar un comando al actor A y un comando actor B. Vamos a substituir lo que antes hacíamos con una transacción ACID por una implementación própia de transacción siguiendo el patró 2PC o Saga.
-Como un actor ejecuta los comandos recibidos por orden de llegada no habrá poroblemas de concurrencia. No hay estado compartido, no hay problemas de concurrencia.
+Cuando se reciba una transacción transfiriendo dinero de la cuenta A a la cuenta B, nuestro sistema va a enviar un comando al actor A y un comando actor B. Vamos a substituir lo que antes hacíamos con una transacción ACID por una implementación própia de transacción siguiendo el patrón 2PC o Saga.
+Como un actor ejecuta los comandos recibidos por orden de llegada no habrá problemas de concurrencia. No hay estado compartido, no hay problemas de concurrencia.
 
 ![image](https://github.com/user-attachments/assets/cc3a9e1c-9587-48b9-9c65-c46e57d7e8ad)
 
@@ -305,14 +304,14 @@ Las librerías de actores más potentes proporcionan las funcionalidades de shar
 El clustering nos permite formar un conjunto de nodos de forma coordinada compartiendo el mismo sistema de actores.
 El sharding distribuye instancias de actor entre los nodos del cluster.
 
-Ulitizando el sistema de actores junto con las técnicas de sharding y clustering obtenemos un sistema altamente escalable.
+Utilizando el sistema de actores junto con las técnicas de sharding y clustering obtenemos un sistema altamente escalable.
 
-Qué hay de la base de datos? Cuando el actor se crea se carga el estado de la base de datos y se escribe cada vez que se modifica.
-Observese que no necesitamos las garantias ACID a la hora de interactuar con la base de datos. 
+¿Qué hay de la base de datos? Cuando el actor se crea se carga el estado de la base de datos y se escribe cada vez que se modifica.
+Obsérvese que no necesitamos las garantías ACID a la hora de interactuar con la base de datos. 
 Entonces podemos utilizar una base de datos no relacional optimizada para escrituras como Cassandra.
 Además Cassandra tiene un cluster de topología en anillo altamente escalable.
 
-Así pues tenemos un sistema stateful, el actor de la cuenta A está en un determminado nodo.
+Así pues tenemos un sistema stateful, el actor de la cuenta A está en un determinado nodo.
 
 Location transparency: el actor de la cuenta A y el actor de la cuenta B pueden estar en distintos nodos pero la comunicación con estos actores 
 se realiza de forma transparente.
@@ -320,7 +319,7 @@ se realiza de forma transparente.
 Hace fala un actor que coordine la transacción. Este actor se va a crear al vuelo y va a implementar el 2PC o Saga, enviando los comandos a los
 actores-cuenta y esperando sus resultados para componer el resultado final.
 
-En cierta forma, el listado de acciones a realizar para una transacción, se trocea en actores y su ejecución se controla a través de los comandos o mensajes que se intercanvian los actores. Equivalente al trozeo "descontrolado" que haría un thread de un listado de acciones al ejecutarlo de forma entrelazada con otros threads. Equiavlente también al trozeo que hacen las corutinas de Kotlin.
+En cierta forma, el listado de acciones a realizar para una transacción, se trocea en actores y su ejecución se controla a través de los comandos o mensajes que se intercambian los actores. Equivalente al trozeo "descontrolado" que haría un thread de un listado de acciones al ejecutarlo de forma entrelazada con otros threads. Equiavlente también al trozeo que hacen las corutinas de Kotlin.
 
 
 #### 2.4- Contra Ejemplos y conclusiones
@@ -339,7 +338,7 @@ El modelo de actores encaja bien para sistemas de alta concurrencia o computacio
 
   El modelo de actores es un modelo de concurrencia. Cuando la concurrencia no es tu principal problema, el modelo de actores no encaja bien.
 
-  Descomponer un secuéncia de pasos en comandos que van a ejecutar actores de forma asíncrona hace que los programas se estructuren de forma muy diferente. Es una cambio de paradigma.
+  Descomponer una secuencia de pasos en comandos que van a ejecutar actores de forma asíncrona hace que los programas se estructuren de forma muy diferente. Es una cambio de paradigma.
 
 
 
@@ -352,7 +351,7 @@ La primera formalización del paradigma reactivo la encontramos en la publicaci�
 
 
 - Reactive Systems: Arquitectura y diseño
-- Reactive Programming: Declarativo y vasado en eventos
+- Reactive Programming: Declarativo y basado en eventos
 
 
 El driver principal de los sistemas reactivos es la responsividad Responsiveness: Capacidad de respuesta. Para conseguir esta capacidad de respuesta, el sistema tiene que solucionar las siguientes cuestiones:
@@ -374,7 +373,7 @@ Asynchronous Programing simplemente hace énfasis en la ejecución asíncrona (n
 
 ***Asincronía vs concurrencia:***
 
-La **concurrencia** és habilidad para ejecutar tareas "simultaneamente". Las tareas se trocean y se ejecutan los trozos de forma entrelazada.
+La **concurrencia** és habilidad para ejecutar tareas "simultáneamente". Las tareas se trocean y se ejecutan los trozos de forma entrelazada.
 Modelos de concurrencia: 
 
 - Threads: Un thread por tarea. Trozeado de tareas en el tiempo: Cada thread ejecuta un subconjunto de instrucciones en su turno de CPU.
@@ -383,7 +382,7 @@ Modelos de concurrencia:
 
 - Go routines, JVM Virtual threads,....
 
-La **asincronía** es una forma de implementar un sistema concurrente. Hace referéncia a la habilidad de un sistema para ejecutar una tarea y continuar con la ejecución de otra sin que la primera haya acabado. La ejecución de tareas se ejecuta de forma no bloqueante.
+La **asincronía** es una forma de implementar un sistema concurrente. Hace referencia a la habilidad de un sistema para ejecutar una tarea y continuar con la ejecución de otra sin que la primera haya acabado. La ejecución de tareas se ejecuta de forma no bloqueante.
 
 
 
@@ -394,16 +393,16 @@ Así pues Reactive Programing se basa en la programación asíncrona y orientada
     - A nivel de actor: Jerarquía de actores con supervisor. Cuando hay una excepción en un Actor y este peta, su actor supervisor en la jerarquía determina qué hacer. Normalmente poner en marcha otra instancia. Lo importante es que el fallo no se propaga. Let it crash.
     - A nivel de nodo del cluster: Actor Rebalancing en sistemas de actores con Actor   Sharding (Kubernetes como pareja de baile)
 
-Vemos que la resiliencia va más allá de la toleráncia a fallos. No se trata de que ante fallos el sistema continue funcionando de forma degradada sino que el sistema se recupere.
+Vemos que la resiliencia va más allá de la tolerancia a fallos. No se trata de que ante fallos el sistema continue funcionando de forma degradada sino que el sistema se recupere.
 
 
 
 **Implementaciones:** Akka/Pekko en Scala, Groovy GPars, Elixir/Erlang y Akka.Net en c# son implementaciones, de un ReactiveSystem basado en el Modelo de Actores.
     Elixir/Erlang es monoparadigma, solo puedo hacer programas siguiendo el modelo de actores (procesos maquina virtual BEAM).
     Scala/C# son multiparadigma.
-    Erlang es un lenguaje que se compila a bytecodes a ejecutar en la máquina virtual BEAM que es una implementacón del modelo de actores.
+    Erlang es un lenguaje que se compila a bytecodes a ejecutar en la máquina virtual BEAM que es una implementación del modelo de actores.
     Una de las principales diferencias con Akka es que BEAM está optimizado para sistemas con baja laténcia. Shcheduler preemptivo limita la duración de ejecución de los procesos/actores en los threads de sistema operativo.
-    Nació en Ericson para equipos de telecomunicaciones y ahora lo usan Whatsapp, Discord, RabbitMQ, etc...
+    Nació en Ericsson para equipos de telecomunicaciones y ahora lo usan Whatsapp, Discord, RabbitMQ, etc...
 
                     
 #### 3.3- Akka Streams
@@ -417,8 +416,8 @@ Evento vs mensaje
       
 ##### 4.1. Origen de la programación funcional
 
-Lisp, el primer lenguage de programación funcional fué desarrollado en 1960 en el MIT.
-Los primeros lenguajes de progamación funcional estuvieron inspirados en el Lambda Calculus (Alonzo Church 1930).
+Lisp, el primer lenguaje de programación funcional fué desarrollado en 1960 en el MIT.
+Los primeros lenguajes de programación funcional estuvieron inspirados en el Lambda Calculus (Alonzo Church 1930).
 Lambda Calculus es un sistema formal matemático que permiten describir una computación en base a la abstracción de funciones y su aplicación.
 En otras palabras, el lambda calculus describe una computación como la aplicación de una función a sus argumentos. Las funciones son 'first-class citizens'. Pueden ser pasadas como argumentos y ser devueltas como valores.   
 
@@ -427,7 +426,7 @@ En otras palabras, el lambda calculus describe una computación como la aplicaci
 
 ##### 4.2.1 Función matemàtica y sus propiedades
 
-Una función matemàtica calcula un resultado en base a unos valores de entrada, nada más.
+Una función matemática calcula un resultado en base a unos valores de entrada, nada más.
 
 Esto implica que la función tiene un comportamiento determinista: dados los mismos valores de entrada, el resultado va a ser el mismo.
 De hecho, si ya se ha calculado el resultado para una determinada entrada, la función puede memoizar el resultado y simplemente devolverlo en sucesivas ejecuciones de la función con la misma entrada.
@@ -470,7 +469,7 @@ Statement: Línea de código o fragmento que tiene como objetivo realizar una ac
             doThis();
             doThat;
 
-Expresión: Línea de código o fragmento que tiene como ojetivo ser evaluado a un valor.
+Expresión: Línea de código o fragmento que tiene como objetivo ser evaluado a un valor.
 
 Las expresiones tienen la propiedad 'referencial transparancy': Se puede substituir la expresión por el valor resultado de su evaluación:
 
@@ -479,7 +478,7 @@ Las expresiones tienen la propiedad 'referencial transparancy': Se puede substit
   
   val result = (getNumberFive() * 2, getNumberFive() * 2)
   
-  //es qquivalente a 
+  //es equivalente a 
   
   val result2 = (10, 10)
   
@@ -493,7 +492,7 @@ Las expresiones tienen la propiedad 'referencial transparancy': Se puede substit
   //esto ejecuta dos veces el println
   val result3 = (getNumberFive2() * 2, getNumberFive2() * 2)
   
-  //No es quivalente a 
+  //No es equivalente a 
   val ten = getNumberFive2() * 5
   val result4 = (ten, ten)
 ```
@@ -507,7 +506,7 @@ Los side effects no se pueden componer. Las funciones puras sí.
 Dada la función addOne del siguiente listado, es posible construir la función addTwo como composición de addOne.
 addOneWithSideEffect es una función que realiza una operación e imprime el resultado por pantalla.
 Sinembargo, dada la función addOneWithSideEffect no es posible construir addTwoWithSideEffect como una función que suma 2 e imprime el resultado
-por pantalla. Si lo intentamos, al ejecutar la función resultatante hay dos println, una con el resultado parcial y otro con el resultado final.
+por pantalla. Si lo intentamos, al ejecutar la función resultante hay dos println, una con el resultado parcial y otro con el resultado final.
 
 Los side effects se ejecutan de forma no controlada, entrelazada con el resto de la funcionalidad. 
 
@@ -572,11 +571,11 @@ El testing de funciones puras, deterministas y sin side effects, es el sueño de
 No hay que construir un contexto para el testing de una función, al ser determinista la función va a dar la misma salida para la misma entrada.
 Al no generar side effects no hay que chequear ni mockear componentes externos.
 
-Facilita el empleo de tecnicas como el Property-Based Testing. Consiste en definir una propiedad de una o varias funciones y el framework se encarga 
+Facilita el empleo de técnicas como el Property-Based Testing. Consiste en definir una propiedad de una o varias funciones y el framework se encarga 
 de generar un conjunto pseudoaleatorio de datos de entrada para nuestra función y para cada una de ellas chequear que se cumple dicha propiedad.
 
-Por ejemplo, se desea testear que desserialización de un objeto tras su serialización coincide con el objeto original.
-O que una función que devuelve la longitud de una estructura de datos simpre de >= 0.
+Por ejemplo, se desea testear que deserialización de un objeto tras su serialización coincide con el objeto original.
+O que una función que devuelve la longitud de una estructura de datos siempre de >= 0.
 
 Separo el testing del cálculo de la lógica de negocio de la ejecución de los side effects.
 
@@ -591,29 +590,29 @@ Separo el testing del cálculo de la lógica de negocio de la ejecución de los 
 
 La carga cognitiva de un programa cuyo comportamiento depende de estados internos del propio programa en su conjunto i/o de un contexto externo de sistemas dependientes es muy grande. 
 
-Ejemplo: Falla una función porque un memória compartida de forma asíncrona esta en un estado inesperado. Quién y porqué ha puesto la memória en aquel estado?
+Ejemplo: Falla una función porque la memoria compartida de forma asíncrona esta en un estado inesperado. ¿Quién y porqué ha puesto la memoria en aquel estado?
 
 Las funciones puras permiten al programador razonar de forma aislada, local, permitiendo su comprensión sin tener en cuenta el resto del sistema.
-Compo las funciones puras son altamente composables, se trata de reducir su tamaño de forma que su responsabilidad quede claramente definida.
+Como las funciones puras son altamente composables, se trata de reducir su tamaño de forma que su responsabilidad quede claramente definida.
 
 
 
 
-##### 4.3.3 Composición, la escéncia de la computación?
+##### 4.3.3 Composición, ¿la esencia de la computación?
 
 
-Necesita un computador un programa escrito de forma funcional pura?
+¿Necesita un computador un programa escrito de forma funcional pura?
 
-La respuesta es: no. Un computador necesita un lista de operaciones a ejecutar una detras de otra sin mayor estructura. 
+La respuesta es: no. Un computador necesita un lista de operaciones a ejecutar una detrás de otra sin mayor estructura. 
 Como una máquina de Turing.
 
-Quién necesita funciones puras y pqueñas, y entodo caso construir sistemas complejos a partir de su composición? Los humanos.
+Quién necesita funciones puras y pequeñas, y en todo caso construir sistemas complejos a partir de su composición? Los humanos.
 
 Entonces el código lo escribimos no para la máquina si no para un humano. Ya sea un compañero o un yo del futuro que necesita entender lo que se hizo en su día.
 
-Un lenguaje de programación es un lenguage de comunicación entre humanos especializado en formalizar determinado tipo de problemas relacionados con el procesado de información.
+Un lenguaje de programación es un lenguaje de comunicación entre humanos especializado en formalizar determinado tipo de problemas relacionados con el procesado de información.
 
-Por otra parte, la composición tiene raíces profundas en las matemàticas, especialmente en la teoría de categorias que formaliza la idea de que la composición es una operación fundamental en casi todas las ramas de las matemáticas.
+Por otra parte, la composición tiene raíces profundas en las matemáticas, especialmente en la teoría de categorías que formaliza la idea de que la composición es una operación fundamental en casi todas las ramas de las matemáticas.
 
 
 ##### 4.4. Side Efffects
@@ -624,7 +623,7 @@ Por otra parte, la composición tiene raíces profundas en las matemàticas, esp
 El concepto de función pura se puede aplicar sin mas. A pesar de que existen sistemas de efectos que permiten manejar los side effects como computaciones puras, se pueden aplicar conceptos de programación funcional en cualquier code base.
 
 Una forma de empezar es el de tener mi lógica de negocio en funciones puras aprovechando las ventajas de testeo que esto implica.
-En arquitectura hexagonal, por ejemplo, esto implicaria tener un dominio puro y la ejecución de side effects a los puertos y adaptadores.
+En arquitectura hexagonal, por ejemplo, esto implicaría tener un dominio puro y la ejecución de side effects a los puertos y adaptadores.
 
 Ejemplo:
 
@@ -635,7 +634,7 @@ Se puede pensar que la computación pura es la descripción de la computación y
 Ventajas: 
     - Separation of concerns. No tengo que manejar la conexión de base de datos y la transacción donde no es necesario
     - Testeabilidad: La lógica se puede testear sin base de datos
-    - Esta separación permitiría, por ejemplo, añadir un optimizador entre las dos fases con el fin de optimizar las operaciones de base de dados,            eliminando dupllicados, juntando operaciones relacionadas, etc...
+    - Esta separación permitiría, por ejemplo, añadir un optimizador entre las dos fases con el fin de optimizar las operaciones de base de datos, eliminando duplicados, juntando operaciones relacionadas, etc...
 
 En general, se puede aplicar el concepto de función pura y composabilidad como buena práctica y cuando sea más factible, de forma gradual y sin que sea un imperativo absoluto.
 
@@ -660,7 +659,7 @@ Ejemplo de signatura:
 def leeNombreDeBaseDeDatos(): IO[String] = ???
 ```
 
-En lugar de conectarse a la base de datos, leer el valor y devolverlo como resultado, esta función devuelve un tipo IO en cuyo valor contiene el código a ejecutar para la objención del valor.
+En lugar de conectarse a la base de datos, leer el valor y devolverlo como resultado, esta función devuelve un tipo IO en cuyo valor contiene el código a ejecutar para la obtención del valor.
 De esta forma, he convertido la función en una función pura.
 
 ```scala
@@ -674,7 +673,7 @@ Un sistema de efectos permite al programador combinar efectos como por ejemplo:
 si tengo  f: A => IO[B] y g: B => IO[C], puedo construir h: A => IO[C]
 
 Entonces puedo combinar mis efectos sin ejecutarlos!! Así, mi programa devuelve como resultado una estructura de datos enorme que describe
-la ajecución compuesta y condicionada de efectos. Una vex obtengo este objeto final, solo tengo que llamar al metoto 'run' y el runtime del sistema de efectos
+la ejecución compuesta y condicionada de efectos. Una vex obtengo este objeto final, solo tengo que llamar al método 'run' y el runtime del sistema de efectos
 va a recorrer la estructura de datos y va a ir ejecutando cada trozo de código con efectos que lo compone.
 Una vez mas, he separado mi programa en dos partes, una que contiene mi lógica de negocio, que es totalmente pura y que da como resultado una descripción de
 los side effects a ejecutar. Y luego un runtime que ejecuta de forma ordenada todos los side effects.
@@ -691,7 +690,7 @@ Thread safety: Si no tengo un estado compartido y modificable de forma concurren
 - Dead locks
 - ...
 
-El hecho de guardar versiones de una estructura de datos a lo largo del tiempo, facilita la implementación de funionalidades como:
+El hecho de guardar versiones de una estructura de datos a lo largo del tiempo, facilita la implementación de funcionalidades como:
 - undo/redo
 - history tracking
 - time traveling debugging
@@ -712,8 +711,8 @@ La programación funcional invita a separar los datos de las funciones puras que
 Al definir unos tipos de datos y unas funciones puras que operan con ellos emerge el concepto de álgebra si le añadimos unas leyes.
 
 Ejemplos:
- - El tipo de datos Int, una operació asociativa + , un elemento neutro para la operació asociativa 0.
-   Ley associativa: (a + b) + c = a + (b + c)
+ - El tipo de datos Int, una operació asociativa + , un elemento neutro para la operación asociativa 0.
+   Ley asociativa: (a + b) + c = a + (b + c)
    Ley de identidad: a + 0 = 0 + a = a
    Ya tengo un álgebra definida que se llama Monoide
  - Monoide con imágenes.
@@ -721,7 +720,7 @@ Ejemplos:
    Operación: Superposición (pintar encima como las capas de un mapa)
    Elemento neutro: Imagen transparente
 
- Qué interés tiene un Monoide? Los monoides van perfecto para paralelizar: Particiono mis datos en grupos de imagenes, los distribuyo entre los workers 
+ ¿Qué interés tiene un Monoide? Los monoides van perfecto para paralelizar: Particiono mis datos en grupos de imágenes, los distribuyo entre los workers 
  (threads, nodos en un cluster, ...), compongo los resultados parciales con la operación asociativa. La computación tardará tanto como tarde el grupo 
  mas lento aprox. 
     
@@ -755,7 +754,7 @@ Para definir tipos complejos se utiliza la composición de tipos: Algebraic Data
 - Funciones como ciudadanos de primera: Las puedo tratar como valores
    - Asignarlas a un valor
    - Recibirlas en una función como parámetro
-   - Devolverlas como resultadode una función
+   - Devolverlas como resultado de una función
    - lambdas
    - ...
       
@@ -784,7 +783,7 @@ case class Person(name: String, age: Int)
 val persion = Person
 ```
 
-    1. Porqué Scala
+    1. ¿Por qué Scala?
         
         1.1.1 Multiparadigma: OOP, FP, actores ...
         1.1.2 Killer Apps: Spark, Akka, PLay Framework....
@@ -801,7 +800,7 @@ val persion = Person
     4 Algebraic Data Types
         4.1 Product Types
         4.2 Union Types
-        4.3 De OOP a Algebra: Datos + transaformaciones (funciones puras)
+        4.3 De OOP a Algebra: Datos + transformaciones (funciones puras)
        
 
     5 High Order Functions
