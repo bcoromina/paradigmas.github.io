@@ -14,58 +14,61 @@ Functional programming if the main paradigm we study in this course because it h
 
 **Part 1 — Introduction to Other Programming Paradigms**
 
-- **[1. What is a Programming Paradigm](#s1-paradigm)**
-- **[2. Actor Model](#s2-actor)**
-    - [2.1. Leaving the conventional paradigm](#s2-1-leaving)
-    - [2.2. What is an actor](#s2-2-actor)
-    - [2.3. Resilient systems](#s2-3-resilient)
-    - [2.4. Examples](#s2-4-examples)
-    - [2.5. Counter-examples and conclusions](#s2-4-counter)
-- **[3. Reactive Paradigm](#s3-reactive)**
-    - [3.1. Introduction](#s3-1-intro)
-    - [3.2. Reactive Programming](#s3-2-reactive)
-    - [3.3. Akka Streams](#s3-3-akka)
-- **[4. Functional Programming](#s4-fp)**
-    - [4.1 Origin of functional programming](#s4-1-origin)
-    - [4.2. Principles](#s4-2-principles)
-        - [4.2.1 Mathematical function and its properties](#s4-2-1-math)
-        - [4.2.2 Examples of side effects](#s4-2-2-side-effects)
-        - [4.2.3 Expressions vs statements](#s4-2-3-expr)
-        - [4.2.4 Composability](#s4-2-4-compose)
-    - [4.3. Benefits of functional programming](#s4-3-benefits)
-        - [4.3.1 Testing (+ law-based testing)](#s4-3-1-testing)
-        - [4.3.2 Local reasoning (7 items in mind)](#s4-3-2-reasoning)
-        - [4.3.3 Composition, the essence of computation](#s4-3-3-composition)
-    - [4.4. Side Effects](#s4-4-side-effects)
-        - [4.4.1 Segregation of pure code. Hexagonal architecture](#s4-4-1-segregation)
-        - [4.4.2 Effects system (IO monad + Resource pattern)](#s4-4-2-effects)
-    - [4.5. Immutability](#s4-5-immutability)
-        - [4.5.1 Benefits](#s4-5-1-benefits)
-        - [4.5.2 Path Copying and Structural Sharing](#s4-5-2-path-copying)
-    - [4.6 Algebra (Monoid typeclass + sumM)](#s4-6-algebra)
-    - [4.7 Characteristics of a functional language](#s4-7-characteristics)
+- **1. What is a Programming Paradigm**
+- **2. Actor Model**
+    - 2.1. Leaving the conventional paradigm
+    - 2.2. What is an actor
+    - 2.3. Resilient systems
+    - 2.4. Actors and event sourcing
+    - 2.5. Examples
+    - 2.6. Counter-examples and conclusions
+- **3. Reactive Paradigm**
+    - 3.1. Introduction
+    - 3.2. Reactive Programming
+    - 3.3. Akka Streams
+- **4. Functional Programming**
+    - 4.1 Origin of functional programming
+    - 4.2. Principles
+        - 4.2.1 Mathematical function and its properties
+        - 4.2.2 Examples of side effects
+        - 4.2.3 Expressions vs statements
+        - 4.2.4 Composability
+    - 4.3. Benefits of functional programming
+        - 4.3.1 Testing (+ law-based testing)
+        - 4.3.2 Local reasoning (7 items in mind)
+        - 4.3.3 Composition, the essence of computation
+    - 4.4. Side Effects
+        - 4.4.1 Segregation of pure code. Hexagonal architecture
+        - 4.4.2 Effects system (IO monad + Resource pattern)
+    - 4.5. Immutability
+        - 4.5.1 Benefits
+        - 4.5.2 Path Copying and Structural Sharing
+    - 4.6 Algebra (Monoid typeclass + sumM)
+    - 4.7 Characteristics of a functional language
 
 **Part 2 — Scala Language**
 
-- [2. Handling side effects](#p2-2-1-option)
-    - [2.1 Option vs null](#p2-2-1-option)
-    - [2.2 Try vs Exceptions](#p2-2-2-try)
-    - [2.3 Either](#p2-2-3-either)
-- [3. Case Classes and Pattern Matching](#p2-3-case-classes)
-- [4. Algebraic Data Types](#p2-4-adt)
-    - [4.1 Product Types and Sum Types](#p2-4-1-product)
-    - [4.4 Union Types (Scala 3)](#p2-4-4-union)
-    - [4.5 Phantom Types](#p2-4-5-phantom)
-    - [4.6 Opaque Types](#p2-4-6-opaque)
-- [5. High Order Functions](#p2-5-hof)
-- [7. Collections](#p2-7-collections)
-- [8. For Comprehension](#p2-8-for)
-- [9. Inheritance vs Type Classes](#p2-9-typeclasses)
-- [10. Recursion](#p2-10-recursion)
-    - [10.1 Trampoline](#p2-10-1-trampoline)
-- [11. Monad](#p2-11-monad)
-    - [11.4 Exercise: Programming an IO Monad](#p2-11-4-io)
-    - [11.5 Future vs IO](#p2-11-5-future-vs-io)
+- 2. Handling side effects
+    - 2.1 Option vs null
+    - 2.2 Try vs Exceptions
+    - 2.3 Either
+- 3. Case Classes and Pattern Matching
+- 4. Algebraic Data Types
+    - 4.1 Product Types and Sum Types
+    - 4.4 Union Types (Scala 3)
+    - 4.5 Phantom Types
+    - 4.6 Opaque Types
+- 5. High Order Functions
+- 7. Collections
+- 8. For Comprehension
+- 9. Inheritance vs Type Classes
+- 10. Recursion
+    - 10.1 Trampoline
+- 11. Monad
+    - 11.4 Exercise: Programming an IO Monad
+    - 11.5 Future vs IO
+
+**Appendix: Effect types cheat sheet**
 
 ---
 
@@ -75,10 +78,17 @@ Functional programming if the main paradigm we study in this course because it h
 
 
 ### 1. What is a Programming Paradigm
-{: #s1-paradigm}
+
+> **In this chapter**
+> - Why "paradigm" is more than a buzzword, and how to tell two paradigms apart pragmatically.
+> - The symptoms that pushed the industry to look beyond conventional OOP + Threads + RPC.
+> - A short diagnosis you'll carry through the rest of the course: shared mutable state, temporal coupling, and hidden side effects.
+
+Picture a 3 a.m. page: an on-call engineer stares at a stack trace that only reproduces under load, never locally. Two requests raced on the same object, one update silently overwrote the other, and nobody can say *when* it happened — only that it did. This is not a bug story about one bad line of code. It is a story about the paradigm the code was written in.
 
 <div style="text-align: justify;">
 Faced with the challenge of building software programs, different programming paradigms have emerged. Each one focuses on different dimensions of the problem, providing a particular point of view or approach.
+</div>
 
 Examples of dimensions can be:
 
@@ -166,14 +176,22 @@ If you want to swap calls a and b you have to know:
 	- Do they publish events?
 	- Do they depend on the current time?
 
+> **Summary**
+> - A paradigm is a lens: it decides which dimension of a problem (execution, organization, concurrency) you optimize for first.
+> - Two programs are in different paradigms if translating one into the other requires new abstractions, not just new syntax.
+> - Conventional OOP concurrency (Threads + RPC) accumulates three symptoms as systems scale: shared mutable state, temporal coupling, and hidden side effects.
+> - These symptoms are exactly what our 3 a.m. page was about — and they are the motivating problem for the rest of this course.
 
-
+Diagnosis done. The prescription starts with a 50-year-old idea that never quite made it into mainstream OOP: what if objects never shared memory, and only ever talked by sending each other messages?
 
 ### 2. Actor Model
-{: #s2-actor}
+
+> **In this chapter**
+> - Where the Actor Model came from, and why Alan Kay's original vision of OOP looked more like it than what we build today.
+> - How a single abstraction (the actor) replaces the dual Threads/RPC toolbox for concurrency *and* scalability.
+> - A running case study — a banking Ledger — that we'll design first with Threads, then redesign with actors, and keep revisiting in later chapters.
 
 #### 2.1- Leaving the Conventional Paradigm
-{: #s2-1-leaving}
 
 Between 1960 and 1970 the first object-oriented languages were created. However, Alan Kay, who is credited with coining the term, defined it in a way that resembles the actor model more closely than how OOP is defined today.
 Alan Kay defined the communication between objects as a message exchange, not as a method call.
@@ -193,10 +211,33 @@ Concurrency is a means to achieve scalability. If we have to execute two uncorre
 The conventional paradigm uses Threads for scale up and RPC for scale out.
 RPC assumes that a call over the network is no different from a call on the same machine. If done synchronously it will block the calling thread, making inefficient use of resources. If we make an asynchronous call, we will have to specify a callback function which adds complexity to the application. You can end up with callback hell if in the callback you make another call that needs its own callback, etc...
 
+```mermaid
+sequenceDiagram
+    participant C as Caller
+    participant S as Service A
+    participant S2 as Service B
+
+    rect rgb(255, 235, 235)
+    Note over C,S2: Synchronous RPC — caller thread blocks
+    C->>S: call() [thread blocked]
+    S->>S2: call() [thread blocked]
+    S2-->>S: result
+    S-->>C: result
+    end
+
+    rect rgb(235, 245, 255)
+    Note over C,S2: Async RPC — callback hell
+    C->>S: call(onResult1)
+    S-->>C: (returns immediately)
+    S->>S2: call(onResult2) [inside onResult1]
+    S2-->>S: onResult2(result)
+    S-->>C: onResult1(result)
+    end
+```
+
 Another problem with this paradigm is that we get code that continually mixes the two abstractions aimed at each type of scalability. You end up hardcoding which parts of your application will use Threads for scale up and which will use RPC for scale out.
 
 #### 2.2- What is an Actor
-{: #s2-2-actor}
 
 Carl Hewitt defined the actor model in 1973.
 
@@ -225,11 +266,25 @@ We no longer have a dual API for scale up and scale out. If no more actors fit i
 
 ***Fault isolation***: Since the actor is the basic unit of computation, failures or exceptions can occur in its logic. An uncontrolled failure in an actor stops it and notifies its supervisor who will apply the error management logic. The failure remains, however, isolated; it does not propagate through the system like an exception through the call stack.
 
+```mermaid
+graph TD
+    Supervisor["Supervisor Actor"] --> A["Account Actor A"]
+    Supervisor --> B["Account Actor B"]
+    Supervisor --> C["Account Actor C"]
+    B -.->|"crashes on bad message"| X["💥"]
+    X -.->|"notifies"| Supervisor
+    Supervisor -->|"restart"| B2["Account Actor B (restarted)"]
+
+    style X fill:#f99,stroke:#900
+    style B2 fill:#9f9,stroke:#090
+```
+
+*The failure in `Account Actor B` never touches `A` or `C` — it is reported up the hierarchy, and the supervisor decides to restart it. Compare this to a shared-object crash in conventional OOP, where an unchecked exception can leave a lock held or a data structure half-mutated for every other thread that touches it.*
+
 ***Low coupling***: The asynchronous exchange of messages between computation units results in much less coupled systems than those produced by object orientation where an object executes the method of another through an instance.
 
 
 #### 2.3- Resilient Systems
-{: #s2-3-resilient}
 
 A resilient system is one that, given a user request, can provide a response in a reasonable time. Maintaining this capacity in the following situations:
 
@@ -244,36 +299,21 @@ Fault isolation is the property of the system that allows it to be resilient in 
 
 The actor programming model (concurrency and location transparency) allows writing "scalable code". 
 
-Cluster scalability is very powerful but implies having a distributed system and distributed systems come with their own complexities. 
-	Example: split brain. Partition happen and one part of the cluster does not see the other. Another lead node is elected for the sub cluster that doesn't have a leader so we reach an undesirable state where identity for actors is no longer guaranteed and state collision as long as other nasty effects can happen.
+Cluster scalability is very powerful but implies having a distributed system and distributed systems come with their own complexities.
 
-#### 2.4- Actors and event sourcing
+> **⚠️ Watch out — split brain**
+> A network partition happens and one part of the cluster stops seeing the other. Each sub-cluster, believing itself abandoned, elects its own leader for the actors that were supposed to be unique. Now you may have *two* actors both claiming to be "the" actor for account A, on different nodes, both accepting writes. Identity is no longer guaranteed, and state can silently collide. Distributed actor frameworks mitigate this with quorum-based leader election and split-brain resolvers, but it is a complexity you only pay for once you go multi-node — worth knowing about before you reach for clustering as a default.
 
-If we take messages as commands received by the actor and events as state changes (not all commands received will trigger a state change) we will see that actor model and Event Sourcing complement each other. Actor naturally encapsulates the decision logic that turns **commands into events**
+#### 2.4- Actors and Event Sourcing
+
+If we take messages as commands received by the actor and events as state changes (not all commands received will trigger a state change) we will see that actor model and Event Sourcing complement each other. Actor naturally encapsulates the decision logic that turns **commands into events**
 The actor is created with an initial state and along its history events are are produced that change this state.  
 
-#### 2.4- Examples
-{: #s2-4-examples}
+#### 2.5- Examples
 
+Let's follow one system end to end through this course: **a banking Ledger**. We'll design it three times — once with the conventional paradigm, once with actors here, and again later with Reactive and Functional techniques — so you can see the same requirements produce a genuinely different program each time.
 
-
-2.4.1. IoT
-
-
-Our application receives data from sensors. Let's say the sensors measure different parameters related to agriculture: soil pH, humidity, rain, wind, light, soil nutrients, etc...
-Our company is a multinational that distributes millions and millions of sensors around the world. The sensors periodically send
-information to our data center. Each data point is saved in a historical log for later analysis and alarms are also generated if certain thresholds are exceeded.
-
-With millions of sensors sending data periodically we have a level of concurrency that cannot be handled with threads. Furthermore, each request
-requires very low computing power, so the CPU cycles due to context switching between threads relative to the CPU cycles required
-to process the data would make our application highly inefficient.
-
-With the actor model, each sensor would be an actor that would process messages in the order received thanks to its message queue. The short
-processing time of messages allows the execution thread not to be blocked.
-
-
-
-2.4.2. Banking
+2.5.1. Banking — the running case study
 
 A Ledger is a component of a banking system responsible for keeping track of how much money is in each account. The ledger receives transactions that it will execute or not based on a series of business rules. The simplest business rule is that to subtract money from an account there must be enough. We can think of a transaction as the order to transfer money from one account to another.
 
@@ -300,19 +340,15 @@ Both the volume of user accounts and the number of transactions can grow enormou
     
   An account can be involved in several simultaneous transactions, so it seems ideal for our database to be relational and to comply with ACID rules in transactions. However, the database locks that result from this will also limit the scalability of our system.
 
-
-Little's law (queuing theory):
-
-L=λ⋅W
-
-L: Average number of requests in the system at any given time
-λ: Requests per second
-W: Average time to process a request
-
-
-2,000,000 simultaneous transactions
-Average duration 200 ms
-10,000,000 tx / sec
+> **📐 Little's law (queuing theory)**
+>
+> L = λ⋅W
+>
+> - L: Average number of requests in the system at any given time
+> - λ: Requests per second
+> - W: Average time to process a request
+>
+> Plug in realistic numbers for our Ledger: 2,000,000 simultaneous transactions, average duration 200 ms ⇒ **10,000,000 tx/sec** the system must sustain. That's the order of magnitude that makes "one thread per request" stop being a design choice and start being a wall.
 
 - Design with the actor paradigm and distributed state:
 
@@ -344,11 +380,56 @@ is done transparently.
 A coordinator actor is needed for the transaction. This actor will be created on the fly and will implement 2PC or Saga, sending commands to the
 account-actors and waiting for their results to compose the final result.
 
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Coordinator as 2PC Coordinator (ephemeral)
+    participant A as Actor Account A
+    participant B as Actor Account B
+
+    Client->>Coordinator: Transfer(A, B, 100)
+
+    rect rgb(235, 245, 255)
+    Note over Coordinator,B: Phase 1 — Prepare (vote)
+    Coordinator->>A: Prepare Debit(100)
+    A-->>Coordinator: Vote Yes (funds reserved)
+    Coordinator->>B: Prepare Credit(100)
+    B-->>Coordinator: Vote Yes (ready to credit)
+    end
+
+    rect rgb(235, 255, 235)
+    Note over Coordinator,B: Phase 2 — Commit (all voted Yes)
+    Coordinator->>A: Commit
+    A-->>Coordinator: Committed
+    Coordinator->>B: Commit
+    B-->>Coordinator: Committed
+    Coordinator-->>Client: TransferComplete
+    end
+
+    Note over Coordinator,B: If either actor votes No in Phase 1,<br/>Coordinator sends Abort to both — no partial commits
+```
+
 In a way, the list of actions to perform for a transaction is broken into actors and their execution is controlled through the commands or messages that the actors exchange. Equivalent to the "uncontrolled" slicing that a thread would do of a list of actions when executing it in an interleaved manner with other threads. Equivalent also to the slicing that Kotlin coroutines do.
 
+> **🧪 Try it yourself**
+> Actor B crashes right after voting Yes in Phase 1, but before the Coordinator sends Commit. Sketch the message flow: does the Coordinator block waiting for B's supervisor to restart it, or does it time out? What happens to Actor A, which already reserved the funds and is waiting for a Commit or Abort it may never receive? (Hint: this is exactly why 2PC trades availability for consistency — a blocked participant blocks the whole transaction.)
 
-#### 2.4- Counter-Examples and Conclusions
-{: #s2-4-counter}
+2.5.2. IoT — a contrasting shape of concurrency
+
+Our application receives data from sensors. Let's say the sensors measure different parameters related to agriculture: soil pH, humidity, rain, wind, light, soil nutrients, etc...
+Our company is a multinational that distributes millions and millions of sensors around the world. The sensors periodically send
+information to our data center. Each data point is saved in a historical log for later analysis and alarms are also generated if certain thresholds are exceeded.
+
+With millions of sensors sending data periodically we have a level of concurrency that cannot be handled with threads. Furthermore, each request
+requires very low computing power, so the CPU cycles due to context switching between threads relative to the CPU cycles required
+to process the data would make our application highly inefficient.
+
+With the actor model, each sensor would be an actor that would process messages in the order received thanks to its message queue. The short
+processing time of messages allows the execution thread not to be blocked.
+
+*Notice the contrast with the Ledger: IoT concurrency is wide and shallow (millions of near-stateless actors doing tiny amounts of work), while banking concurrency is about correctness under contention (fewer actors, but each one guards a critical invariant). The actor model handles both shapes with the same abstraction — that is the point.*
+
+#### 2.6- Counter-Examples and Conclusions
 
 
 The actor model fits well for high concurrency systems or computations that can be parallelized. Therefore it does not fit well when:
@@ -366,14 +447,27 @@ The actor model fits well for high concurrency systems or computations that can 
 
   Decomposing a sequence of steps into commands that will be executed by actors asynchronously makes programs structured very differently. It is a paradigm shift.
 
+> **Summary**
+> - Actors replace the dual Threads (scale up) + RPC (scale out) toolbox with a single abstraction: state, concurrency, and behavior all owned by one addressable unit.
+> - Our Ledger, redesigned around one actor per account, turns a database-lock bottleneck into a message-ordering guarantee — no shared state, no concurrency problem.
+> - Fault isolation (a crashed actor is restarted, not propagated) and location transparency (same API whether local or remote) are what make actor systems scale *and* recover.
+> - The actor model is a concurrency model — reach for it when concurrency is your bottleneck, not by default.
 
+> **Further reading**
+> - *Reactive Design Patterns*, Roland Kuhn — the definitive treatment of actor-based resilience patterns referenced throughout this chapter.
+> - Carl Hewitt's original 1973 paper, *A Universal Modular ACTOR Formalism for Artificial Intelligence*.
+> - Akka/Pekko documentation on Cluster Sharding and Persistence (Event Sourcing) for a production-grade version of the Ledger.
 
+Actors gave the Ledger a place to put state safely — one actor, one account, no locks. But notice what we didn't get: the state inside `Actor A` is still mutated in place, one message at a time. It's *safe* mutation, not *no* mutation. The next paradigm asks a harder question: what does resilience look like as a system-wide property, not just an actor-level one? And after that, Functional Programming asks the hardest question of all — what if we simply stopped mutating state, anywhere?
 
 ### 3. Reactive Paradigm
-{: #s3-reactive}
+
+> **In this chapter**
+> - How the Reactive Manifesto formalizes "responsiveness" into concrete system properties: resilience and elasticity.
+> - The difference between asynchrony (a mechanism) and concurrency (a goal) — and why Reactive Programming is asynchronous, message-driven programming built on the Actor Model.
+> - How our Ledger's actor-per-account design already gets elasticity from clustering and resilience from supervision — Reactive Programming names and formalizes what we already built.
 
 #### 3.1- Introduction
-{: #s3-1-intro}
 
 The first formalization of the reactive paradigm is found in the publication of the Reactive Manifesto in 2013. It sets out the design principles for a reactive system or Reactive System which, at the implementation level, is embodied in the Reactive Programming paradigm. The target of reactive systems are distributed systems with high concurrency.
 
@@ -389,9 +483,9 @@ The main driver of reactive systems is responsiveness: the capacity to respond. 
 
 The Reactive Manifesto prescribes that to achieve these properties, we need the system to be Message-driven.
 
+Look back at our Ledger: when a node hosting `Actor A` goes down, Cluster Sharding rebalances `Actor A` onto a surviving node and it resumes from its last persisted state — that's *resilience*. When Black Friday traffic doubles the transaction rate, adding nodes lets the cluster shard more accounts across more machines — that's *elasticity*. We didn't design for these properties explicitly in Chapter 2; they fell out of choosing actors + clustering + sharding. The Reactive Manifesto is what names and formalizes that outcome.
 
 #### 3.2- Reactive Programming
-{: #s3-2-reactive}
 
 It is a subset of Asynchronous Programming.
 
@@ -427,63 +521,87 @@ We see that resilience goes beyond fault tolerance. It is not about the system c
 
 
 **Implementations:** Akka/Pekko in Scala, Groovy GPars, Elixir/Erlang and Akka.Net in C# are implementations of a ReactiveSystem based on the Actor Model.
-    Elixir/Erlang is mono-paradigm, I can only write programs following the actor model (BEAM virtual machine processes).
-    Scala/C# are multi-paradigm.
-    Erlang is a language that compiles to bytecodes to run on the BEAM virtual machine which is an implementation of the actor model.
-    One of the main differences with Akka is that BEAM is optimized for systems with low latency. A preemptive scheduler limits the execution duration of processes/actors on OS threads.
-    It was born at Ericsson for telecommunications equipment and is now used by WhatsApp, Discord, RabbitMQ, etc...
 
-                
+> **💡 Where BEAM fits in**
+> Elixir/Erlang is mono-paradigm — you can only write programs following the actor model (BEAM virtual machine processes). Scala/C# are multi-paradigm. Erlang compiles to bytecode that runs on the BEAM virtual machine, itself an implementation of the actor model, but optimized for *low latency*: a preemptive scheduler caps how long any process/actor can run on an OS thread before yielding, so no single actor can starve the others. BEAM was born at Ericsson for telecom switches — systems that must never go fully down — and today powers WhatsApp, Discord, and RabbitMQ.
+
 #### 3.3- Akka Streams
-{: #s3-3-akka}
 
+A good example of Reactive Programming is Akka Streams: a declarative API for describing a pipeline of transformations over a flow of elements, where backpressure — not manual thread management — regulates how fast upstream producers are allowed to emit.
 
-A good example of Reactive Programming is Akka Streams.
-Declarative programming.
-Event vs message.
+Back to the Ledger: instead of processing transactions one request at a time, imagine transactions arriving as a continuous stream from a Kafka topic. With Akka Streams you *declare* the pipeline instead of imperatively pulling and pushing data:
+
+```scala
+// Declarative: describe the transformation, the runtime handles backpressure
+val transactionFlow: Source[Transaction, NotUsed] =
+  Source(transactionQueue)                 // upstream: incoming transactions
+    .filter(_.amount > 0)                  // discard malformed transactions
+    .mapAsync(parallelism = 4)(tx => ledgerActor.ask(Debit(tx)))  // ask each account actor
+    .map(result => auditLog(result))       // side-channel: audit trail
+
+transactionFlow.runWith(Sink.foreach(println))
+```
+
+Note the distinction between an **event** (something that already happened — `AccountDebited`) and a **message** (a request to do something — `Debit(tx)`). Streams are usually built from events; actors communicate with messages. The Ledger's actor-per-account design produces events (via Event Sourcing, §2.4) that a stream like this one can consume for auditing, alerting, or projections — without ever touching the account actor's internal state directly.
+
+> **Summary**
+> - Reactive Systems are an architectural goal (responsiveness via resilience + elasticity); Reactive Programming is the asynchronous, message-driven implementation technique — typically the Actor Model.
+> - Asynchrony is a *mechanism* (non-blocking execution); concurrency is a *goal* (doing more than one thing "at once"). Reactive Programming uses the former to achieve the latter.
+> - Our Ledger already had these properties once we added clustering and supervision in Chapter 2 — Reactive Programming just gives us the vocabulary to reason about *why* it doesn't fall over under load or failure.
+> - Streams (Akka Streams) add a third declarative layer on top of actors: pipelines of events, with backpressure instead of manual flow control.
+
+> **Further reading**
+> - The [Reactive Manifesto](https://www.reactivemanifesto.org/) itself — short, and worth reading once end to end.
+> - *Reactive Design Patterns*, Roland Kuhn — resilience and elasticity patterns in depth.
+> - Akka Streams documentation, especially the sections on backpressure and materialized values.
+
+We now have a Ledger that survives node failure and scales out under load, one message at a time, one mutation at a time — always safe, because only one actor ever touches an account's state. But every actor still mutates a `var balance` internally. What if we removed the mutation itself, not just the concurrency around it? That's the question Functional Programming answers — and it changes not just *how* we handle state, but how we decompose the whole problem.
 
 ### 4. Functional Programming
-{: #s4-fp}
+
+> **In this chapter**
+> - Three ways to decompose the same domain — OOP (nouns own behavior), Actors (state owns concurrency), FP (data flows through transformations) — using our Ledger's `Account` as the running example.
+> - Why pure functions, immutability, and composability aren't academic purity tests but concrete answers to the symptoms diagnosed in Chapter 1.
+> - How to keep side effects (the database write, the Kafka publish) at the edges of a system while the core stays pure and trivially testable.
 
 
-Object-oriented design focuses on organiseing nouns. Functional programming focuses on composing transformations.
-
+Object-oriented design focuses on organiseing nouns. Functional programming focuses on composing transformations. Let's see this on the Ledger's `Account` — the same object we designed with Threads in §2.5.1 and with an actor in §2.5.
 
 OOP:
 
 ```java
-Order
- ├── validate()
- ├── calculatePrice()
- └── applyDiscount()
+Account
+ ├── validate(transaction)
+ ├── applyTransaction()
+ └── checkOverdraft()
 ```
 
 
 FP:
 
 ```scala
-Order
+Account
  |
 validate
  |
-calculatePrice
+applyTransaction
  |
-applyDiscount
+checkOverdraft
  |
-checkout
+persist
 ```
 
 The same domain, different decomposition.
 
 
-Shopping Cart:
+Three decompositions of the same `Account`:
 
 OOP:
 
 ```java
-cart.add(item)
-cart.remove(item)
-cart.total()
+account.withdraw(amount)
+account.deposit(amount)
+account.balance()
 ```
 
 The world is modeled as a collection of objects that own state and expose behavior.
@@ -491,16 +609,16 @@ The object is the identity.The methods describe what the object can do.
 **How to solve the state mutation problem**: Concurrency restriction primitives (locks, semaphores, etc...)
 **Mental model**: What object should own this method?
 
-Actor:
+Actor (§2 — what we actually built for the Ledger):
 
 ```scala
-CartActor
- receive AddItem
- receive RemoveItem
- receive GetTotal
+AccountActor
+ receive Withdraw
+ receive Deposit
+ receive GetBalance
 ```
 
-The operation becomes a **message**. Not a method call. The sender no longer controls execution.
+The operation becomes a **message**. Not a method call. The sender no longer controls execution.
 This completely changes the concurrency model.
 **How to solve the state mutation problem**: Do not mutate the state concurrently
 **Mental model**: Who owns this state?
@@ -508,16 +626,17 @@ This completely changes the concurrency model.
 FP:
 
 ```scala
-addItem(cart, item)
-removeItem(cart, item)
-total(cart)
+withdraw(account, amount)
+deposit(account, amount)
+balance(account)
 ```
 
 **How to solve the state mutation problem**: Do not mutate the state
 Mental model: What transformation am I performing?
 
+Look closely at the FP version: `withdraw` doesn't mutate `account` — it returns a *new* account with the updated balance. The actor version is still safer than raw OOP (no concurrent mutation), but it is still mutation: `AccountActor` holds a `var balance` internally and changes it in place, one message at a time. FP asks: what if there were no `var` anywhere at all?
+
 ##### 4.1. Origin of Functional Programming
-{: #s4-1-origin}
 
 Lisp, the first functional programming language, was developed in 1960 at MIT.
 The first functional programming languages were inspired by Lambda Calculus (Alonzo Church 1930).
@@ -526,10 +645,8 @@ In other words, lambda calculus describes a computation as the application of a 
 
 
 ##### 4.2. Principles
-{: #s4-2-principles}
 
 ##### 4.2.1 Mathematical Function and Its Properties
-{: #s4-2-1-math}
 
 A mathematical function calculates a result based on input values, nothing more.
 
@@ -540,7 +657,6 @@ Note that a mathematical function or pure function cannot have side effects. Tha
 
 
 ##### 4.2.2 Examples of Side Effects
-{: #s4-2-2-side-effects}
 
 - Reading or writing to an external data source: database, RPC, etc...
 - Throwing an exception.
@@ -593,7 +709,6 @@ object ImpureComputations {
 
 
 ##### 4.2.3 Expressions vs Statements
-{: #s4-2-3-expr}
 
 
 Statement: A line of code or fragment whose objective is to perform an action (Side effect).
@@ -630,7 +745,6 @@ val result4 = (ten, ten)
 Pure functions allow us to build referentially transparent expressions with which it is much easier for us to reason and refactor our code like a mathematical expression.
 
 ##### 4.2.4 Composability
-{: #s4-2-4-compose}
 
 Side effects cannot be composed. Pure functions can.
 
@@ -727,10 +841,8 @@ the execution of these side effects.
 
 
 ##### 4.3. Benefits of Functional Programming
-{: #s4-3-benefits}
 
 ##### 4.3.1 Testing
-{: #s4-3-1-testing}
 
 Testing pure functions, deterministic and without side effects, is every tester's dream.
 
@@ -783,11 +895,9 @@ assert(!KVRepoLaws.putThenGetLaw(brokenRepo, "key", 42)) // correctly fails
 
 
 ##### 4.3.2 Local Reasoning (7 items in mind)
-{: #s4-3-2-reasoning}
-    "The Magical Number Seven, Plus or Minus Two" by psychologist 
-    George A. Miller (1956). 
-    Miller suggested that the average human can hold about 
-    7 ± 2 items in their short-term memory (STM) at one time.
+
+> **🧠 The Magical Number Seven, Plus or Minus Two**
+> Psychologist George A. Miller (1956) suggested that the average human can hold about 7 ± 2 items in short-term memory at one time. Every extra piece of context a function silently depends on — a shared mutable field, a global flag, the current time — eats into that budget before you've even started reasoning about the actual logic.
 
 The cognitive load of a program whose behavior depends on internal states of the program as a whole and/or on an external context of dependent systems is very large.
 
@@ -800,7 +910,6 @@ Since pure functions are highly composable, it is about reducing their size so t
 
 
 ##### 4.3.3 Composition, the Essence of Computation?
-{: #s4-3-3-composition}
 
 
 Does a computer need a program written in a purely functional way?
@@ -818,10 +927,8 @@ On the other hand, composition has deep roots in mathematics, especially in cate
 
 
 ##### 4.4. Side Effects
-{: #s4-4-side-effects}
 
 ##### 4.4.1 Segregation of Pure Code. Application in Hexagonal Architecture
-{: #s4-4-1-segregation}
 
 
 The concept of pure function can be applied directly. Although there are effect systems that allow handling side effects as pure computations, functional programming concepts can be applied in any codebase.
@@ -845,7 +952,6 @@ In general, the concept of pure function and composability can be applied as a g
 
 
 ##### 4.4.2 Concept of Effects System
-{: #s4-4-2-effects}
 
 The goal of an effects system is to handle side effects in a 100% functional way. It is thus about describing and controlling the execution of side effects.
 
@@ -883,6 +989,22 @@ the composed and conditional execution of effects. Once I obtain this final obje
 will traverse the data structure and execute each piece of code with effects that composes it.
 Once more, I have separated my program into two parts, one that contains my business logic, which is completely pure and results in a description of
 the side effects to execute. And then a runtime that executes all the side effects in an orderly fashion.
+
+```mermaid
+graph LR
+    subgraph "Build phase — pure, nothing executes"
+        A["readUserFromDb(1)"] --> B["IO[String] description"]
+        B --> C["map/flatMap composition"]
+        C --> D["IO[User] description"]
+    end
+    D -->|".unsafeRun"| E["Runtime executes the DB call"]
+    E --> F["User(1, 'Bernat')"]
+
+    style D fill:#cde,stroke:#369
+    style E fill:#fca,stroke:#a52
+```
+
+*Everything left of `.unsafeRun` is just data — you can inspect it, log it, retry it, or throw it away without ever touching a database. This is the same trick our Ledger used for Event Sourcing (§2.4): describe the change first, decide whether/when to apply it second.*
 
 Here is the full, clean implementation of `IO` as a Scala 3 case class, plus a real-world use of the `Resource` pattern built on top of it:
 
@@ -934,11 +1056,10 @@ val fileResource: Resource[IO, BufferedReader] = Resource[IO, BufferedReader](
 )
 ```
 
-
-
+> **🧪 Try it yourself**
+> Add an `attempt` method to `IO[A]` that converts a failed computation into `IO[Either[Throwable, A]]` instead of throwing when you call `.unsafeRun`. Then rewrite `readUserFromDb` to use it so a missing user becomes a `Left`, not a crash — the same shift from "hidden side effect" to "explicit data" that `Either` (Part 2, §2.3) gives you for synchronous code.
 
 ##### 4.5. Immutability
-{: #s4-5-immutability}
 
 The problem is not state. The problem is uncontrolled state.
 
@@ -979,7 +1100,6 @@ Now:
 - composable
 
 ##### 4.5.1 Benefits
-{: #s4-5-1-benefits}
 
 Thread safety: If I don't have shared state that is concurrently modifiable, I save myself a good set of problems.
 - Race conditions
@@ -994,7 +1114,6 @@ The fact of saving versions of a data structure over time facilitates the implem
  
 
 ##### 4.5.2 Path Copying and Structural Sharing
-{: #s4-5-2-path-copying}
 
 We convert our mutable data to immutable and add a "version control system".
 
@@ -1017,7 +1136,6 @@ graph LR
 
 
 ##### 4.6. Algebra
-{: #s4-6-algebra}
 
 Functional programming invites separating data from the pure functions that operate on them. On the contrary, OOP pushes more to have an object that packages data and functions.
 
@@ -1047,9 +1165,8 @@ Examples:
    Laws are normally not specified but exist implicitly and we trust that whoever implements an interface will deduce the
    laws from the function names like put and get.
 
-   Liskov Substitution Principle: If B is a subtype of A, I must be able to substitute objects of type A with those of type B without altering the behavior of the
-   program. In the example: I must be able to substitute IKeyValueRepo with RedisRepo without altering the behavior of the program. Without altering the behavior
-   of the program means: complying with the laws of the algebra (whether explicit or implicit).
+> **📎 Liskov Substitution Principle, restated as an algebra law**
+> If B is a subtype of A, I must be able to substitute objects of type A with those of type B without altering the behavior of the program. In the example: I must be able to substitute `IKeyValueRepo` with `RedisRepo` without altering the behavior of the program. Without altering the behavior of the program means: complying with the laws of the algebra (whether explicit or implicit).
 
    The programmer must assess on a case-by-case basis whether it is worth making the laws explicit and verifying their compliance with unit tests.
 
@@ -1089,7 +1206,6 @@ sumM(List(1, 2, 3, 4))  // 10
 ```
     
 ##### 4.7. Characteristics of a Functional Language
-{: #s4-7-characteristics}
 - Functions as first-class citizens: I can treat them as values.
    - Assign them to a value.
    - Receive them in a function as a parameter.
@@ -1151,8 +1267,25 @@ Languages:
       - C#: readonly, Linq functional API, pattern matching
       - Python: HoF, lambdas, 'frozenset' for immutability, pattern matching
 
+> **Summary**
+> - Three paradigms decompose the same `Account` differently: OOP asks "what object owns this method?", Actors ask "who owns this state?", FP asks "what transformation am I performing?"
+> - Pure functions are deterministic and side-effect-free, which is what makes them trivially testable, locally reasoned about (respecting our 7±2 budget), and composable — side effects, by contrast, don't compose.
+> - Hexagonal architecture and effect systems (`IO`, `Resource`) both apply the same trick: separate the *description* of what should happen from the *execution* of it, and push execution to the edges.
+> - Immutability isn't the absence of state — it's state changes you can track, undo, and reason about one version at a time, the same "no shared mutable state" goal from Chapter 1, solved by eliminating mutation instead of coordinating it.
+
+> **Further reading**
+> - *Functional and Reactive Domain Modeling*, Debasish Ghosh — models exactly this kind of domain (accounts, transactions) the functional way.
+> - *Functional Programming in Scala* (2nd ed.), Chiusano & Bjarnason — the canonical deep-dive into monads, effects, and composability.
+> - Cats Effect / ZIO documentation for production-grade `IO` and `Resource` implementations beyond our toy versions.
+
+We've now designed the Ledger three times: Threads + locks (Chapter 1's diagnosis), one actor per account (Chapter 2), and finally as pure transformations over immutable `Account` values (this chapter). Part 2 puts these ideas to work in Scala specifically — a language that lets you write all three styles, and increasingly nudges you toward the functional one.
+
 ## **Part 2**: Scala Language
-{: #part2}
+
+> **In this chapter**
+> - Scala's answers to `null`, exceptions, and untyped errors: `Option`, `Try`, and `Either` — the FP toolkit for handling side effects explicitly (§4.4 in Part 1, now made concrete).
+> - The language features (case classes, ADTs, type classes, monads) that make the Ledger's pure `Account` transformations ergonomic instead of academic.
+> - A worked, from-scratch implementation of the `IO` monad you already saw a preview of in §4.4.2 — this time you'll build it yourself, twice.
 
 
 ```scala
@@ -1175,7 +1308,6 @@ val persion = Person
         2.4 List
 
 #### 2.1 Option vs null
-{: #p2-2-1-option}
 
 `Option[A]` is a type that either contains a value (`Some(a)`) or is empty (`None`). It replaces `null` and makes the absence of a value explicit in the type system.
 
@@ -1203,7 +1335,6 @@ noValue.flatMap(x => other.map(y => x + y))    // None
 ```
 
 #### 2.2 Try vs Exceptions
-{: #p2-2-2-try}
 
 `Try[A]` captures a computation that may throw into a value: either `Success(a)` or `Failure(exception)`. Exceptions become data you can map over and compose.
 
@@ -1228,7 +1359,6 @@ functionalDivide(10, 0).recoverWith { case _ => Try(42.0) }  // Success(42.0)
 ```
 
 #### 2.3 Either
-{: #p2-2-3-either}
 
 `Either[L, R]` is right-biased: `Right` represents success and `Left` represents an error. Unlike `Try`, the error type is explicit in the signature.
 
@@ -1288,7 +1418,6 @@ Left("err").bimap(_.toUpperCase, _ + 1) // Left("ERR")
         11.5 Future vs IO
 
 ### 3. Case Classes and Pattern Matching
-{: #p2-3-case-classes}
 
    Methods added to a case class:
    
@@ -1343,10 +1472,8 @@ val invalid: Option[Email] = Email("not-an-email")     // None
 ```
 
 #### 4. Algebraic Data Types
-{: #p2-4-adt}
 
 ##### 4.1 Product Types and Sum Types
-{: #p2-4-1-product}
 
 ```scala
 // Product type: a User is an Int AND a String AND a String
@@ -1365,7 +1492,6 @@ enum Tree[+A]:
 ```
 
 ##### 4.4 Union Types (Scala 3)
-{: #p2-4-4-union}
 
 Scala 3 introduces first-class union types — no wrapper allocation, no `Either`:
 
@@ -1385,7 +1511,6 @@ def divide(a: Double, b: Double): ErrorOr[Double] =
 ```
 
 ##### 4.5 Phantom Types
-{: #p2-4-5-phantom}
 
 Phantom types encode state machine constraints in the type system — invalid state transitions become **compile errors**:
 
@@ -1407,7 +1532,6 @@ val conn = open(Connection[Closed]())  // ok
 ```
 
 ##### 4.6 Opaque Types
-{: #p2-4-6-opaque}
 
 Opaque types give a type a distinct identity outside its defining scope with **zero runtime overhead** — unlike a case class wrapper:
 
@@ -1424,7 +1548,6 @@ println(userId.value)               // 123
 ```
 
 #### 5. High Order Functions
-{: #p2-5-hof}
 
 Functions are first-class citizens in Scala. See §4.7 for the full treatment. Key patterns used with collections:
 
@@ -1444,7 +1567,6 @@ val addTwo: Int => Int = (_ + 1) andThen (_ + 1)
 ```
 
 #### 7. Collections
-{: #p2-7-collections}
 
 `foldLeft` is the fundamental building block — all other collection operations can be derived from it:
 
@@ -1472,7 +1594,6 @@ naturals.filter(_ % 2 == 0).take(5).toList  // List(0, 2, 4, 6, 8)
 ```
 
 #### 8. For Comprehension
-{: #p2-8-for}
 
 For comprehensions are syntactic sugar for `flatMap` + `map`. They chain monadic computations and short-circuit on the first failure:
 
@@ -1499,8 +1620,10 @@ val pairs = for {
 // List(11, 21, 31, 12, 22, 32, 13, 23, 33)
 ```
 
+> **🧪 Try it yourself**
+> Model a transfer between two Ledger accounts with `Either[String, Account]` for validation: write `withdraw` and `deposit` functions that return `Left` with an error message on insufficient funds, then chain them in a for-comprehension so the whole transfer short-circuits on the first failure — no exceptions, no early `return`.
+
 #### 9. Inheritance vs Type Classes
-{: #p2-9-typeclasses}
 
 Type classes enable **ad-hoc polymorphism**: add behaviour to existing types without modifying them or using inheritance.
 
@@ -1530,7 +1653,6 @@ Option(User("Bernat", 44)).toJson  // {"name":"Bernat","age":44}
 ```
 
 #### 10. Recursion
-{: #p2-10-recursion}
 
 Prefer tail recursion over loops. The `@tailrec` annotation tells the compiler to verify the recursive call is in tail position — it will be compiled as a loop with no stack growth:
 
@@ -1551,7 +1673,6 @@ lazyFibonacci().take(10).toList  // List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34)
 ```
 
 #### 10.1 Trampoline
-{: #p2-10-1-trampoline}
 
 Deep recursion that is not tail-recursive will cause a `StackOverflowError`. A **trampoline** converts each recursive step into a data value and runs them iteratively in a loop:
 
@@ -1592,7 +1713,6 @@ sumTree(myHugeTree).result  // stack-safe
 ```
 
 #### 11. Monad
-{: #p2-11-monad}
 
 A **Monad** is a typeclass with two operations: `pure` (wrap a value) and `flatMap` (chain computations). `Option`, `Try`, `Either`, `List`, and `IO` are all monads — that's why they all have `map` and `flatMap` and can be used in for-comprehensions.
 
@@ -1611,8 +1731,10 @@ given Monad[IO] with
   def flatMap[A, B](fa: IO[A])(f: A => IO[B]): IO[B] = fa.flatMap(f)
 ```
 
+> **🧪 Try it yourself**
+> Write `given Monad[Option]` following the same pattern as `Monad[IO]` above. Then use your instance to implement a generic `sequence[F[_]: Monad, A](list: List[F[A]]): F[List[A]]` — turn a `List[Option[Int]]` into an `Option[List[Int]]` (this is exactly what you need to validate every transaction in a batch before committing any of them).
+
 #### 11.4 Programming an IO Monad
-{: #p2-11-4-io}
 
 ```scala
      case class IO[A](f: () => A){
@@ -1670,7 +1792,6 @@ class IO[A](f: => A){
 ```
 
 #### 11.5 Future vs IO
-{: #p2-11-5-future-vs-io}
 
 Both `Future` and `IO` are monads that represent asynchronous or side-effectful computations — but they differ fundamentally in when they execute:
 
@@ -1709,3 +1830,30 @@ program.unsafeRun  // side effects happen only here — referentially transparen
 | Referential transparency | No — `val f = Future{...}` is not the same as using the expression twice | Yes |
 | Memoisation | Yes — result is cached | No — re-executes on each `.unsafeRun` |
 | Use case | Java interop, existing async code | Pure FP, effect systems (Cats Effect, ZIO) |
+
+> **Summary**
+> - `Option`/`Try`/`Either` turn absence, exceptions, and typed errors into ordinary values you `map`/`flatMap` over — no `null` checks, no silent throws.
+> - Case classes give you structural equality, `copy`, and (via `sealed trait` + pattern matching) compiler-checked exhaustiveness for free.
+> - Type classes (§9) let you add behavior to a type — like serializing an `Account` to JSON — without touching its class or reaching for inheritance.
+> - `IO` and `Future` are both monads over an asynchronous/effectful computation, but only `IO` is lazy and referentially transparent — the property that makes effect systems composable.
+
+> **Further reading**
+> - *Programming in Scala* (5th ed.), Odersky, Spoon & Venners — the canonical Scala reference.
+> - Cats / Cats Effect documentation — production implementations of `Option`/`Either`-style typeclasses and the `IO` monad built here from scratch.
+> - The Scala 3 book (docs.scala-lang.org) for union types, opaque types, and given/using — the newest additions to the ADT toolkit in §4.
+
+---
+
+## Appendix: Effect types cheat sheet
+
+A quick reference for choosing between Scala's four ways of describing "this might not just return a plain value":
+
+| Type | Represents | Short-circuits on | Error info | When to reach for it |
+|---|---|---|---|---|
+| `Option[A]` | Presence or absence of a value | `None` | None — you only know it failed | A value may legitimately be missing (e.g. `Map.get`), and you don't need to say *why* |
+| `Try[A]` | A computation that may throw | `Failure(exception)` | `Throwable` | Wrapping legacy/Java APIs that throw exceptions you want to handle as data |
+| `Either[L, R]` | Success (`Right`) or a typed failure (`Left`) | `Left` | Any type `L` you choose | Domain validation where the caller needs to know *why* it failed (e.g. `Left("insufficient funds")`) |
+| `IO[A]` | A deferred, possibly side-effecting computation | N/A (describes the effect itself) | Depends on implementation (exceptions, or combine with `Either`) | Database calls, network I/O, anything you want to compose *before* deciding whether/when to run it |
+
+All four are monads: they all support `map` (transform the success case) and `flatMap` (chain computations, short-circuiting on failure), which is exactly why all four work inside a `for`-comprehension (§8) the same way.
+
