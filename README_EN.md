@@ -322,27 +322,6 @@ graph TD
 
 ***Low coupling***: The asynchronous exchange of messages between computation units results in much less coupled systems than those produced by object orientation where an object executes the method of another through an instance.
 
-
-#### 2.3- Resilient Systems
-
-A resilient system is one that, given a user request, can provide a response in a reasonable time. Maintaining this capacity in the following situations:
-
-- High demand situations. Whether peaks or sustained levels.
-- Errors in the system.
-- Self healing. If a component stops due to an error, it is automatically restarted.
-- ...
-
-
-Scalability is the property of the system that allows it to be resilient in the face of demand increases.
-Fault isolation is the property of the system that allows it to be resilient in the face of errors.
-
-The actor programming model (concurrency and location transparency) allows writing "scalable code". 
-
-Cluster scalability is very powerful but implies having a distributed system and distributed systems come with their own complexities.
-
-> **⚠️ Watch out — split brain**
-> A network partition happens and one part of the cluster stops seeing the other. Each sub-cluster, believing itself abandoned, elects its own leader for the actors that were supposed to be unique. Now you may have *two* actors both claiming to be "the" actor for account A, on different nodes, both accepting writes. Identity is no longer guaranteed, and state can silently collide. Distributed actor frameworks mitigate this with quorum-based leader election and split-brain resolvers, but it is a complexity you only pay for once you go multi-node — worth knowing about before you reach for clustering as a default.
-
 #### 2.4- Actors and Event Sourcing
 
 If we take messages as commands received by the actor and events as state changes (not all commands received will trigger a state change) we will see that actor model and Event Sourcing complement each other. Actor naturally encapsulates the decision logic that turns **commands into events**
@@ -573,6 +552,8 @@ We see that resilience goes beyond fault tolerance. It is not about the system c
 #### 3.3- Akka Streams
 
 A good example of Reactive Programming is Akka Streams: a declarative API for describing a pipeline of transformations over a flow of elements, where backpressure — not manual thread management — regulates how fast upstream producers are allowed to emit.
+
+Backpressure is a flow-control mechanism in reactive systems that propagates downstream demand upstream, ensuring that producers emit data no faster than consumers can process it.
 
 Back to the Ledger: instead of processing transactions one request at a time, imagine transactions arriving as a continuous stream from a Kafka topic. With Akka Streams you *declare* the pipeline instead of imperatively pulling and pushing data:
 
