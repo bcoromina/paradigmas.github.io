@@ -12,7 +12,7 @@ Functional programming if the main paradigm we study in this course because it h
 
 ## Table of Contents
 
-**Part 1 — Introduction to Other Programming Paradigms**
+**Part 1 — Introduction to other Programming Paradigms**
 
 - **1. What is a Programming Paradigm**
 - **2. Actor Model**
@@ -103,23 +103,23 @@ Each paradigm has, in a more or less formal way, a set of rules or principles th
 Programming paradigms provide the developer or software architect with the set of tools necessary to approach a problem in the best possible way.
 </div>
 
-Examples:
+Examples of paradigms:
 - **Imperative**: A program is a list of instructions.
     - Procedural: C.
           No Goto's but procedures (we leave the term functions for functional programming).
           The fundamental building block is the procedure.
-    - Object Oriented Programming. Encapsulates state in procedures (like a closure) so you can have several procedures with different state (encapsulation in objects).
+    - Object Oriented Programming. We encapsulate state together with its related procedures. Like in a closure. So you can have several procedures with different state. This is called encapsulation in objects.
       "An object is just a poor man's closure", Norman Adams.
       The fundamental building block is the object/class.
 - **Logic programming**: Based on formal logic such as Prolog.
 - **Reactive Programming**: The desired result is described as the propagation of elements through a data flow.
 - **Functional programming**: A program is a function.
   
-**Pragmatic Definition**
-    Given two programs that solve the same problem (functionally equivalent), one can detect that a different programming paradigm has been followed in each when they present significant conceptual differences beyond syntax. If we can simply translate one program into the other by translating syntax and little else, we are within the same paradigm. If, on the contrary, we have to rewrite it using new abstractions and concepts, we have changed paradigm.
+**The Translation Test**
+    Given two programs that solve the same problem (functionally equivalent), one can detect that a different programming paradigm has been followed in each them when they present significant conceptual differences beyond syntax. If we can simply translate one program into the other by translating syntax and little else, we are within the same paradigm. If, on the contrary, we have to rewrite it using new abstractions and concepts, we have changed paradigm.
         
 
-Although historically paradigm shifts have meant the transition from one world view to a new vision sometimes incompatible with the previous one,
+Historically paradigm shifts have meant the transition from one world view to a new vision sometimes incompatible with the previous one,
 sometimes complementary.
 
 Copernican cosmology (the earth is not the center of the universe) was incompatible with what came before. However, the theory of relativity does not invalidate classical mechanics. It provides tools to understand phenomena at other scales (e.g.: speeds close to the speed of light). Or quantum mechanics at the subatomic scale. But if I need to calculate the speed at which an apple falls from a tree, classical mechanics works great.
@@ -140,18 +140,21 @@ Problems:
 	- lost updates: specific form of race condition where one modification completely overwrites another.
 	- data corruption: concurrent mutations can temporarily or permanently violate state invariants
 
-	To avoid this we need to access state in a coordinated way, so we add:
+	To avoid this we need to access state in a coordinated way, so we add mechanisms:
 	- locks
-	- synchronized blocs
+	- synchronized blocks
 	- mutexes
 	- semaphores
-	- atomics
+	- atomics references
 	- concurrent collections
+	
 	While this works it ads a lot of complexity and cognitive load for the developer because business logic mixes with concurrency management.
 		
 - **temporal coupling**: Correctness depends not only on _what_ happens, but _when_ it happens.
 
 - **hidden side effects**:  Effects of calling a method are not obvious from its interface or from the local code, making it difficult to reason about.
+
+For instances:
 
 	```java 
 	userService.updateUser(user);
@@ -163,6 +166,8 @@ If the result of a function call depends on a hidden shared state, identical cal
 
 Why this is a problem? 
 
+If we have:
+
 ```java
 a();
 b();
@@ -170,6 +175,7 @@ c();
 ```
 
 If you want to swap calls a and b you have to know:
+
 	- Do they modify shared state?
 	- Do they touch the database?
 	- Do they mutate their arguments?
@@ -197,9 +203,9 @@ Between 1960 and 1970 the first object-oriented languages were created. However,
 Alan Kay defined the communication between objects as a message exchange, not as a method call.
 https://adabeat.com/fp/the-history-of-functional-programming/
 
-So is we pull the thread of this change on how objects communicate we will find ourselves in a different paradigm where objects (actors) are still the building blocks but the concurrency model is completely different. Derived from this we will structure our programs completely different. 
+So if we pull the thread of this change on how objects communicate we will find ourselves in a different paradigm where objects (actors) are still the building blocks but the concurrency model and scalability are completely different. This small change in how objects communicate is the start of our journey. 
 
-The most widespread programming paradigm is OOP with a concurrency model based on Threads (or light threads/fibers) and using RPC.
+The most widespread programming paradigm is OOP with a concurrency model based on Threads (or light threads/fibers) and using RPC (Remote Procedure Calls). REST API, grpc, database accessing, etc... all this are RPCs. 
 
 The problem with this combination comes with scalability. We define scalability as the ability of an application or system to handle an increase in demand while maintaining response time.
 A system can scale at two levels:
@@ -245,23 +251,56 @@ The actor model provides a single abstraction for concurrency and scalability.
 
 
 ***Actor***: The actor is the basic unit of computation in the actor model.
-  - It can receive messages that it processes sequentially in order of arrival. It stores them in a queue.
+
+What can an actor do:
+
+  - It can receive messages that it processes sequentially in order of arrival. It stores them in a queue before processing them.
   - It contains state that can be modified based on the received messages.
   - It can send messages to other actors.
-  - It can create other actors, generating a hierarchical tree and managing their life cycle. If an actor crashes, its supervisor is notified and can decide what actions to apply.
+  - It can create other actors, generating a hierarchical supervision tree and managing their life cycle. If an actor crashes, its supervisor is notified and can decide what actions to apply.
 
 The first mental model that we can build of an actor is a OOP class that communicates with other actors by sending messages instead of calling other actors methods. In order to keep up with its received messages, the actor has a built-in queue.
+
+In terms of memory footprint, an actor is very light abstraction. It only occupies the memory needed for the state, for the queue and very little extra which typically results in a few KB.
   
-The concurrency model plays a crucial role in the actor model. It consists of a single thread (or thread pool, one per core) that via a scheduler executes each actor.
+The concurrency model plays a crucial role in the actor model. It consists of a single thread (or thread pool, one per core) that executes each actor.
 Executing an actor means checking if it has messages in the queue and calling the associated processing logic. Thus, a single thread is shared by several actors, so an actor must not contain blocking code as it would block the execution of other actors.
 
 Note that the state contained in an actor will not be concurrently mutated. When an actor is processing a message it can mutate its state with the guarantee that no other mutation will happen concurrently.
 
-If concurrently mutating the state was the problem, if we keep mutating the state but not concurrently. The Actor is the unit of state, concurrency and functionality.
+If concurrently mutating the state was the problem, well, we keep mutating the state but not concurrently. The Actor is the unit of state, the unit of concurrency and the unit of functionality, so it is the main building block.
 
-***Location transparency***: An actor has an address similar to a file path that locates it in the hierarchical tree and allows it to be found to send messages. In the case of a distributed system made up of several nodes running an actor system, the location of a specific actor in the cluster is transparent. That is, when sending a message to an actor, the same API is used whether the actor is on the same machine or is remote.
+***Identity***
 
+An actor identity is defined by an id that is provided on it's creation. Example: In the case of a bank each account will be modeled with an actor holding the account state.
+
+***Clustering***
+
+A complete Actor framework has a cluster functionality where multiple nodes of actors can work together while living in different nodes of the same cluster.
+The actor framework owns the responsibility of forming the cluster and managing it by electing a cluster coordinator role, restarting unresponsive nodes, solve split brain problems, etc... and also distributing actors across the cluster.
+
+***Location transparency***: An actor has an address similar to a file path + its identity that locates it in the hierarchical tree and allows it to be found to send messages. In the case of a distributed system made up of several nodes running an actor system, the location of a specific actor in the cluster is transparent. That is, when sending a message to an actor, the same API is used whether the actor is on the same machine or is remote.
+
+***Actor Sharding***
+
+As our actor system grows and we need to handle more and more actor instances of the same type and they are receiving more and more messages, scaling vertically is no longer the solution so we have to scale horizontally forming a cluster and we need to distribute the actors along the nodes. This process is known as actor sharding and it places a shard of actors on each node in a cluster coordinated fashion.  
+
+*Example*: In our banking example we have one actor type called Account and we can scale our system by distributing the account actors across our cluster nodes with a naive sharding function like: accounts with account number from 0000 to 0020 to node A, from 0020 to 0040 to node B, etc... So a sharding function maps actor identity to a given node.
+
+So we define a sharded actor, a sharding function and the actor framework will take care of:
+	- Creating new actors in the corresponding node
+	- Knowing where each actor lives and route messages to them
+	- If one node dies, its actors will be redistributed to shards in other nodes and no message will be lost in the process.
+
+
+So we took our beloved OOP object and we keep the state it encapsulated but we have chopped its computations to small chunks that
+will be executed triggered by a message that the actor will eventually receive.
 We no longer have a dual API for scale up and scale out. If no more actors fit in a single machine, we add other machines forming a cluster and all this is handled by the actor framework and is transparent from the business logic point of view. 
+
+**Multiple domains in the same cluster**
+
+If we have a cluster we can even have node profiles and set the cluster to have n nodes with profile A and m nodes with profile B. So if we have two domains in our system, each implemented with its own actor set, we can instruct the cluster to allocate actors TypeA in the NodeTypeA and the actor TypeB in B nodes so we can independently scale both domains.
+So domains can scale independently but cannot be deployed independently.
 
 
 ***Fault isolation***: Since the actor is the basic unit of computation, failures or exceptions can occur in its logic. An uncontrolled failure in an actor stops it and notifies its supervisor who will apply the error management logic. The failure remains, however, isolated; it does not propagate through the system like an exception through the call stack.
@@ -321,7 +360,7 @@ Both the volume of user accounts and the number of transactions can grow enormou
 
 - Design in a concurrency paradigm with Threads and centralized state:
 
-  Each transaction is processed by a Thread and the state is stored in a relational database.
+  Each transaction is processed by a Thread and the state is stored in a relational database:
 
     - The financial request/transaction is received in a thread.
     - A database transaction is started.
@@ -331,12 +370,12 @@ Both the volume of user accounts and the number of transactions can grow enormou
     - The database transaction is closed.
     - A response is sent to the request.
 
-    **What is the unit of concurrency? The request. If I have a single processor, it alternately executes the requests in progress.
+    **What is the unit of concurrency? The request.
 
 
   To begin with, the number of concurrent transactions in an instance of our service is limited by the number of threads we can keep in memory and, if there are many, the performance of our application will be diminished by the waste of CPU caused by context switching.
     
-  If we also add a relational database that scales with a leader-replica model, where writes are made to the leader and asynchronously replicated to the replicas, we are creating a bottleneck at the leader. Scaling by data sharding would not work due to transactions between accounts in different shards.
+  If we also add a relational database that scales with a leader-replica model, where writes are made to the leader and asynchronously replicated to the replicas, we are creating a bottleneck at the leader and we still have the problem of consistency. Scaling by data sharding would not work due to transactions between accounts in different shards. So we will have to pass the problem to the database. Now we need the database to implement distributed transactions.
     
   An account can be involved in several simultaneous transactions, so it seems ideal for our database to be relational and to comply with ACID rules in transactions. However, the database locks that result from this will also limit the scalability of our system.
 
@@ -354,27 +393,33 @@ Both the volume of user accounts and the number of transactions can grow enormou
 
 Applying the actor model, we are going to create an actor for each account. The actor will be the sole responsible for maintaining the state of the account and modifying it based on business rules.
 
-**What is the unit of concurrency? The account. If I have a single processor, it alternately executes each account, that is, the commands of each account.
+**What is the unit of concurrency? The account. 
 
 When a transaction transferring money from account A to account B is received, our system will send a command to actor A and a command to actor B. We will replace what we previously did with an ACID transaction with our own transaction implementation following the 2PC or Saga pattern.
 Since an actor executes commands received in order of arrival, there will be no concurrency problems. No shared state, no concurrency problems.
 
 ![image](https://github.com/user-attachments/assets/cc3a9e1c-9587-48b9-9c65-c46e57d7e8ad)
 
-The most powerful actor libraries provide sharding and clustering functionalities.
-Clustering allows us to form a set of nodes in a coordinated way sharing the same actor system.
-Sharding distributes actor instances among the cluster nodes.
 
 Using the actor system together with sharding and clustering techniques we obtain a highly scalable system.
 
-What about the database? When the actor is created, the state is loaded from the database and written each time it is modified.
-Note that we do not need ACID guarantees when interacting with the database.
-Then we can use a non-relational database optimized for writes like Cassandra.
-In addition, Cassandra has a highly scalable ring-topology cluster.
+The actor state remains in memory and when a received message produces a change on state, the in memory state is updated and event is persisted in the database.
 
-So we have a stateful system, the actor for account A is on a specific node.
+**What will be persisted in the database?** InitialState + a collection of events that modify the state. So the database is an event log of all state changes that occurred since the creation of the actor. Applying them sequentially to the initial state allow us to compute the actors state at any given instant of the past actor's life.
 
-Location transparency: the actor for account A and the actor for account B can be on different nodes but communication with these actors
+When the actor is created after a deploy or a crash, its initial state is loaded and the events are re executed by the actor until it reaches its final state. As this process can be too long given a large amount of events, snapshots are applied by the actor framework so only the events from the last snapshot on are really recomputed. 
+
+
+Note that:
+	- State is kept in memory and event log is kept in sync.
+	- We do not need ACID guarantees when interacting with the database.
+	Then we can use a non-relational database optimized for writes like Cassandra. Ideal for Write Append Logs.
+	In addition, Cassandra has a highly scalable ring-topology cluster.
+	- We have a stateful system, the actor for account A is on a specific node.
+
+**Executing a transaction:**
+
+Thanks to location transparency the actor for account A and the actor for account B can be on different nodes but communication with these actors
 is done transparently.
 
 A coordinator actor is needed for the transaction. This actor will be created on the fly and will implement 2PC or Saga, sending commands to the
