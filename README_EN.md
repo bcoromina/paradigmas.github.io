@@ -5,7 +5,7 @@
 
 <div style="text-align: justify;">
 Since the origins of computer science, different programming paradigms have been created that have provided different solutions and perspectives to the problems and challenges posed by the construction of computer programs. This course aims to introduce some of the most relevant paradigms beyond object orientation, which will be used as a starting point for their exploration. The goal of the course is to enrich the student's vision and resources so that they acquire the criteria to use the right paradigm for each problem. Special attention will be paid to the functional paradigm using the Scala language, since being multi-paradigm it stands as ideal for the student to make a smooth transition from OOP to Functional Programming. 
-Functional programming if the main paradigm we study in this course because it has been influencing all mainstream programing languages for decades.
+Functional Programming is the main paradigm we study in this course because it has been influencing all mainstream programing languages for decades.
 </div>
 
 ---
@@ -48,25 +48,25 @@ Functional programming if the main paradigm we study in this course because it h
 
 **Part 2 — Scala Language**
 
-- 2. Handling side effects
-    - 2.1 Option vs null
-    - 2.2 Try vs Exceptions
-    - 2.3 Either
-- 3. Case Classes and Pattern Matching
-- 4. Algebraic Data Types
-    - 4.1 Product Types and Sum Types
-    - 4.4 Union Types (Scala 3)
-    - 4.5 Phantom Types
-    - 4.6 Opaque Types
-- 5. High Order Functions
-- 7. Collections
-- 8. For Comprehension
-- 9. Inheritance vs Type Classes
-- 10. Recursion
-    - 10.1 Trampoline
-- 11. Monad
-    - 11.4 Exercise: Programming an IO Monad
-    - 11.5 Future vs IO
+- **1. Handling side effects**
+    - 1.1 Option vs null
+    - 1.2 Try vs Exceptions
+    - 1.3 Either
+- **2. Case Classes and Pattern Matching**
+- **3. Algebraic Data Types**
+    - 3.1 Product Types and Sum Types
+    - 3.4 Union Types (Scala 3)
+    - 3.5 Phantom Types
+    - 3.6 Opaque Types
+- **4. High Order Functions**
+- **5. Collections**
+- **6. For Comprehension**
+- **7. Inheritance vs Type Classes**
+- **8. Recursion**
+    - 8.1 Trampoline
+- **9. Monad**
+    - 9.4 Exercise: Programming an IO Monad
+    - 9.5 Future vs IO
 
 **Appendix: Effect types cheat sheet**
 
@@ -156,9 +156,9 @@ Problems:
 
 For instances:
 
-	```java 
-	userService.updateUser(user);
-	```
+```java 
+userService.updateUser(user);
+```
 
 What happens inside the call? Is database updated? kafka message published? email sent?
 
@@ -288,9 +288,10 @@ As our actor system grows and we need to handle more and more actor instances of
 *Example*: In our banking example we have one actor type called Account and we can scale our system by distributing the account actors across our cluster nodes with a naive sharding function like: accounts with account number from 0000 to 0020 to node A, from 0020 to 0040 to node B, etc... So a sharding function maps actor identity to a given node.
 
 So we define a sharded actor, a sharding function and the actor framework will take care of:
-	- Creating new actors in the corresponding node
-	- Knowing where each actor lives and route messages to them
-	- If one node dies, its actors will be redistributed to shards in other nodes and no message will be lost in the process.
+	
+- Creating new actors in the corresponding node
+- Knowing where each actor lives and route messages to them
+- If one node dies, its actors will be redistributed to shards in other nodes and no message will be lost in the process.
 
 
 So we took our beloved OOP object and we keep the state it encapsulated but we have chopped its computations to small chunks that
@@ -299,7 +300,7 @@ We no longer have a dual API for scale up and scale out. If no more actors fit i
 
 **Multiple domains in the same cluster**
 
-If we have a cluster we can even have node profiles and set the cluster to have n nodes with profile A and m nodes with profile B. So if we have two domains in our system, each implemented with its own actor set, we can instruct the cluster to allocate actors TypeA in the NodeTypeA and the actor TypeB in B nodes so we can independently scale both domains.
+If we have a cluster we can even have node profiles and set the cluster to have n nodes with profile A and m nodes with profile B. So if we have two domains in our system, each implemented with its own actor set, we can instruct the cluster to allocate actors TypeA in the A nodes and the actor TypeB in B nodes so we can independently scale both domains.
 So domains can scale independently but cannot be deployed independently.
 
 
@@ -390,11 +391,12 @@ When the actor is created after a deploy or a crash, its initial state is loaded
 
 
 Note that:
-	- State is kept in memory and event log is kept in sync.
-	- We do not need ACID guarantees when interacting with the database.
-	Then we can use a non-relational database optimized for writes like Cassandra. Ideal for Write Append Logs.
-	In addition, Cassandra has a highly scalable ring-topology cluster.
-	- We have a stateful system, the actor for account A is on a specific node.
+
+- State is kept in memory and event log is kept in sync.
+- We do not need ACID guarantees when interacting with the database.
+Then we can use a non-relational database optimized for writes like Cassandra. Ideal for Write Append Logs.
+In addition, Cassandra has a highly scalable ring-topology cluster.
+- We have a stateful system, the actor for account A is on a specific node.
 
 **Executing a transaction:**
 
@@ -553,7 +555,7 @@ We see that resilience goes beyond fault tolerance. It is not about the system c
 
 A good example of Reactive Programming is Akka Streams: a declarative API for describing a pipeline of transformations over a flow of elements, where backpressure — not manual thread management — regulates how fast upstream producers are allowed to emit.
 
-Backpressure is a flow-control mechanism in reactive systems that propagates downstream demand upstream, ensuring that producers emit data no faster than consumers can process it.
+
 
 Back to the Ledger: instead of processing transactions one request at a time, imagine transactions arriving as a continuous stream from a Kafka topic. With Akka Streams you *declare* the pipeline instead of imperatively pulling and pushing data:
 
