@@ -660,7 +660,7 @@ balance(account)
 ```
 
 **How to solve the state mutation problem**: Do not mutate the state
-Mental model: What transformation am I performing?
+**Mental model**: What transformation am I performing?
 
 Look closely at the FP version: `withdraw` doesn't mutate `account` — it returns a *new* account with the updated balance. The actor version is still safer than raw OOP (no concurrent mutation), but it is still mutation: `AccountActor` holds a `var balance` internally and changes it in place, one message at a time. FP asks: what if there were no `var` anywhere at all?
 
@@ -671,7 +671,8 @@ The first functional programming languages were inspired by Lambda Calculus (Alo
 Lambda Calculus is a formal mathematical system that allows describing a computation based on function abstraction and its application.
 In other words, lambda calculus describes a computation as the application of a function to its arguments. Functions are 'first-class citizens'. They can be passed as arguments and returned as values.
 
-
+> 💡**An intuition about lambda calculus**: Lambda calculus is a minimal model of computation based entirely on functions. Expressions are variables, abstractions (λx.body), or applications (f x). An expression like λy.λx.x + y can be read as a function that takes y and returns another function that takes x and adds both values. For example, (λy.λx.x + y) 3 reduces to λx.x + 3, a function that adds 3 to its argument; applying it as ((λy.λx.x + y) 3) 5 reduces to 5 + 3, and then to 8. This substitution process is called beta reduction. Booleans are encoded as selector functions: TRUE ≡ λt.λf.t selects its first argument, while FALSE ≡ λt.λf.f selects its second. Therefore, IF ≡ λb.λthen.λelse.b then else, so IF TRUE a b → a and IF FALSE a b → b. Recursion is also possible but requires additional fixed-point machinery.
+>  **Lambda calculus is Turing complete: it can express any computation that a Turing machine can perform**, given unlimited time and memory
 ##### 4.2. Principles
 
 ##### 4.2.1 Mathematical Function and Its Properties
@@ -971,10 +972,11 @@ A function that receives a complex JSON and has to parse it and calculate the da
 We can think of the pure computation as the description of the computation and the part that receives the list of database operations and executes them as our runtime.
 
 Advantages:
-    - Separation of concerns. I don't have to manage the database connection and transaction where it is not necessary.
-    - Testability: The logic can be tested without a database.
-    - This separation would allow, for example, adding an optimizer between the two phases in order to optimize database operations,
-      eliminating duplicates, joining related operations, etc...
+
+- Separation of concerns. I don't have to manage the database connection and transaction where it is not necessary.
+- Testability: The logic can be tested without a database.
+- This separation would allow, for example, adding an optimizer between the two phases in order to optimize database operations,
+  eliminating duplicates, joining related operations, etc...
 
 In general, the concept of pure function and composability can be applied as a good practice and when it is more feasible, gradually and without it being an absolute imperative.
 
@@ -1034,10 +1036,11 @@ graph LR
 
 *Everything left of `.unsafeRun` is just data — you can inspect it, log it, retry it, or throw it away without ever touching a database. This is the same trick our Ledger used for Event Sourcing (§2.4): describe the change first, decide whether/when to apply it second.*
 
-Here is the full, clean implementation of `IO` as a Scala 3 case class, plus a real-world use of the `Resource` pattern built on top of it:
+Here is the full, toy implementation of `IO` as a Scala 3 case class:
 
 ```scala
-// IO[A]: wraps a side-effectful computation as a pure value — nothing runs until unsafeRun
+// IO[A]: wraps a lambda that receives no parameter and produces an A by doing some side effect. 
+// The lambda is not executed until unsafeRun is called.
 case class IO[A](func: () => A):
   def map[B](f: A => B): IO[B]         = IO(() => f(func()))
   def flatMap[B](f: A => IO[B]): IO[B] = IO(() => f(func()).func())
@@ -1055,37 +1058,6 @@ val program: IO[User] = for {
 
 program.unsafeRun  // only here do the side effects actually run
 ```
-
-The `Resource` pattern extends `IO` with safe acquire/release lifecycle management:
-
-```scala
-// Monad typeclass — IO satisfies it
-trait Monad[F[_]]:
-  def pure[A](a: A): F[A]
-  def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B]
-
-given Monad[IO] with
-  def pure[A](a: A): IO[A] = IO(() => a)
-  def flatMap[A, B](fa: IO[A])(f: A => IO[B]): IO[B] = fa.flatMap(f)
-
-// Resource: acquire → use → release, guaranteed even on failure
-final case class Resource[F[_], A](acquire: F[A], release: A => F[Unit]):
-  def use[B](f: A => F[B])(using M: Monad[F]): F[B] =
-    M.flatMap(acquire) { a =>
-      M.flatMap(f(a)) { b =>
-        M.flatMap(release(a)) { _ => M.pure(b) }
-      }
-    }
-
-// Example: file is always closed after use, even if an exception occurs
-val fileResource: Resource[IO, BufferedReader] = Resource[IO, BufferedReader](
-  acquire = IO(() => new BufferedReader(new FileReader("data.csv"))),
-  release = reader => IO(() => reader.close())
-)
-```
-
-> **🧪 Try it yourself**
-> Add an `attempt` method to `IO[A]` that converts a failed computation into `IO[Either[Throwable, A]]` instead of throwing when you call `.unsafeRun`. Then rewrite `readUserFromDb` to use it so a missing user becomes a `Left`, not a crash — the same shift from "hidden side effect" to "explicit data" that `Either` (Part 2, §2.3) gives you for synchronous code.
 
 ##### 4.5. Immutability
 
@@ -1298,13 +1270,13 @@ Languages:
 > **Summary**
 > - Three paradigms decompose the same `Account` differently: OOP asks "what object owns this method?", Actors ask "who owns this state?", FP asks "what transformation am I performing?"
 > - Pure functions are deterministic and side-effect-free, which is what makes them trivially testable, locally reasoned about (respecting our 7±2 budget), and composable — side effects, by contrast, don't compose.
-> - Hexagonal architecture and effect systems (`IO`, `Resource`) both apply the same trick: separate the *description* of what should happen from the *execution* of it, and push execution to the edges.
+> - Hexagonal architecture and effect systems (`IO`) apply the same trick: separate the *description* of what should happen from the *execution* of it, and push execution to the edges.
 > - Immutability isn't the absence of state — it's state changes you can track, undo, and reason about one version at a time, the same "no shared mutable state" goal from Chapter 1, solved by eliminating mutation instead of coordinating it.
 
 > **Further reading**
 > - *Functional and Reactive Domain Modeling*, Debasish Ghosh — models exactly this kind of domain (accounts, transactions) the functional way.
 > - *Functional Programming in Scala* (2nd ed.), Chiusano & Bjarnason — the canonical deep-dive into monads, effects, and composability.
-> - Cats Effect / ZIO documentation for production-grade `IO` and `Resource` implementations beyond our toy versions.
+> - Cats Effect / ZIO documentation for production-grade `IO` and other effect implementations beyond our toy version.
 
 We've now designed the Ledger three times: Threads + locks (Chapter 1's diagnosis), one actor per account (Chapter 2), and finally as pure transformations over immutable `Account` values (this chapter). Part 2 puts these ideas to work in Scala specifically — a language that lets you write all three styles, and increasingly nudges you toward the functional one.
 
@@ -1316,12 +1288,7 @@ We've now designed the Ledger three times: Threads + locks (Chapter 1's diagnosi
 > - A worked, from-scratch implementation of the `IO` monad you already saw a preview of in §4.4.2 — this time you'll build it yourself, twice.
 
 
-```scala
-trait LivingCreature
 
-case class Person(name: String, age: Int)
-val persion = Person
-```
 
     1. Why Scala
         
@@ -1373,6 +1340,11 @@ def divide(a: Double, b: Double): Double =
   if b == 0 then throw ArithmeticException("div by zero") else a / b
 
 def functionalDivide(a: Double, b: Double): Try[Double] = Try(divide(a, b))
+
+def functionalDivideLong(a: Double, b: Double): Try[Double] = Try{
+  val p = 10   // useless local variable, just to show Try can wrap multiple lines
+  divide(a, b)
+}
 
 functionalDivide(10, 2).map(_ + 1)                            // Success(6.0)
 functionalDivide(10, 0).map(_ + 1)                            // Failure(ArithmeticException)
@@ -1447,7 +1419,9 @@ Left("err").bimap(_.toUpperCase, _ + 1) // Left("ERR")
 
 ### 3. Case Classes and Pattern Matching
 
-   Methods added to a case class:
+   A case class can be seen like a regular class with some extra methods added that allows it to behave like a value class, an immutable composed value.
+   
+Methods added to a case class:
    
    - apply: Composition. Factory method
    - unapply: Decomposition. Extract method
@@ -1524,7 +1498,7 @@ enum Tree[+A]:
 Scala 3 introduces first-class union types — no wrapper allocation, no `Either`:
 
 ```scala
-type IntOrString = Int | String
+type IntOrString = Int | String // 😍
 val a: IntOrString = 23
 val b: IntOrString = "hello"
 
@@ -1566,14 +1540,19 @@ Opaque types give a type a distinct identity outside its defining scope with **z
 ```scala
 object UserId:
   opaque type UserId = Int          // outside this object, UserId ≠ Int
-  def apply(value: Int): UserId = value
-  extension (id: UserId) def value: Int = id
+  def apply(value: Int): UserId = value // could perform validation
+  extension (id: UserId) 
+    def value: Int = id
 
 import UserId.UserId
 val userId: UserId = UserId(123)
 // val i: Int = userId              // compile error — UserId is not Int here
 println(userId.value)               // 123
 ```
+
+This nice feature of scala 3 allows you to have a type that is distinct from its underlying representation, but without the runtime cost of wrapping/unwrapping.
+The more specific the type, the more the compiler can help you avoid mistakes. For example, if you have two different opaque types for `UserId` and `OrderId` that are both represented as `Int`,
+you can't accidentally pass one where the other is expected.
 
 #### 5. High Order Functions
 
@@ -1596,7 +1575,13 @@ val addTwo: Int => Int = (_ + 1) andThen (_ + 1)
 
 #### 7. Collections
 
-`foldLeft` is the fundamental building block — all other collection operations can be derived from it:
+`foldLeft` is the fundamental building block — all other collection operations can be derived from it.
+It receives an initial accumulator value and a binary function, and traverses the collection left-to-right, 
+applying the function to each element and the current accumulator.
+
+So if you want to reduce a collection to a single value, put the initial value in the accumulator and the operation you want to perform in the binary function.
+
+See the following examples:
 
 ```scala
 // Sum with foldLeft
@@ -1624,6 +1609,9 @@ naturals.filter(_ % 2 == 0).take(5).toList  // List(0, 2, 4, 6, 8)
 #### 8. For Comprehension
 
 For comprehensions are syntactic sugar for `flatMap` + `map`. They chain monadic computations and short-circuit on the first failure:
+
+A Monad is an abstraction that allows to compose computations that have a context (like `Option`, `Either`, `List`, `IO`, etc.) in a way that the context is preserved.
+But if this definition is not clear for you yet, you can think of it as something that have flatMap and map methods, so that can be used in for comprehensions.
 
 ```scala
 def getIntValue():          Option[Int]    = Some(1)
@@ -1655,6 +1643,8 @@ val pairs = for {
 
 Type classes enable **ad-hoc polymorphism**: add behaviour to existing types without modifying them or using inheritance.
 
+Ad hoc polymorphism lets the same function or operator behave differently for different types. For example, + may perform integer addition, floating-point addition, or string concatenation. Can be implemented through function overloading or type classes.
+
 ```scala
 // Typeclass: defines a capability
 trait JsonSerializable[T]:
@@ -1680,9 +1670,19 @@ Option(User("Bernat", 44)).toJson  // {"name":"Bernat","age":44}
 // No inheritance needed — each type opts in independently
 ```
 
+If I want to add a new type, I just provide a new instance of the type class. If I want to add a new operation, I define a new type class. No inheritance hierarchy is needed.
+
+Observe this is a good solution to the **expression problem**: I can add new data types and new operations without modifying existing code.
+Object-oriented designs usually make adding new data types easy but new operations harder; if you add a new operation, you have to modify all existing classes. 
+>The expression problem is the difficulty of designing a program so you can add both new data types and new operations without modifying existing code.
+
+
+
 #### 10. Recursion
 
-Prefer tail recursion over loops. The `@tailrec` annotation tells the compiler to verify the recursive call is in tail position — it will be compiled as a loop with no stack growth:
+Prefer tail recursion over loops because loops are inherently imperative: they describe how to change state step by step. 
+To avoid StackOverflowError, scala use tail recursion or trampolines.
+The `@tailrec` annotation tells the compiler to verify the recursive call is in tail position — it will be compiled as a loop with no stack growth:
 
 ```scala
 import scala.annotation.tailrec
@@ -1794,30 +1794,6 @@ given Monad[IO] with
       program.runUnsafe
 ```
 
-More ergonomic:
-
-```scala
-class IO[A](f: => A){
-      def runUnsafe: A = f
-      def map[B](g: A => B): IO[B] = new IO(g(runUnsafe))
-
-      def flatMap[B](g: A => IO[B]): IO[B] = new IO( g(runUnsafe).runUnsafe )
-    }
-
-    object IO{
-      def apply[A](f: => A) = new IO(f)
-    }
-
-
-    val program = for{
-      _ <- IO( println("Name: ") )
-      name <- IO( readLine() )
-      _ <- IO( println("Hello: " + name) )
-    }yield ()
-
-
-    program.runUnsafe
-```
 
 #### 11.5 Future vs IO
 
