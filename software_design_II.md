@@ -7,8 +7,136 @@
 2. Arquitectura hexagonal: Puertos y adaptadores
 3. CQRS
 4. Event sourcing
-5. Consistencia eventual
+5. Change data capture
+6Consistencia eventual
 -----------------------
+
+## 5. CDC: Change Data Capture
+
+Extract changes from a database and publish them as events so, as a user, you can react to them.
+
+All databases work with a transaction log, which is the source of truth for the database. Its an append only data structure which records all inserts, updates and deletes done in the database.
+From there the table files are materialized. So, hey! a database is already event sourced! 
+The problem is that the transaction log is not exposed to the user, so we have to use some mechanism to extract the changes from the database and publish them as events.
+
+Transaction log has two reasons to exist:
+- Recovery: If the database crashes, we can recover it by replaying the transaction log.
+- Replication: If we have a replica of the database, we can keep it in sync. By streaming the contents of the transaction log to a node we can create a replica.
+
+Change Data Capture is a mechanism to extract the changes from the transaction log and publish them as events in a message queue or kafka topic.
+It's usually implemented by the database vendor, but there are also open source implementations like Debezium.
+
+>Debezium is an open-source change data capture (CDC) platform that streams database changes into event systems in near real time
+
+CDC vs Event Sourcing:
+
+CDC says: "The database changed like this."
+
+              PostgreSQL
+              source of truth
+                    │
+                    ▼
+                   WAL
+                    │
+                    ▼
+                   CDC
+                    │
+             ┌──────┴──────┐
+             ▼             ▼
+           Kafka       Data Warehouse
+             │
+       ┌─────┼─────┐
+       ▼     ▼     ▼
+    Search  Cache  Other services
+
+Event Sourcing says: "The business says this happened."
+
+The crucial difference is that database changes are not necessarily the same as business events. 
+For example, if a user updates their address in a web form, the database may record an update to the address field, but the business event is that the user has changed their address. The business event may trigger other actions, such as sending a confirmation email or updating related records.
+A change in the database may correspond to a business event, but it may also be the result of a batch job, a data migration, or a correction of an error. Therefore, CDC captures all changes to the database, while event sourcing captures only the events that are relevant to the business domain.
+
+To put an specific example, imagine we update a column in a row of a table:
+- Propagate changes to a microservice, may be you want to propagate the full state of the row.
+- Maybe we are find by propagating the changed column only plus the primary key of the row.
+
+    ```json 
+    {
+      "id": 42,
+      "changed": {
+        "status": "PAID"
+      }
+    }
+    ```
+- Maybe we are interested in the previous state plus the new state of the row.
+  Example:
+    ```json
+    {
+      "before": {
+        "id": 42,
+        "status": "PENDING",
+        "amount": 100
+      },
+      "after": {
+        "id": 42,
+        "status": "PAID",
+        "amount": 100
+      },
+      "op": "u"
+    }
+    ```
+
+You have to configure the database to capture the desired data in the transaction log plus the Debezium component.
+
+>ALTER TABLE orders REPLICA IDENTITY FULL; tells PostgreSQL to log the entire row into the Write-Ahead Log (WAL) during UPDATE and DELETE operations for the orders table.
+
+CDC software component (Debezium) acts as a replication client from the database point of view.
+
+There's no standard interface for CDC, so tools like Debezium have to implement a connector for each database vendor.
+
+Those implementation details are mentioned to illustrate that CDC is a after thought, a hack to extract events from a database that was not designed to be event sourced.
+Some younger databases like YugaByteDB or CockroachDB are designed to be event sourced from the beginning, so they have a native CDC interface.
+In the kafka ecosystem, Debezium is a de facto standard for CDC.
+
+3 ways to use Debezium:
+    - Kafka Connect: Debezium is a Kafka Connect source connector that streams changes from the database into Kafka topics.
+    - Embedded Engine: Debezium can be embedded into a Java application and react to events from the database. Useful to publish events to a custom service. Ex: to build a connector from postgres to Apache Flink
+    - Debezium Server: Debezium runs as a service and provides connectivity to other messaging systems like RabbitMQ, AWS Kinesis, Google Pub/Sub, etc.
+
+Use cases for CDC:
+
+An application receives an order creation request from a REST API. We store it in the database but we also want to notify Shipment service and Payment Service.
+If I do everything in my application, I want to make sure that the storage and the kafka message publication happens atomically, or both things happen or non of them does.
+But kafka and the database doesn't share transaction boundaries so this might lead to inconsistency (typical dual write problem).
+CDC lets you avoid this problem because now is the CDC software who has to track which transactions from the transaction log has been published to kafka and which not by maintaining some kind of pointer to the WAL.
+
+An XA transaction is a distributed transaction implemented as a 2 Phase Commit.
+As an alternative we can implement a 2PC but this worsen the availability of the system because now, to place an order we need both systems the database and kafka up. 
+If one of them is down, we cannot place an order. 
+With CDC, if kafka is down, we can still place the order because the kafka publication is deferred by this kind of queue that the WAL is. 
+Kafka is not in the critical path.
+
+Notice if we achieve availability by using CDC, we are sacrificing consistency because now the order is placed but the downstream services are not notified yet.
+We are taped by the CAP theorem: in case of partition (ex: kafka is down) we can choose between availability and consistency. We choose availability.
+
+Alternatively we could implement a SAGA pattern to achieve availability with eventual consistency. The SAGA pattern can be implemented with a choreography approach or an orchestration approach.
+Each service part of the SAGA has to implement a command and an undo command. In fact: Event and UndoEvent.
+- Orchestration: The orchestrator will be able to tell each service what to do and what to undo in case of failure.
+- Choreography: Once the service receive the Event, it will react to it and publish an event (OK or Err) to notify the next service in the SAGA to proceed or to undo the previous command. The SAGA is implemented as a chain of events.
+
+> Advice: Do not implement a SAGA pattern ort 2PC if you can avoid it.
+
+What if the application receive a request to place an order and we simply publish it to kafka? Then we will have multiple consumers and one of them will write it to the database.
+Which problems can you see in this architecture?
+- If the consumer that writes to the database is down, we will lose the order.
+- There is a lack of consistency if the order is shipped before it is stored in the database.
+- If the user doesn't see the order in the screen because is written to the database, he might try to create the order again, which probably will end up in a bad experience.
+
+We could avoid some of this problem by keeping the order created in memory and serve it to the user, but this comes with its own problems too.
+
+It all depends of which guarantees you want to provide to the user and which properties do you want your system to have.
+Answer questions like: It's ok to have a little bit of inconsistency? Is it critical to loose a couple events?
+These are architectural decisions that you have to take based in the context of the project. If data is coming from a sensor in an agriculture field, sending this temperature of the soild every 5 minutes, if we loose a couple of events, probably is not a big deal. 
+But if we are talking about a financial transaction, loosing an event is a big deal. Or even if the temperature sensor is in a rocket engine and we are using this data to calculate the quantity of fuel to inject in the engine, loosing a couple events is a big deal too.
 
 
 
