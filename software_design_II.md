@@ -1,15 +1,216 @@
 1. Domain Driven Design
 
-   1. Strategic DDD: Subdominis i contextos
+   1. Strategic DDD: Subdomains i contexts
    2. Event Storming: Descobriment de fluxes
-   3. Tactic DDD: Entitats i agregats
+   3. Tactic DDD: Entities and aggregates, value objects, domain events, domain services, repositories, factories...
 
-2. Arquitectura hexagonal: Puertos y adaptadores
+2. Arquitectura hexagonal: Puertos y adaptadores 
+   A good way to implement DDD.
 3. CQRS
 4. Event sourcing
 5. Change data capture
 6Consistencia eventual
 -----------------------
+
+## 1. Domain Driven Design
+
+DDD is a sotware design approach guided by the business domain. So the first and more important step in our design is to understand the business domain and its rules.
+
+In DDD:
+```
+Business concepts & rules
+        ↓
+Domain model
+        ↓
+Application/use cases
+        ↓
+Infrastructure
+```
+
+As an alternative, data driven approach,: 
+
+``` 
+Database → ORM → Services → Controllers
+```
+
+In the alternative approach, we design our system based on the data model. Tipically we start with an Entity Relationship Diagram (ERD) and one could argue that this is also a model of the business domain, but is not exactly the same.
+ERD and DDD model, both models the business domains but the ERD it's build from storage perspective, while the DDD model is optimized for the business domain which includes behavior and rules.
+Both models have entities but the DDD model has more behavior and rules, while the ERD is more focused on data and relationships.
+
+### Strategic DDD: Subdomains and contexts
+
+
+#### Subdomains
+Our goal in this stage is to identify the boundaries of the business before we try to model it.
+Of course this happens in the problem space, not in the solution space. So a good questions in this stage is:
+
+```
+What different business problems that the company is solving?
+What are the distinct problems this business has, and which of those problems are strategically important?
+```
+
+Each of those problems is a subdomain containing different concepts, rules, terminology and goals.
+
+For example, "content" means somethind different to:
+
+    - The content adquisition team, which is focused on acquiring content from studios and producers.
+    - The content recommendation team, which is focused on recommending content to users based on their preferences
+    - The content delivery team, which is focused on delivering content to users in a reliable and efficient way.
+
+Once we've identified the subdomains, we can classify them based on their importance to the business. 
+
+We can classify them in three categories:
+
+- Core domain: The most important part of the business domain, where the business differentiates itself from its competitors. This is where we want to invest more time and effort to get a better model.
+- Supporting subdomain: A part of the business domain that is not core but is still important for the business. We want to have a good model but we don't want to invest too much time and effort in it.
+- Generic subdomain: A part of the business domain that is not core and is not important for the business. We don't want to invest time and effort in it, we can use off-the-shelf solutions.
+
+Netflix example: 
+        Core domain: Video streaming, Content discovery and personalization. Major competitive differentiator
+        Supporting subdomain: User subscription management. Business-specific but relatively standard. Not a competitive advantage.
+        Generic subdomain: Payment processing, HR payroll. Commodity capability
+
+This classification tell us where to invest our time and effort in modeling the business domain. 
+We want to invest more time and effort in the core domain, less in the supporting subdomain and none in the generic subdomain.
+
+We can already see that we don't want one model for everything. A Movie will have different attributes and behavior in the different subdomains. 
+Different subdomains are different business perspectives so they may have different models.
+
+
+Subdomains give you a map where complexity and business value lives.
+
+To successfully implement strategic DDD, we need the help of domain experts, people that know the business domain and can help us understand it. 
+
+
+Who are this domain experts in a company? 
+    - Product managers: They know about business goals, priorities and customer needs.
+    - Business analysts: They know about business processes, rules and requirements.
+    - Stakeholders: They know about business strategy, vision and goals.
+    - ...
+
+Developers and domain experts should work together to build a shared understanding of the business domain. 
+This is called "ubiquitous language", a common language that is used by both developers and domain experts to describe the business domain.
+
+Next to the subdomains identification, we will discover language/model boundaries, which will drive us  to define bounded contexts.
+
+#### Bounded contexts
+
+A bounded context is a boundary around a model that defines the meaning of the terms used in that model.
+A Movie inside a given bounded context will have the same meaning and behavior, and the same business rules will apply to it.
+
+It can look that a subdomain corresponds to a bounded context but this is not always the case.
+
+- One subdomain can have multiple bounded contexts, each one with its own model and language.
+
+For example, the Ordering subdomain can have two bounded contexts: 
+    - Order Management: Track customer order and triggering fulfillment. 
+      Capturing, validating, checking inventory, customer communications, handling returns...
+    - Order Fulfillment: Physical work in the warehouse: receiving, processing, packing, shipping...
+
+- One bounded context can have multiple subdomains.
+Example: An online learning platform that has the following subdomains:
+- Learning Progression: Track student progress through courses and modules.
+- Assessments: Tracks student assessments for modules and courses.
+- Enrollment: 
+- Billing:
+
+The question is whether the concepts from those subdomains can participate in one coherent model with one consistent language
+
+Learning progression says: "The student has completed modules 1, 2 and 3."
+Assessment says: "The student has passed the assessment for module 3."
+If the concepts StudentProgress, Assessment, Completion, etc. all make sense together and the rules naturally cross those boundaries, one context can be appropriate.
+
+
+A good example to differentiate subdomains from bounded contexts. This time in a bank. The bank has the following subdomains of the domain of Banking:
+- Cash accounts: Deposit (credit), Withdrawal(debit) 
+- Credit cards: Payment, Charge
+In the bank organization we have a department for each subdomain.  
+We identify one bounded context for each subdomain. The concepts of "Deposit" and "Payment" are different and have different rules, so they should be in different bounded contexts.
+We are happy because each business subdomain has one bounded context. 
+The organization is structured based on how the domain brakes down and we organize software around that. That' an ideal situation.
+
+But then concepts changes in the business. Somebody says: "We have to align with market segments not with types of accounts"
+The organization is restructured. We will have a department for Business Accounts and another for Personal Accounts, and these are our subdomains.
+The bounded context remains the same. The software remains the same. 
+Now we have two teams and each one needs CashAccounts and CreditCards. 
+Stewardship can become unclear because both teams might one to evolve each bounded context so it requires some coordination to do it well.
+
+When each department has his own bounded context, the stewardship is obvious. Cash Accounts department is stewards the CashAccount model.
+
+But now, we are in a situation where we can end up in a Big Ball of Mud if we don't have a clear stewardship of the bounded contexts.
+
+Stewardship of a system means taking ongoing responsibility for the health, evolution, and long-term value of a system, rather than merely being responsible for implementing individual features.
+For a Core Domain, stewardship implies making sure the system continues to represent and support the company's competitive advantage.]
+For example, if you say:
+
+"The Learning Bounded Context needs a steward."
+
+you're saying someone needs to be responsible for things like:
+
+- maintaining the integrity of the model
+- understanding its business purpose
+- evolving the ubiquitous language
+- deciding how the context should change
+- preventing accidental coupling with other contexts
+- ensuring the software continues to reflect the domain
+- coordinating with domain experts and other contexts
+
+What would have happened if we had started with the new business alignment around market segments and then tried to identify the subdomains and bounded contexts?
+Start with the business capabilities, not the departments.
+
+```
+                    BANK
+                      │
+          ┌───────────┴───────────┐
+          │                       │
+       Personal                Business
+          │                       │
+     ┌────┴────┐             ┌────┴────┐
+     │         │             │         │
+   Cash      Credit        Cash      Credit
+ Accounts    Cards       Accounts    Cards
+```
+
+So we should have concluded that the business subdomains are CashAccounts and CreditCards (same bounded contexts).
+
+The organization structure could have been to create a department for Personal/Business accounts by country, and this doesn't change our business subdomains and bounded context.
+Unless we have very different rules and concepts for CashAccounts by country...
+
+Personal and Business are dimensions cutting across the subdomains, but they are not subdomains themselves.
+
+
+**How to solve the stewardship problem?** That's an organizational problem
+We can add a team to steward each bounded context and Personal/Business teams will be they customers.
+
+```
+Cash Account BC
+       ↑
+Cash Accounts Team
+       │
+       ├── Personal Banking
+       └── Business Banking
+
+Credit Card BC
+       ↑
+Credit Cards Team
+       │
+       ├── Personal Banking
+       └── Business Banking
+```
+Although this is an organizational problem, not a software problem, we have to keep it in mind because it affects the stewardship of the bounded contexts.
+
+The reorganization is new information about the business.
+Does this new Personal/Business distinction reveal genuinely different business rules?
+What is Personal CashAccounts and Business CashAccounts have different rules? If yes, then we have to create two bounded contexts for CashAccounts, one for Personal and another for Business.
+
+
+
+**There is a key distinction between organization structure (departments),subdomains (business capabilities) and bounded contexts (models and language).**
+
+
+#### Big ball of Mud
+No clear boundaries are set so we endup with inconsistent definitions of concepts and rules, and the system becomes difficult to maintain and evolve. 
+Often they are risky to change, have incomplete test coverage, etc..
 
 ## 5. CDC: Change Data Capture
 
