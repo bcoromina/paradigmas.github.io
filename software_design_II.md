@@ -1,9 +1,12 @@
 1. Domain Driven Design
 
    1. Strategic DDD: Subdomains i contexts
-   2. Event Storming: Descobriment de fluxes
+   2. Event Storming: Discovering the domain
    3. Tactic DDD: Entities and aggregates, value objects, domain events, domain services, repositories, factories...
-
+   4. DDD and Agile
+   5. How to apply DDD in legacy systems?
+   6. DDD, bounded contexts and microservices
+   
 2. Arquitectura hexagonal: Puertos y adaptadores 
    A good way to implement DDD.
 3. CQRS
@@ -211,6 +214,415 @@ What is Personal CashAccounts and Business CashAccounts have different rules? If
 #### Big ball of Mud
 No clear boundaries are set so we endup with inconsistent definitions of concepts and rules, and the system becomes difficult to maintain and evolve. 
 Often they are risky to change, have incomplete test coverage, etc..
+
+### Event Storming: Discovering the domain
+
+Event Storming is a collaborative workshop technique used in Domain-Driven Design (DDD) to discover 
+and model a business domain by starting from domain events—things that happened in the business.
+
+It was introduced by Alberto Brandolini.
+
+The basic idea
+
+Instead of starting with classes, database tables, or services, you ask:
+
+“What happens in this business process?”
+
+For example, imagine a food-delivery domain:
+``` 
+OrderPlaced
+    ↓
+PaymentAuthorized
+    ↓
+RestaurantAcceptedOrder
+    ↓
+CourierAssigned
+    ↓
+FoodPickedUp
+    ↓
+OrderDelivered
+```
+
+Each of these typically represent a Domain Event.
+
+The important characteristic is that events are expressed in past tense:
+
+•OrderPlaced
+•PaymentAuthorized
+•RestaurantAcceptedOrder
+•CourierAssigned
+
+rather than:
+
+•PlaceOrder
+•AuthorizePayment
+•AssignCourier
+
+The latter are commands—things someone wants to happen.
+
+
+Event Storming usually evolves into something like this
+
+                COMMAND
+                   │
+                   ▼
+             ┌───────────┐
+             │ PlaceOrder│
+             └─────┬─────┘
+                   │
+                   ▼
+              OrderPlaced
+                   │
+                   ▼
+             ┌───────────┐
+             │Authorize  │
+             │Payment    │
+             └─────┬─────┘
+                   │
+                   ▼
+          PaymentAuthorized
+                   │
+                   ▼
+          ┌────────────────┐
+          │Restaurant      │
+          │Accepts Order   │
+          └───────┬────────┘
+                  │
+                  ▼
+       RestaurantAcceptedOrder
+
+You then identify other important concepts around these events:
+
+Actor:	Customer
+Command:	PlaceOrder
+Domain Event:	OrderPlaced
+Aggregate:	Order with various items and information about the customer and restaurant
+Policy/Business rule:	“When payment is authorized, notify restaurant”
+Read Model:	Order status
+External System:	Payment provider
+
+The important part is the collaborative exploration of the domain, starting from domain events to end up
+discovering other concepts like actors, commands, aggregates, business rules.
+
+
+Why start with events?
+
+Because events describe business facts.
+
+Compare:
+
+Order
+├── status
+├── customerId
+├── restaurantId
+└── items
+
+with:
+
+CustomerPlacedOrder
+PaymentWasAuthorized
+RestaurantAcceptedOrder
+RestaurantStartedPreparingFood
+CourierPickedUpOrder
+OrderWasDelivered
+
+The second representation tells you much more about how the business actually works.
+
+It can reveal:
+
+• Business processes
+• Terminology
+• Business rules
+• Dependencies
+• Responsibilities
+• Exceptions
+• Different actors
+• Important state transitions
+• Integration points
+
+And, importantly for DDD, it can expose boundaries.
+
+
+Event Storming and Bounded Contexts
+
+This is where Event Storming becomes particularly useful for DDD.
+
+Suppose you have:
+
+```
+OrderPlaced
+    ↓
+PaymentAuthorized
+    ↓
+RestaurantAcceptedOrder
+    ↓
+CourierAssigned
+    ↓
+FoodPickedUp
+    ↓
+OrderDelivered
+```
+
+As you discuss the events, you may discover different business areas:
+
+```
+       Ordering
+          │
+          ▼
+       Payment
+          │
+          ▼
+     Restaurant
+          │
+          ▼
+      Logistics
+```
+Those areas may eventually suggest bounded contexts.
+
+For example:
+```
+┌──────────────────┐
+│ Ordering Context │
+│                  │
+│ Order            │
+│ OrderPlaced      │
+└────────┬─────────┘
+         │
+         │ event
+         ▼
+┌──────────────────┐
+│ Payment Context  │
+│                  │
+│ Payment          │
+│ PaymentAuthorized│
+└────────┬─────────┘
+         │
+         ▼
+┌─────────────────────┐
+│ Logistics Context   │
+│                     │
+│ Delivery            │
+│ CourierAssigned     │
+└─────────────────────┘
+```
+The boundaries aren’t automatically determined by the event storming session. Rather, 
+the conversations and language differences discovered during the session provide evidence for where boundaries might belong.
+
+
+Two common forms
+
+1.Big Picture Event Storming
+
+Used to understand a large business domain.
+
+You might start with:
+
+```
+Customer
+   ↓
+OrderPlaced
+   ↓
+PaymentAuthorized
+   ↓
+RestaurantAccepted
+   ↓
+  ...
+```
+
+Then explore:
+
+• Who does what? (Actors)
+• Why does this happen?(Commands)
+• What can go wrong? (Exceptions)
+• Which teams care about this? (Organizational boundaries)
+• Where does terminology change? (Bounded context)
+• Which systems are involved? (Integration points/External systems)
+
+This is useful for discovering domains, subdomains and potential bounded contexts.
+
+2. Process-Level Event Storming
+
+Much more detailed.
+
+For example:
+```
+Customer
+   │
+   │ PlaceOrder
+   ▼
+OrderPlaced
+   │
+   │
+   ├──► PaymentRequested
+   │         │
+   │         ▼
+   │   PaymentAuthorized
+   │
+   └──► RestaurantNotified
+             │
+             ▼
+       RestaurantAccepted
+
+```
+
+Here you’re investigating a particular business process and its rules.
+
+
+One important DDD distinction
+
+Don’t think:
+
+Event Storming = drawing an event-driven architecture.
+
+That’s a common misunderstanding. The discovered domain events are not necessarilly meant to be published to a message bus or event stream. 
+They are simply a way to understand the business domain.
+
+You don’t need Kafka, event sourcing, microservices, or even asynchronous communication.
+We are working in the problem space, not the solution space. We are discovering the business domain, not designing a software architecture.
+
+
+A domain event such as:
+
+OrderPlaced
+
+simply means:
+
+The business recognizes that an order has been placed.
+
+It could be implemented internally as a method call, a message, a database transaction, Kafka event, etc.
+
+Event Storming is primarily a domain discovery and modeling technique, not an architectural technology.
+
+
+
+A useful mental model
+
+Think of Event Storming as moving through these levels:
+
+```
+Business activity
+       ↓
+Domain events
+       ↓
+Commands + actors + policies
+       ↓
+Business rules / aggregates
+       ↓
+Boundaries
+       ↓
+Bounded contexts
+       ↓
+Potential architecture
+```
+The key idea is:
+
+Don’t start by designing the software. Start by discovering how the business works.
+
+That makes Event Storming particularly useful when you want to distinguish departments, subdomains 
+and bounded contexts—because you can discover the boundaries from the business language and 
+responsibilities rather than imposing your organizational structure onto the model.
+
+Who participates in Event Storming sessions?
+Domain experts, developers, architects, product managers, business analysts, and anyone else who
+can contribute to understanding the business domain.
+
+
+### DDD and Agile
+
+One might think that DDD is incompatible with Agile because DDD emphasizes upfront modeling and Agile emphasizes iterative development.
+That might be true for strategic DDD, but not for tactical DDD.
+The trick is to treat the model as evolving knowledge, rather than a specification produced before implementation.
+The model is not a blue print, it is a representation of your current understanding of the business domain.
+You can Event Storm a specific business capability, process, or feature. 
+So event storming can became one activity of an Agile sprint, and the model can evolve as you learn more about the domain.  
+
+```
+                 PRODUCT BACKLOG
+                       │
+                       ↓
+              Select valuable slice
+                       │
+                       ↓
+                Event Storming
+                       │
+                       ↓
+             Domain understanding
+                       │
+                       ↓
+              Design / implement
+                       │
+                       ↓
+                Working software
+                       │
+                       ↓
+                  Demo / feedback
+                       │
+                       ↓
+              New domain knowledge
+                       │
+                       └──────→ Backlog
+```
+
+
+Agile answers how to develop?
+DDD answers how to discover and model the business domain
+
+
+Strategic DDD is more like an upfront activity. You don't want to rediscover your entire strategic architecture every sprint
+But even this should be treated as hypotheses, not immutable architecture.
+
+### How to apply DDD in legacy systems?
+
+What happens when the existing system's boundaries don't correspond to the business boundaries.
+The key is to distinguish discovering the domain from redesigning the existing software.
+
+Meet the Bubble Context technique:
+The idea is to create a new, clean domain model inside a “bubble” around part of the legacy system, rather than trying to clean up the entire legacy model first.
+
+```
+┌─────────────────────────────────────┐
+│          LEGACY SYSTEM              │
+│                                     │
+│  Customer  Order  Payment  Account  │
+│       everything interconnected     │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+Create a DDD bubble inside the legacy system, with a new model, new language, and new rules. 
+It will communicate with the legacy system through a translation layer or an anti-corruption layer (ACL).
+So we will have our new model completely isolated so it can evolve independently.   
+```
+        Legacy
+┌──────────────────────────────┐
+│                              │
+│     ┌──────────────────┐     │
+│     │   NEW DDD        │     │
+│     │   "BUBBLE"       │     │
+│     │                  │     │
+│     │  New model       │     │
+│     │  New language    │     │
+│     │  New rules       │     │
+│     └────────┬─────────┘     │
+│              │               │
+└──────────────┼───────────────┘
+               │
+        Translation / ACL
+```
+
+Eventually you can extract the bubble into a new service, or you can keep it as a module inside the legacy system.
+
+Help yourself with some patterns to incrementally migrate from a legacy system to a new system:
+Strangler Fig Pattern — gradually replace parts of a legacy system (do not rewrite the whole legacy at once).
+Branch by Abstraction — introduce an abstraction and migrate implementations incrementally.
+
+### DDD, bounded contexts and microservices
+
+Sounds good but I can also have bounded contexts as modules inside a monolith, or as serverless functions.
+Or some bounded contexts can be implemented as microservices and some others as modules inside a monolith.
+And in the future I can extract them as microservices if I want to. 
+This a change in the solution space, the software architecture, not in the problem space. 
+
 
 ## 5. CDC: Change Data Capture
 
