@@ -54,7 +54,7 @@ What are the distinct problems this business has, and which of those problems ar
 
 Each of those problems is a subdomain containing different concepts, rules, terminology and goals.
 
-For example, "content" means somethind different to:
+For example, "content" means something different to:
 
     - The content adquisition team, which is focused on acquiring content from studios and producers.
     - The content recommendation team, which is focused on recommending content to users based on their preferences
@@ -94,7 +94,7 @@ Who are this domain experts in a company?
 Developers and domain experts should work together to build a shared understanding of the business domain. 
 This is called "ubiquitous language", a common language that is used by both developers and domain experts to describe the business domain.
 
-Next to the subdomains identification, we will discover language/model boundaries, which will drive us  to define bounded contexts.
+Next to the subdomains identification, we will discover language/model boundaries, which will drive us to define bounded contexts.
 
 #### Bounded contexts
 
@@ -130,13 +130,13 @@ A good example to differentiate subdomains from bounded contexts. This time in a
 In the bank organization we have a department for each subdomain.  
 We identify one bounded context for each subdomain. The concepts of "Deposit" and "Payment" are different and have different rules, so they should be in different bounded contexts.
 We are happy because each business subdomain has one bounded context. 
-The organization is structured based on how the domain brakes down and we organize software around that. That' an ideal situation.
+The organization is structured based on how the domain brakes down, and we organize software around that. That's an ideal situation.
 
 But then concepts changes in the business. Somebody says: "We have to align with market segments not with types of accounts"
 The organization is restructured. We will have a department for Business Accounts and another for Personal Accounts, and these are our subdomains.
 The bounded context remains the same. The software remains the same. 
 Now we have two teams and each one needs CashAccounts and CreditCards. 
-Stewardship can become unclear because both teams might one to evolve each bounded context so it requires some coordination to do it well.
+Stewardship can become unclear because both teams might want to evolve each bounded context so it requires some coordination to do it well.
 
 When each department has his own bounded context, the stewardship is obvious. Cash Accounts department is stewards the CashAccount model.
 
@@ -208,8 +208,15 @@ What is Personal CashAccounts and Business CashAccounts have different rules? If
 
 
 
-**There is a key distinction between organization structure (departments),subdomains (business capabilities) and bounded contexts (models and language).**
+**There is a key distinction between organization structure (departments), subdomains (business capabilities) and bounded contexts (models and language).**
 
+
+- Departments correspond to organization structure
+- Subdomains correspond to business capabilities
+- Bounded contexts correspond to (often hidden) foundations that give structure and meaning to business activities. 
+  It describes how a part of a business activity is understood and modeled: its terminology, rules, concepts, and boundaries.
+
+Strategical DDD provides techniques for discovering and defining bounded contexts.
 
 #### Big ball of Mud
 No clear boundaries are set so we endup with inconsistent definitions of concepts and rules, and the system becomes difficult to maintain and evolve. 
