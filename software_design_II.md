@@ -218,6 +218,36 @@ What is Personal CashAccounts and Business CashAccounts have different rules? If
 
 Strategical DDD provides techniques for discovering and defining bounded contexts.
 
+#### Context mappings
+
+Ways that different bounded context communicates between each other which also represents the team relation between the two involved teams.
+
+Context Mappings grouped by dimension:
+
+- Upstream - Downstream relation:
+  - Customer-Supplier (Collaboration): The Customer requests its needs in terms of model to the Supplier, they plan expectations together
+                       but in the end is the Supplier who will determine what and when the Customer will get.
+                       The Supplier may expose a view of its model to satisfy the needs of its Customer.
+                       If the Supplier exposes its internal model directly we will end up in the Conformist relationship. 
+  - Conformist: The Customer cannot request its needs to the Supplier so it has no other option that adapting its model to 
+                the Supplier's model. If Supplier model changes, the Customer will have to adapt wether it likes it or not.
+                i.e: Amazon's affiliate sellers has to adapt its business model to Amazon's.
+  - ACL (Anti Corruption Layer): The Downstream (Consumer) translate the Upstream (Supplier) language to its own language
+                                 via a translation. It has a not negligible maintenance cost. Unavoidable when integrating with a Big Ball of Mud.
+  
+- How a context expose its model:
+  - OHS: Open Host Service. i.e: Http API, publishing events in a Kafka topic
+  - PL: Published Language. i.e: Open Api Specification, Protobuf schema, Avro
+    
+    Usually OHS and PL goes together.  
+
+- Sharing part of the model
+  - Shared Kernel: Two bounded context share a small part of their domain and jointly maintain it.
+    ex: In a bank Payments and Accounts bounded context shares entities like Money, Currency...
+
+
+This dimensions can be combined. i.e: Two bounded context can have OHS + PL + Conformist
+
 #### Big ball of Mud
 No clear boundaries are set so we endup with inconsistent definitions of concepts and rules, and the system becomes difficult to maintain and evolve. 
 Often they are risky to change, have incomplete test coverage, etc..
