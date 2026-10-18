@@ -182,7 +182,7 @@ When each department has his own bounded context, the stewardship is obvious. Ca
 But now, we are in a situation where we can end up in a Big Ball of Mud if we don't have a clear stewardship of the bounded contexts.
 
 Stewardship of a system means taking ongoing responsibility for the health, evolution, and long-term value of a system, rather than merely being responsible for implementing individual features.
-For a Core Domain, stewardship implies making sure the system continues to represent and support the company's competitive advantage.]
+For a Core Domain, stewardship implies making sure the system continues to represent and support the company's competitive advantage.
 For example, if you say:
 
 "The Learning Bounded Context needs a steward."
@@ -289,7 +289,7 @@ This dimensions can be combined. i.e: Two bounded context can have OHS + PL + Co
 
 #### Big ball of Mud
 No clear boundaries are set so we end up with inconsistent definitions of concepts and rules, and the system becomes difficult to maintain and evolve. 
-Often they are risky to change, have incomplete test coverage, etc..
+Often they are risky to change, have incomplete test coverage, etc...
 
 ### Event Storming: Discovering the domain
 
@@ -694,7 +694,7 @@ Branch by Abstraction — introduce an abstraction and migrate implementations i
 
 ### DDD, bounded contexts and microservices
 
-Sounds good but I can also have bounded contexts as modules inside a monolith, or as serverless functions.
+Sounds good, but I can also have bounded contexts as modules inside a monolith, or as serverless functions.
 Or some bounded contexts can be implemented as microservices and some others as modules inside a monolith.
 And in the future I can extract them as microservices if I want to. 
 This a change in the solution space, the software architecture, not in the problem space. 
@@ -714,7 +714,7 @@ Implementations of the transaction log (or Replication Log):
 - **Statement Based Replication**: Every write statement (Insert, update and delete) is written in the log. Each follower or reader
   Executes that SQl statement it had been received from the client. While this sounds reasonable there are several ways in this approach that can break down:
    
-   - Any statement that calls non-deterministic functions like NOW() or RAND() is likely to generate an different value when read to be replicated.
+   - Any statement that calls non-deterministic functions like NOW() or RAND() is likely to generate a different value when read to be replicated.
    - If statements has side effects like firing triggers, stored procedures or user defined functions, this side effects need to be absolutely deterministic.
   
   It's possible for the reader to substitute the nondeterministic functions by they final value so every reader sees the same value. 
@@ -737,7 +737,7 @@ Implementations of the transaction log (or Replication Log):
     - For a deleted row it contains enough information to uniquely identify the deleted row. Usually the PK.
     - For an update, it contains the id of the row and the new values of all columns or at least the new values for the columns that changed.
 
-  Logical log reduce the operational rollout problems mentioned and make it easier fot external applications to parse its information and it is used for Change Data Capture.
+  Logical log reduce the operational rollout problems mentioned and make it easier fot external applications to parse its information, and it is used for Change Data Capture.
 
 The problem is that the transaction log is not exposed to the user, so we have to use some mechanism to extract the changes from the database and publish them as events.
 
@@ -815,7 +815,7 @@ CDC software component (Debezium) acts as a replication client from the database
 
 There's no standard interface for CDC, so tools like Debezium have to implement a connector for each database vendor.
 
-Those implementation details are mentioned to illustrate that CDC is a after thought, a hack to extract events from a database that was not designed to be event sourced.
+Those implementation details are mentioned to illustrate that CDC is an afterthought, a hack to extract events from a database that was not designed to be event sourced.
 Some younger databases like YugaByteDB or CockroachDB are designed to be event sourced from the beginning, so they have a native CDC interface.
 In the kafka ecosystem, Debezium is a de facto standard for CDC.
 
@@ -847,7 +847,7 @@ Each service part of the SAGA has to implement a command and an undo command. In
 
 > Advice: Do not implement a SAGA pattern ort 2PC if you can avoid it.
 
-What if the application receive a request to place an order and we simply publish it to kafka? Then we will have multiple consumers and one of them will write it to the database.
+What if the application receive a request to place an order, and we simply publish it to kafka? Then we will have multiple consumers and one of them will write it to the database.
 Which problems can you see in this architecture?
 - If the consumer that writes to the database is down, we will lose the order.
 - There is a lack of consistency if the order is shipped before it is stored in the database.
@@ -911,7 +911,7 @@ IQ will keep a copy of all data so it has all the data it needs not the entire C
 
 ### 3- Event Sourcing
 
-When I want to change one person's address I go and delete its old address and I create the new address and I store the final state of my system in a database. Typically, with a user table and a address table relational schema.
+When I want to change one person's address I go and delete its old address and I create the new address and I store the final state of my system in a database. Typically, with a user table and an address table relational schema.
 
 Alternatively:
 Create AddressChangedEvent and store it in a different storage area like a WAL (Write Append Log), then I process the event traditionally and update the current state of my system in the DB.
@@ -931,7 +931,7 @@ Benefits:
 - Debugging: Copy the system and feed the same events one by one reproducing the application state at every step.
 - Alternative State: Copy of all log and introduce a hypothetical event at a certain point so you get the application state under the hypothesis the event would have occurred. Branching in git
    >Payroll example:
-        somebody worked 35 hours in a week, we record that, we send him a check, we update the sick pay, update pension benefits, etc.. all sort of downstream happened. 
+        somebody worked 35 hours in a week, we record that, we send him a check, we update the sick pay, update pension benefits, etc... all sort of downstream happened. 
         And 6 month later someone says Ohh it wasn't 35 hours, it was 40. Now we have to recalculate all the adjustments. You can do it by hand or in an event sourced system you can copy the event log with the updated event and replay it to calculate the Application State, compare the two application states, do the diff and apply the changes.
 - Memory Image: 
      Why do I need to store my application state in a relational database if I can restore it my replaying event log?
