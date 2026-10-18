@@ -745,7 +745,7 @@ Transaction log has two reasons to exist:
 - Recovery: If the database crashes, we can recover it by replaying the transaction log.
 - Replication: If we have a replica of the database, we can keep it in sync. By streaming the contents of the transaction log to a node we can create a replica.
 
-Change Data Capture is a mechanism to extract the changes from the transaction log and publish them as events in a message queue or kafka topic.
+Change Data Capture is a mechanism to extract the changes from the transaction log and publish them as events in a message queue or Kafka topic.
 It's usually implemented by the database vendor, but there are also open source implementations like Debezium.
 
 >Debezium is an open-source change data capture (CDC) platform that streams database changes into event systems in near real time
@@ -817,7 +817,7 @@ There's no standard interface for CDC, so tools like Debezium have to implement 
 
 Those implementation details are mentioned to illustrate that CDC is an afterthought, a hack to extract events from a database that was not designed to be event sourced.
 Some younger databases like YugaByteDB or CockroachDB are designed to be event sourced from the beginning, so they have a native CDC interface.
-In the kafka ecosystem, Debezium is a de facto standard for CDC.
+In the Kafka ecosystem, Debezium is a de facto standard for CDC.
 
 3 ways to use Debezium:
     - Kafka Connect: Debezium is a Kafka Connect source connector that streams changes from the database into Kafka topics.
@@ -827,18 +827,18 @@ In the kafka ecosystem, Debezium is a de facto standard for CDC.
 Use cases for CDC:
 
 An application receives an order creation request from a REST API. We store it in the database, but we also want to notify Shipment service and Payment Service.
-If I do everything in my application, I want to make sure that the storage and the kafka message publication happens atomically, or both things happen or none of them does.
-But kafka and the database doesn't share transaction boundaries so this might lead to inconsistency (typical dual write problem).
-CDC lets you avoid this problem because now is the CDC software who has to track which transactions from the transaction log has been published to kafka and which not by maintaining some kind of pointer to the WAL.
+If I do everything in my application, I want to make sure that the storage and the Kafka message publication happens atomically, or both things happen or none of them does.
+But Kafka and the database doesn't share transaction boundaries so this might lead to inconsistency (typical dual write problem).
+CDC lets you avoid this problem because now is the CDC software who has to track which transactions from the transaction log has been published to Kafka and which not by maintaining some kind of pointer to the WAL.
 
 An XA transaction is a distributed transaction implemented as a 2 Phase Commit.
-As an alternative we can implement a 2PC but this worsens the availability of the system because now, to place an order we need both systems the database and kafka up. 
+As an alternative we can implement a 2PC but this worsens the availability of the system because now, to place an order we need both systems the database and Kafka up. 
 If one of them is down, we cannot place an order. 
-With CDC, if kafka is down, we can still place the order because the kafka publication is deferred by this kind of queue that the WAL is. 
+With CDC, if Kafka is down, we can still place the order because the Kafka publication is deferred by this kind of queue that the WAL is. 
 Kafka is not in the critical path.
 
 Notice if we achieve availability by using CDC, we are sacrificing consistency because now the order is placed but the downstream services are not notified yet.
-We are taped by the CAP theorem: in case of partition (ex: kafka is down) we can choose between availability and consistency. We choose availability.
+We are taped by the CAP theorem: in case of partition (ex: Kafka is down) we can choose between availability and consistency. We choose availability.
 
 Alternatively we could implement a SAGA pattern to achieve availability with eventual consistency. The SAGA pattern can be implemented with a choreography approach or an orchestration approach.
 Each service part of the SAGA has to implement a command and an undo command. In fact: Event and UndoEvent.
@@ -847,7 +847,7 @@ Each service part of the SAGA has to implement a command and an undo command. In
 
 > Advice: Do not implement a SAGA pattern ort 2PC if you can avoid it.
 
-What if the application receive a request to place an order, and we simply publish it to kafka? Then we will have multiple consumers and one of them will write it to the database.
+What if the application receive a request to place an order, and we simply publish it to Kafka? Then we will have multiple consumers and one of them will write it to the database.
 Which problems can you see in this architecture?
 - If the consumer that writes to the database is down, we will lose the order.
 - There is a lack of consistency if the order is shipped before it is stored in the database.
@@ -962,7 +962,7 @@ Then I have to put every response of an external system as an event and make it 
 
     - Causation Id: Id of the event causing the current event. Allows to reconstruct causal chains.
     - SequenceNumber: Used in aggregates for optimistic concurrency.
-            OrederCreated 1, Add Item 2. If I store a Confirmed event I expect it to be sotred with seq id 4.
+            OrderCreated 1, Add Item 2. If I store a Confirmed event I expect it to be sorted with seq id 4.
             Timestamps
             
 A useful way to think about these identifiers is to group them into three categories:
@@ -971,7 +971,7 @@ A useful way to think about these identifiers is to group them into three catego
 - **Consistency**: Aggregate Version (or Sequence Number).
 - **Observability**: Correlation ID, Causation ID, Command ID, User ID, Tenant ID.
     
-Snapshot every day: We don't need to process older events. Parttial event sourcing
+Snapshot every day: We don't need to process older events. Partial event sourcing
 
 4- **CQRS**: Command Query Responsibility Segregation
 
@@ -986,7 +986,7 @@ Suited when the write path is very different that the read path. Like unfrequent
 
 Possible implementation:
 
-- Write path produce events that are stored in a kafka topic. Writes are fast
+- Write path produce events that are stored in a Kafka topic. Writes are fast
 - The consumers calculate a view of the current state by reducing the event flow suitable for each use case. 
   One can be a search index database like Elasticsearch (full text search), another for data analytics like Snowflake, 
   SQL database for regular operations.
