@@ -973,11 +973,34 @@ A useful way to think about these identifiers is to group them into three catego
     
 Snapshot every day: We don't need to process older events. Parttial event sourcing
 
-4- **CQRS**:
+4- **CQRS**: Command Query Responsibility Segregation
+
+
+
 - One path handle state updates
 - It updates 3 different schemas variants corresponding to different query needs
 
 Problem: Eventual consistency (inconsistency window)
 Suited when the write path is very different that the read path. Like unfrequent writes that triggers complex calculations, frequent simple reads.
+
+
+Possible implementation:
+
+- Write path produce events that are stored in a kafka topic. Writes are fast
+- The consumers calculate a view of the current state by reducing the event flow suitable for each use case. 
+  One can be a search index database like Elasticsearch (full text search), another for data analytics like Snowflake, 
+  SQL database for regular operations.
+  Customer service needs to retrieve an order and its current status. Regular SQL
+  The search engine needs to find orders using customer names, product names, filters... Elasticsearch
+  The analytics team needs to calculate sales by product, country, month, etc... Snowflake
+
+You can have CQRS with event driven projections.
+
+How can we have CQRS without event sourcing: 
+
+We do write operation in a conventional SQL database. We use a Change Data Capture tool to publish events to feed other 
+read views of the state (optimized for the use case). Is not an event source architecture because the 
+source of truth for the state is not an event log.
+
 
 DDD cheat sheet https://github.com/ddd-crew/context-mapping?tab=readme-ov-file#context-map-cheat-sheet
